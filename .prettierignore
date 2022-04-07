@@ -270,6 +270,5 @@ $RECYCLE.BIN/
 .env*
 /db/main.db
 
-# === End of generic rules ===
 # === Start of specific rules ===
 # === End of specific rules ===
