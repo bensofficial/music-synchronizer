@@ -1,34 +1,43 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+## Get Started 💨
 
-## Getting Started
+Klone das repo mit git:
 
-First, run the development server:
-
-```bash
-npm run dev
-# or
-yarn dev
+```console
+$ cd ~/Folder/you/want/to/clone/this/repository/into
+$ git clone https://github.com/check24-scholarships/music-synchronizer.git
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+> Tip: Use <kbd>Tab</kbd> to complete terminal commands and show suggestions
 
-You can start editing the page by modifying `pages/index.tsx`. The page auto-updates as you edit the file.
+Öffne das Projekt in [Visual Studio Code](https://code.visualstudio.com/), (recommended IDE) (code editor):
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.ts`.
+```console
+$ code lsg
+```
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+**Vertraue dem Ordner und installiere alle recommended extensions**
 
-## Learn More
+> Installation instructions for Visual Studio Code:  
+> (Linux) `pacman -S code` (limited OSS version) / `yay -S visual-studio-code-bin` (Research required!)  
+> (macOS) `brew install --cask visual-studio-code`  
+> (Windows) `winget install -e --id Microsoft.VisualStudioCode`
 
-To learn more about Next.js, take a look at the following resources:
+Installiere die dependencies vom Projekt (Du kannst in Visual Studio Code ein Terminal mit <kbd>Ctrl</kbd> + <kbd>J</kbd> öffnen):
 
--   [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
--   [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```console
+$ npm i
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+Setzte die Datenbank auf
 
-## Deploy on Vercel
+```
+$ npm run new
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Starte einen lokalen development Server
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+```console
+$ npm run dev
+```
+
+Happy hacking! 🥳
