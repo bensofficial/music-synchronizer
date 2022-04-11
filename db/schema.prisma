@@ -9,3 +9,10 @@ datasource db {
     provider = "sqlite"
     url      = "file:./main.db"
 }
+
+model User {
+    id          Int         @id @default(autoincrement())
+    email       String      @unique
+    createdAt   DateTime    @default(now())
+    updatedAt   DateTime    @updatedAt
+}
