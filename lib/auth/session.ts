@@ -54,10 +54,11 @@ export const ssrAuth = <
 };
 
 export const ssrRequireAuth = () => {
-	ssrAuth(({ req }) => {
+	return ssrAuth(({ req }) => {
 		const userSessionData = req.session.user;
 
 		if (!userSessionData) {
+			console.log("returning");
 			return {
 				redirect: {
 					destination: "/login",

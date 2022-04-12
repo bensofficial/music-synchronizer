@@ -20,20 +20,20 @@ export default apiAuth(async (req, res) => {
 
 	const data = req.body;
 
-	const user = await prisma.user.findUnique({
-		where: { email: data.email },
-	});
+	const user = await prisma.user.findFirst({ where: { email: data.email } });
 
 	// if no user with the given email exists, verify the password against
 	// a hash to prevent timing attacks
-	if (
-		!(await verifyPassword(
-			data.password,
-			user?.password ??
-				"$argon2i$v=19$m=4096,t=3,p=1$UFp3ZFmnUdIc84t1M7zpXQ$o+I1FxwYr0ulRgG4epYb+EIWxI/g8lEiLXTv4Ps1W8k",
-		)) ||
-		!user
-	) {
+	const hashToVerifyAgainst =
+		user?.password ??
+		"$argon2i$v=19$m=4096,t=3,p=1$UFp3ZFmnUdIc84t1M7zpXQ$o+I1FxwYr0ulRgG4epYb+EIWxI/g8lEiLXTv4Ps1W8k";
+
+	const passwordIsValid = await verifyPassword(
+		data.password,
+		hashToVerifyAgainst,
+	);
+
+	if (passwordIsValid || !user) {
 		return res.status(500).send({
 			errors: [{ message: "Invalid username or password" }],
 		});
