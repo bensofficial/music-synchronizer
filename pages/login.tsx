@@ -7,8 +7,7 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { FormInput } from "$app/form";
-import email from "$lib/validation/Email";
-import { string } from "$lib/validation";
+import { email, string } from "$lib/validation/rules";
 
 export default function Login() {
 	return (

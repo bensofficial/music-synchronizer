@@ -7,9 +7,8 @@ import {
 	VStack,
 } from "@chakra-ui/react";
 import { FormInput } from "$app/form";
-import email from "$lib/validation/Email";
 import { useState } from "react";
-import { password, string } from "$lib/validation";
+import { password, string, email } from "$lib/validation/rules";
 
 export default function Login() {
 	const [passwordInput, setPasswordInput] = useState("");

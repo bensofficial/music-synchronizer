@@ -1,7 +1,7 @@
-export default abstract class Rule {
-	private nextRule: Rule | null = null;
-	private firstRule: Rule;
-	private lastRule: Rule;
+export default abstract class ValidationRule {
+	private nextRule: ValidationRule | null = null;
+	private firstRule: ValidationRule;
+	private lastRule: ValidationRule;
 	protected abstract errorMessage: string;
 	protected abstract isValid(input: string): boolean;
 
@@ -10,7 +10,7 @@ export default abstract class Rule {
 		this.lastRule = this;
 	}
 
-	public addRule(rule: Rule) {
+	public addRule(rule: ValidationRule) {
 		this.lastRule.nextRule = rule;
 		this.lastRule = this.lastRule.nextRule;
 		return this.firstRule;

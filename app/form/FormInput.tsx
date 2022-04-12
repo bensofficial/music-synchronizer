@@ -1,4 +1,4 @@
-import { Rule } from "$lib/validation";
+import { ValidationRule } from "$lib/validation/rules";
 import {
 	FormControl,
 	FormErrorMessage,
@@ -15,7 +15,7 @@ export default function FormInput({
 	label,
 	...props
 }: InputProps & {
-	rule: Rule;
+	rule: ValidationRule;
 	type: string;
 	name: string;
 	label: string;

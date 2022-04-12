@@ -1,6 +1,6 @@
-import Rule from "./Rule";
+import ValidationRule from "./ValidationRule";
 
-export class String extends Rule {
+export default class String extends ValidationRule {
 	protected errorMessage = "Must be a string";
 
 	protected isValid(input: string): boolean {
@@ -84,8 +84,4 @@ class Matches extends String {
 	protected isValid(input: string): boolean {
 		return this.shouldMatch.test(input);
 	}
-}
-
-export default function string() {
-	return new String();
 }

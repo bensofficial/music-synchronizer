@@ -1,9 +1,11 @@
 import { User } from "@prisma/client";
 
+export default interface SessionUser {
+	id: number;
+}
+
 declare module "iron-session" {
 	interface IronSessionData {
-		user?: {
-			id: Pick<User, "id">;
-		};
+		user?: SessionUser;
 	}
 }
