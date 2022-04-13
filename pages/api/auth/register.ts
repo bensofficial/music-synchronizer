@@ -1,4 +1,4 @@
-import { apiAuth, hashPassword } from "$lib/auth";
+import { apiWithSession, hashPassword } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { email, password } from "$lib/validation/rules";
 import schema from "$lib/validation/Schema";
@@ -8,7 +8,7 @@ const requestData = schema({
 	password: password(),
 });
 
-export default apiAuth(async (req, res) => {
+export default apiWithSession(async (req, res) => {
 	if (!requestData.validate(req, res)) {
 		return;
 	}
@@ -35,5 +35,5 @@ export default apiAuth(async (req, res) => {
 
 	await req.session.save();
 
-	return res.status(200).json(newUser);
+	return res.status(200).json({});
 });

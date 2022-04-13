@@ -2,13 +2,77 @@ import { useEffect, useState } from "react";
 
 type RequestMethod = "POST" | "GET";
 
-export function usePostRequest<T>(url: string) {
+/**
+ * The `usePostRequest` hook can be used in ReactComponents to send data to an api and use the reponse data.
+ *
+ * `usePostRequest` is a generic function. It needs to know the type of the
+ * response data. Pass it in angled brackets like this:
+ *
+ * ```
+ * const {data} = usePostRequest<User>("/api/auth/login");
+ * ```
+ *
+ * If no data type is given, it is assumed that the response data is an empty object
+ *
+ * It returns information about the request in an object (use object destructuring!)
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#object_destructuring
+ *
+ * Information returned:
+ * - `error`: Request failed?
+ * - `errorMessage`
+ * - `loading`: request in progress?
+ * - `data`: return data, might be null
+ * - `send`: call this function to send the request. Pass the req body as parameter
+ *
+ * Example:
+ *
+ * ```
+ * //somewhere inside a React Component
+ * //only destructure the vars you actually need!
+ * const {loading, error, errorMessage, data, send} = usePostRequest<User>("/api/auth/login");
+ * ```
+ */
+export function usePostRequest<T = Record<string, never>>(url: string) {
 	return useRequest<T>(url, "POST");
 }
 
+/**
+ * The `useGetRequest` hook can be used in ReactComponents to retrieve data from an api and use the reponse data.
+ *
+ * `useGetRequest` is a generic function. It needs to know the type of the
+ * response data. Pass it in angled brackets like this:
+ *
+ * ```
+ * const {data} = useGetRequest<User>("/api/user");
+ * ```
+ *
+ * If no data type is given, it is assumed that the response data is an empty object
+ *
+ * The request is sent immediatley the first time the hook is called.
+ *
+ * It returns information about the request in an object (use object destructuring!)
+ * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#object_destructuring
+ *
+ * Information returned:
+ * - `error`: Request failed?
+ * - `errorMessage`
+ * - `loading`: request in progress?
+ * - `data`: return data, might be null
+ *
+ * Example:
+ *
+ * ```
+ * //somewhere inside a React Component
+ * //only destructure the vars you actually need!
+ * const {loading, error, errorMessage, data} = useGetRequest<User>("/api/user");
+ * ```
+ */
 export function useGetRequest<T>(url: string) {
 	const { send, ...values } = useRequest<T>(url, "GET");
 
+	/* pass an empty array of dependencies to ensure that 
+	the request is only send once, when the component mounts
+	*/
 	useEffect(() => {
 		send();
 	}, []);
@@ -25,6 +89,10 @@ function useRequest<T>(url: string, method: RequestMethod) {
 	function send(body: Record<string, any> | null = null) {
 		setLoading(true);
 
+		/* 
+		Chained callback functions must be used here instead of await.
+		Otherwise the states (loading, error, data, etc..) wouldn't update correctly
+		*/
 		fetch(url, {
 			headers: {
 				"Content-Type": "application/json; charset=utf-8",
@@ -38,6 +106,10 @@ function useRequest<T>(url: string, method: RequestMethod) {
 			})
 			.then((data) => {
 				if (error) {
+					/*
+					Surrounded with a try catch expr since its not sure
+					if this value exists on the response data
+					*/
 					try {
 						setErrorMessage(data.errors[0].message);
 					} catch (e) {}

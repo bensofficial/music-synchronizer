@@ -57,6 +57,32 @@ class Schema {
 	}
 }
 
+/**
+ * A Schema can be used to can be used in `api routes` to verify that the data
+ * in the request body is valid.
+
+ * The function expects an object consisting of validationRules (see example)
+ *
+ * A schema can be defined in the following way:
+ *
+ * ```
+ * import {email, string} from "$lib/validation/rules"
+ *
+ * const expectedData = schema({
+ * 		email: email(),
+ * 		username: string().minLen(5)
+ * })
+ * ```
+ * You can validate the data in the api route like this: (Logically you should do this before you use the data)
+ * ```
+ * export default someApiRoute((req, res) => {
+ * 		if(!expectedData.validate(req, res)){
+ * 			return;		
+ * 		}
+ * 		//do other stuff
+ * })
+ * ```
+ */
 export default function schema(schemaShape: schemaShape) {
 	return new Schema(schemaShape);
 }

@@ -19,11 +19,21 @@ const config: IronSessionOptions = {
 	password: process.env["COOKIE_SECRET"]!,
 };
 
-export const apiAuth = (
+/**
+ *
+ * Can be used in `api routes` to access the session data via `req.session`. E.g:
+ *
+ * ```
+ * export default apiWithSession((req, res) => {
+ * 	const sessionUser = req.session.user
+ * })
+ * ```
+ */
+export const apiWithSession = (
 	handler: Parameters<typeof withIronSessionApiRoute>[0],
 ): NextApiHandler => {
-	if (!process.env["COOKIE_SECRET"]) {
-		return (_req, res) =>
+	if (!process.env.COOKIE_SECRET) {
+		return (_req, res) => {
 			res.status(500).send({
 				errors: [
 					{
@@ -32,33 +42,97 @@ export const apiAuth = (
 					},
 				],
 			});
+		};
 	}
 
 	return withIronSessionApiRoute(handler, config);
 };
 
-export const ssrAuth = <
-	P extends { [key: string]: unknown } = { [key: string]: unknown },
+/**
+ * Can be used in `getServerSideProps` to access the session data via `req.session`.
+ *
+ * The function is generic, you have to define the type of the props in
+ * angled brackets. If no type is given it is assumed to be an empty object
+ *
+ * E.g:
+ * ```
+ * import type {SessionUser} from "$lib/auth";
+ *
+ * export const getServerSideProps = ssrWithSession<{sessionUser: sessionUser}>(({req}) => {
+ * 		const sessionUser = req.session.user;
+ *
+ * 		return {
+ * 			props: {
+ * 				sessionUser,
+ * 			}
+ * 		}
+ * })
+ * ```
+ * This Syntax must be used. The following would not work:
+ * ```
+ * export function getServerSideProps() {
+ * 		return ssrWithSession(({req}) => {
+ * 			const sessionUser = req.session.user;
+ *
+ * 			return {
+ * 				props: {
+ * 					sessionUser,
+ * 				}
+ * 			}
+ * 		});
+ * }
+ * ```
+ */
+export const ssrWithSession = <
+	P extends { [key: string]: unknown } = Record<string, never>,
 >(
 	handler: (
 		context: GetServerSidePropsContext,
 	) => GetServerSidePropsResult<P> | Promise<GetServerSidePropsResult<P>>,
-): ((
-	context: GetServerSidePropsContext,
-) => Promise<GetServerSidePropsResult<P>>) => {
-	if (!process.env["COOKIE_SECRET"]) {
+) => {
+	if (!process.env.COOKIE_SECRET) {
 		return async () => ({ notFound: true });
 	}
 
 	return withIronSessionSsr(handler, config);
 };
 
-export const ssrRequireAuth = () => {
-	return ssrAuth(({ req }) => {
-		const userSessionData = req.session.user;
+/**
+ * Can be used in `getServerSideProps` to ensure that the callback is only executed
+ * when the client is authenticated
+ *
+ * If the user who requests the page is not authenticated he will be redirected to `/login`.
+ * That means that only authenticated users will be able to access the page
+ *
+ * The function is generic. You have to define the return type of the props in angled brackets.
+ * If no type is given it is assumed to be an empty object;
+ *
+ * Only this syntax must be used (its the same as with `ssrWithSession`)
+ * ```
+ * import type {SessionUser} from "$lib/auth";
+ *
+ * export const getServerSideProps = ssrRequireAuth<{sessionUser: sessionUser}>(({req}, sessionUser) => {
+ * 		//do something with the sessionUser. Most simple thing to do:
+ * 		return {
+ * 			props: {
+ * 				sessionUser
+ * 			}
+ * 		}
+ * });
+ * ```
+ */
+export const ssrRequireAuth = <
+	P extends { [key: string]: unknown } = Record<string, never>,
+>(
+	callback: (
+		context: GetServerSidePropsContext,
+		sessionUser: SessionUser,
+	) => GetServerSidePropsResult<P> | Promise<GetServerSidePropsResult<P>>,
+) => {
+	return ssrWithSession((context) => {
+		const sessionUser = context.req.session.user;
 
-		if (!userSessionData) {
-			console.log("returning");
+		if (!sessionUser) {
 			return {
 				redirect: {
 					destination: "/login",
@@ -67,14 +141,23 @@ export const ssrRequireAuth = () => {
 			};
 		}
 
-		return {
-			props: {
-				userId: userSessionData.id,
-			},
-		};
+		return callback(context, sessionUser);
 	});
 };
 
+/**
+ * Can be used in `api routes` to ensure that the callback is only executed if the client
+ * who called the route is authenticated
+ *
+ * If the user who sent the request is not authenticated a `Not authorized` error message will be
+ * sent. (Status Code: 500)
+ *
+ * ```
+ * export default apiRequireAuth((req, res, sessionUser) => {
+ * 		//do something with the sessionUser
+ * });
+ * ```
+ */
 export const apiRequireAuth = (
 	callback: (
 		req: NextApiRequest,
@@ -82,7 +165,7 @@ export const apiRequireAuth = (
 		sessionUser: SessionUser,
 	) => void | Promise<void>,
 ) => {
-	return apiAuth((req, res) => {
+	return apiWithSession((req, res) => {
 		const sessionUser = req.session.user;
 
 		if (!sessionUser) {

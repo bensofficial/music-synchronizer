@@ -9,15 +9,21 @@ import {
 import { FormInput } from "$app/form";
 import { email, string } from "$lib/validation/rules";
 import { usePostRequest } from "$lib/clientRequest";
-import { User } from "@prisma/client";
 import { useState } from "react";
+import { useRouter } from "next/router";
 
 export default function Login() {
-	const { loading, errorMessage, send } =
-		usePostRequest<User>("/api/auth/login");
+	const { loading, errorMessage, error, send, data } =
+		usePostRequest<Record<string, never>>("/api/auth/login");
 
 	const [emailInput, setEmailInput] = useState("");
 	const [passwordInput, setPasswordInput] = useState("");
+
+	const router = useRouter();
+
+	if (data && !error) {
+		router.push("/dashboard");
+	}
 
 	return (
 		<Center h="100vh">

@@ -1,5 +1,5 @@
 import {
-	apiAuth,
+	apiWithSession,
 	hashPassword,
 	shouldRehashPassword,
 	verifyPassword,
@@ -13,7 +13,7 @@ const requestData = schema({
 	password: string(),
 });
 
-export default apiAuth(async (req, res) => {
+export default apiWithSession(async (req, res) => {
 	if (!requestData.validate(req, res)) {
 		return;
 	}
@@ -33,8 +33,8 @@ export default apiAuth(async (req, res) => {
 		hashToVerifyAgainst,
 	);
 
-	if (passwordIsValid || !user) {
-		return res.status(500).send({
+	if (!passwordIsValid || !user) {
+		return res.status(400).send({
 			errors: [{ message: "Invalid username or password" }],
 		});
 	}
@@ -64,5 +64,5 @@ export default apiAuth(async (req, res) => {
 
 	await req.session.save();
 
-	return res.status(200).json(user);
+	return res.status(200).json({});
 });

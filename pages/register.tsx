@@ -9,9 +9,21 @@ import {
 import { FormInput } from "$app/form";
 import { useState } from "react";
 import { password, string, email } from "$lib/validation/rules";
+import { usePostRequest } from "$lib/clientRequest";
+import { useRouter } from "next/router";
 
 export default function Login() {
 	const [passwordInput, setPasswordInput] = useState("");
+	const [emailInput, setEmailInput] = useState("");
+
+	const { loading, error, errorMessage, data, send } =
+		usePostRequest<Record<string, never>>("/api/auth/register");
+
+	const router = useRouter();
+
+	if (!error && data) {
+		router.push("/dashboard");
+	}
 
 	return (
 		<Center h="100vh">
@@ -31,10 +43,14 @@ export default function Login() {
 						"brand.errorDark",
 					)}
 					textAlign="center">
-					Server Error
+					{errorMessage}
 				</Text>
 				<FormInput
 					type="email"
+					value={emailInput}
+					onChange={(e) => {
+						setEmailInput(e.target.value);
+					}}
 					name="email"
 					rule={email()}
 					label="Email"></FormInput>
@@ -55,7 +71,17 @@ export default function Login() {
 						"Must be the same password",
 					)}
 					label="Repeat Password"></FormInput>
-				<Button w="100%">Submit</Button>
+				<Button
+					onClick={() => {
+						send({
+							email: emailInput,
+							password: passwordInput,
+						});
+					}}
+					isLoading={loading}
+					w="100%">
+					Submit
+				</Button>
 			</VStack>
 		</Center>
 	);

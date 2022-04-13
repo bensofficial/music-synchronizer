@@ -4,6 +4,10 @@ import prisma from "$lib/prisma";
 export default apiRequireAuth(async (_req, res, sessionUser) => {
 	const user = await prisma.user.findUnique({
 		where: { id: sessionUser.id },
+		select: {
+			email: true,
+			id: true,
+		},
 	});
 
 	if (!user) {
