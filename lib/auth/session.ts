@@ -150,7 +150,7 @@ export const ssrRequireAuth = <
  * who called the route is authenticated
  *
  * If the user who sent the request is not authenticated a `Not authorized` error message will be
- * sent. (Status Code: 500)
+ * sent. (Status Code: 403)
  *
  * ```
  * export default apiRequireAuth((req, res, sessionUser) => {
@@ -169,7 +169,7 @@ export const apiRequireAuth = (
 		const sessionUser = req.session.user;
 
 		if (!sessionUser) {
-			return res.status(500).send({
+			return res.status(403).send({
 				errors: [
 					{
 						message: "Not authorized",
