@@ -89,6 +89,12 @@ function useRequest<T>(url: string, method: RequestMethod) {
 	function send(body: Record<string, any> | null = null) {
 		setLoading(true);
 
+		/*
+		A second error var has to be used to store whether the request failed or not.
+		If the information is saved in the state "error" it wont have updated once the response body
+		is parsed and the errorMessage wont be extracted
+		*/
+		let reqError = false;
 		/* 
 		Chained callback functions must be used here instead of await.
 		Otherwise the states (loading, error, data, etc..) wouldn't update correctly
@@ -102,17 +108,22 @@ function useRequest<T>(url: string, method: RequestMethod) {
 		})
 			.then((res) => {
 				setError(!res.ok);
+				reqError = !res.ok;
 				return res.json();
 			})
 			.then((data) => {
-				if (error) {
+				if (reqError) {
+					console.log("extracting errMessage");
 					/*
 					Surrounded with a try catch expr since its not sure
 					if this value exists on the response data
 					*/
 					try {
 						setErrorMessage(data.errors[0].message);
-					} catch (e) {}
+						console.log("setErrorMessage", data.errors[0].message);
+					} catch (e) {
+						console.log("Unable to extract errorMessage");
+					}
 				}
 
 				setData(data);

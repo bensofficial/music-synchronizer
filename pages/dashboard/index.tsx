@@ -13,13 +13,13 @@ export default function Index() {
 	const {
 		loading: logoutLoading,
 		send: sendLogout,
-		data: logoutdata,
+		data: logoutData,
 		error: logoutError,
 	} = usePostRequest("/api/auth/logout");
 
 	const router = useRouter();
 
-	if (!logoutError && logoutdata) {
+	if (!logoutError && logoutData) {
 		router.push("/login");
 	}
 
