@@ -29,9 +29,9 @@ function prepareGapi() {
 		/*callback for when the load finishes*/ async () => {
 			await gapi.auth2.init({
 				client_id:
-					"323473282193-jdvhesk2u573kt3dot0jmkk42a6gn0c2.apps.googleusercontent.com",
+					process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
 			});
-			gapi.client.setApiKey("AIzaSyBsKGY49NrhKc4En8UNMrqxWAlPzzBM3s0");
+			gapi.client.setApiKey(process.env.NEXT_PUBLIC_GOOGLE_API_KEY!);
 		},
 	);
 }
