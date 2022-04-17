@@ -1,6 +1,6 @@
 ## Get Started 💨
 
-Klone das repo mit git:
+Clone the repo using git:
 
 ```console
 $ cd ~/Folder/you/want/to/clone/this/repository/into
@@ -9,32 +9,38 @@ $ git clone https://github.com/check24-scholarships/music-synchronizer.git
 
 > Tip: Use <kbd>Tab</kbd> to complete terminal commands and show suggestions
 
-Öffne das Projekt in [Visual Studio Code](https://code.visualstudio.com/), (recommended IDE) (code editor):
+Open the project in [Visual Studio Code](https://code.visualstudio.com/), (recommended IDE) (code editor):
 
 ```console
 $ code lsg
 ```
 
-**Vertraue dem Ordner und installiere alle recommended extensions**
+**Trust the foldera and install all recommended extensions**
 
 > Installation instructions for Visual Studio Code:  
 > (Linux) `pacman -S code` (limited OSS version) / `yay -S visual-studio-code-bin` (Research required!)  
 > (macOS) `brew install --cask visual-studio-code`  
 > (Windows) `winget install -e --id Microsoft.VisualStudioCode`
 
-Installiere die dependencies vom Projekt (Du kannst in Visual Studio Code ein Terminal mit <kbd>Ctrl</kbd> + <kbd>J</kbd> öffnen):
+Create a `.env.local` file and set the Cookie Secret (a 40 - 50 character long password)
+
+```dotenv
+COOKIE_SECRET=<40-50 character long password>
+```
+
+Install the dependencies of the Project (You can open up a new terminal in Visua Studio Code with <kbd>Ctrl</kbd> + <kbd>J</kbd>):
 
 ```console
 $ npm i
 ```
 
-Setzte die Datenbank auf
+Setup the database
 
-```
+```console
 $ npm run new
 ```
 
-Starte einen lokalen development Server
+Start a local development server
 
 ```console
 $ npm run dev
