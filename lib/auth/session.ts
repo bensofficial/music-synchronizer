@@ -13,8 +13,9 @@ import SessionUser from "./auth";
 const config: IronSessionOptions = {
 	cookieName: "auth",
 	cookieOptions: {
+		httpOnly: true,
 		sameSite: process.env.NODE_ENV !== "development" ? "strict" : "none",
-		secure: process.env.NODE_ENV !== "development",
+		secure: true,
 	},
 	password: process.env["COOKIE_SECRET"]!,
 };

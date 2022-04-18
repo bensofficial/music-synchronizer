@@ -32,7 +32,7 @@ export default function Login() {
 				p={8}
 				spacing={6}
 				borderRadius="lg"
-				bg={useColorModeValue("gray.50", "gray.700")}>
+				bg={useColorModeValue("gray.100", "gray.700")}>
 				<Heading size="lg" textAlign="center">
 					Login
 				</Heading>
