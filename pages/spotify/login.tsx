@@ -1,17 +1,26 @@
 import { Center, Button } from "@chakra-ui/react";
+import {SessionUser, ssrRequireAuth} from "$lib/auth";
+import Link from 'next/link'
 
-export function Login() {
+export default function Login() {
 
     return (
         <Center h="100vh">
-            <a href="/api/spotify/login">
-                <Button>
-                    Auth with Spotify
-                </Button>
-            </a>
-
+            <Link href="/api/spotify/login">
+                <a>
+                    <Button>Connect with Spotify</Button>
+                </a>
+            </Link>
         </Center>
     )
 }
 
-export default Login
+export const getServerSideProps = ssrRequireAuth<{ sessionUser: SessionUser }> (
+    (_ctx, sessionUser) => {
+        return {
+            props: {
+                sessionUser: sessionUser,
+            },
+        };
+    },
+);

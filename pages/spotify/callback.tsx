@@ -3,16 +3,20 @@ import * as queryString from "query-string";
 import {SessionUser, ssrRequireAuth} from "$lib/auth";
 import {InferGetServerSidePropsType} from "next";
 import Cookies from "js-cookie";
+import prisma from "$lib/prisma";
 
 function Callback({ error }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
-    if (error) {
-        console.log('Es gab ein Error')
+    if (error !== null) {
+        console.log('Es gab ein Error: ', error)
     }
 
     return (
         <Center h="100vh">
-            <Heading>Du hast dich erfolgreich mit Spotify Authentifiziert 👍</Heading>
+            { error === null
+                ? (<Heading>Du hast dich erfolgreich mit Spotify Authentifiziert 👍</Heading>)
+                : (<Heading>😔 {error}</Heading>)
+            }
         </Center>
     )
 }
@@ -27,14 +31,24 @@ export const getServerSideProps = ssrRequireAuth<{ error: string | null, session
         const redirectUri = process.env.SPOTIFY_REDIRECT_URI
 
         const code = _ctx.query.code || null;
+        const error = _ctx.query.error || null;
         const state = _ctx.query.state || null;
 
         const previousState = _ctx.req.cookies.spotify_state
 
+        if (error !== null) {
+            return {
+                props: {
+                    error: error.toString(),
+                    sessionUser: sessionUser
+                }
+            }
+        }
+
         if (state === null) {
             return {
                 props: {
-                    error: 'state_mismatch',
+                    error: 'state_is_null',
                     sessionUser: sessionUser
                 },
             };
@@ -65,8 +79,16 @@ export const getServerSideProps = ssrRequireAuth<{ error: string | null, session
 
         fetch('https://accounts.spotify.com/api/token', authOptions).then(async (response) => {
             const data = await response.json();
-            console.log('data: ', data)
-            //TODO: tokens in db speichern
+
+            prisma.user.update({
+                data: {
+                    spotifyAccessToken: data.access_token,
+                    spotifyRefreshToken: data.refresh_token,
+                },
+                where: {
+                    id: sessionUser.id
+                }
+            })
         })
 
         return {
