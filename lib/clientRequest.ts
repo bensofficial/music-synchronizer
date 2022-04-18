@@ -104,7 +104,6 @@ function useRequest<T>(url: string, method: RequestMethod) {
 				Accept: "application/json",
 				"Content-Type": "application/json; charset=utf-8",
 			},
-			credentials: "same-origin",
 			method: method,
 			body: body ? JSON.stringify(body) : null,
 		})
