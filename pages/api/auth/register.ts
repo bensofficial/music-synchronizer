@@ -18,7 +18,7 @@ export default apiWithSession(async (req, res) => {
 	if (await prisma.user.findUnique({ where: { email: data.email } })) {
 		return res
 			.status(400)
-			.json({ errors: [{ message: "Email must be unique" }] });
+			.json({ errors: [{ message: "Email is already used" }] });
 	}
 
 	const newUser = await prisma.user.create({
