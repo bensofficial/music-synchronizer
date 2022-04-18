@@ -1,9 +1,7 @@
-//In TypeScript geht das komischerweise nicht
-
 import generateRandomString from "../../../lib/generateRandomString";
-import {NextApiRequest, NextApiResponse} from "next";
 import Cookies from "js-cookie";
 import {apiRequireAuth} from "$lib/auth";
+import cookie from "cookie"
 
 const clientId = process.env.SPOTIFY_CLIENT_ID
 const redirectUri = process.env.SPOTIFY_REDIRECT_URI
@@ -13,8 +11,13 @@ const scope = 'playlist-modify-public playlist-read-private playlist-modify-priv
 
 export default apiRequireAuth((_req, res, _sessionUser) => {
 
-    Cookies.set('spotify_state', state)
-    console.log(state)
+    res.setHeader("Set-Cookie", cookie.serialize("spotify_state", state, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV !== "development",
+        maxAge: 60 * 60,
+        sameSite: "strict",
+        path: "/"
+    }))
 
     try {
         res.redirect(307, 'https://accounts.spotify.com/authorize?' +

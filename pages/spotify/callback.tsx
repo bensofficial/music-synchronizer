@@ -2,6 +2,7 @@ import { Center, Heading } from "@chakra-ui/react";
 import * as queryString from "query-string";
 import {SessionUser, ssrRequireAuth} from "$lib/auth";
 import {InferGetServerSidePropsType} from "next";
+import Cookies from "js-cookie";
 
 function Callback({ error }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
@@ -21,8 +22,6 @@ export default Callback;
 export const getServerSideProps = ssrRequireAuth<{ error: string | null, sessionUser: SessionUser }> (
     (_ctx, sessionUser) => {
 
-        const cookies = _ctx.req.cookies
-
         const clientId = process.env.SPOTIFY_CLIENT_ID
         const clientSecret = process.env.SPOTIFY_CLIENT_SECRET
         const redirectUri = process.env.SPOTIFY_REDIRECT_URI
@@ -30,9 +29,7 @@ export const getServerSideProps = ssrRequireAuth<{ error: string | null, session
         const code = _ctx.query.code || null;
         const state = _ctx.query.state || null;
 
-        const previousState = cookies.spotify_state
-
-        console.log(previousState)
+        const previousState = _ctx.req.cookies.spotify_state
 
         if (state === null) {
             return {
@@ -48,8 +45,8 @@ export const getServerSideProps = ssrRequireAuth<{ error: string | null, session
                 props: {
                     error: 'state_mismatch',
                     sessionUser: sessionUser
-                },
-            };
+                }
+            }
         }
 
         const authOptions = {
@@ -67,7 +64,9 @@ export const getServerSideProps = ssrRequireAuth<{ error: string | null, session
         };
 
         fetch('https://accounts.spotify.com/api/token', authOptions).then(async (response) => {
-            const data = response.json();
+            const data = await response.json();
+            console.log('data: ', data)
+            //TODO: tokens in db speichern
         })
 
         return {
