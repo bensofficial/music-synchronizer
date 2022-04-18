@@ -2,6 +2,9 @@
 	"[dotenv]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
+	"[ignore]": {
+		"editor.defaultFormatter": "foxundermoon.shell-format"
+	},
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": true
 	},
