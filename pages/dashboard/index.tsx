@@ -1,4 +1,3 @@
-import { SessionUser, ssrRequireAuth } from "$lib/auth";
 import { useGetRequest, usePostRequest } from "$lib/clientRequest";
 import { Button, Center, Heading, Spinner, VStack } from "@chakra-ui/react";
 import { useRouter } from "next/router";
@@ -43,12 +42,12 @@ export default function Index() {
 	);
 }
 
-export const getServerSideProps = ssrRequireAuth<{ sessionUser: SessionUser }>(
-	(_ctx, sessionUser) => {
+/*export const getServerSideProps = ssrRequireAuth<{ sessionUser: SessionUser }>(
+	(_context, _session, sessionData) => {
 		return {
 			props: {
-				sessionUser,
+				sessionUser: sessionData.user,
 			},
 		};
 	},
-);
+);*/

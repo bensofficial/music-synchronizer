@@ -8,7 +8,7 @@ const requestData = schema({
 	password: password(),
 });
 
-export default apiWithSession(async (req, res) => {
+export default apiWithSession(async (req, res, session) => {
 	if (!requestData.validate(req, res)) {
 		return;
 	}
@@ -28,12 +28,7 @@ export default apiWithSession(async (req, res) => {
 		},
 	});
 
-	// login in the user once his account is created
-	req.session.user = {
-		id: newUser.id,
-	};
-
-	await req.session.save();
+	await session.save({ user: { id: newUser.id } });
 
 	return res.status(200).json({});
 });

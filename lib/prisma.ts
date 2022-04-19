@@ -1,11 +1,21 @@
 import { PrismaClient } from "@prisma/client";
 
-var prisma: PrismaClient | undefined;
+declare global {
+	// allow global `var` declarations
 
-// https://pris.ly/d/help/next-js-best-practices
-export default prisma ||
-	(process.env.NODE_ENV !== "development" && new PrismaClient()) ||
-	(prisma = new PrismaClient({
-		errorFormat: "pretty",
-		log: ["query", "info", "warn", "error"],
-	}));
+	// eslint-disable-next-line no-var
+
+	var prisma: PrismaClient | undefined;
+}
+
+const prisma =
+	global.prisma || process.env.NODE_ENV !== "development"
+		? new PrismaClient()
+		: new PrismaClient({
+				errorFormat: "pretty",
+				log: ["query", "info", "warn", "error"],
+		  });
+
+if (process.env.NODE_ENV !== "production") global.prisma = prisma;
+
+export default prisma;

@@ -2,6 +2,7 @@
 	"[dotenv]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
+	"cSpell.words": ["chakra"],
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": true
 	},
