@@ -1,54 +1,133 @@
-import { SessionUser, ssrRequireAuth } from "$lib/auth";
-import { useGetRequest, usePostRequest } from "$lib/clientRequest";
-import { Button, Center, Heading, Spinner, VStack } from "@chakra-ui/react";
-import { useRouter } from "next/router";
-
-interface AuthenticatedUser {
-	email: string;
-	id: number;
-}
+import DashboardNav from "$app/layout/DashboardNav";
+import Container from "$app/layout/Container";
+import {
+	Box,
+	Center,
+	Flex,
+	Grid,
+	Heading,
+	HStack,
+	Image,
+	Modal,
+	ModalOverlay,
+	ModalContent,
+	ModalCloseButton,
+	ModalBody,
+	ModalFooter,
+	Tag,
+	Text,
+	useColorModeValue,
+	VStack,
+	useDisclosure,
+	Button,
+	ModalHeader,
+} from "@chakra-ui/react";
+import { AddIcon } from "@chakra-ui/icons";
 
 export default function Index() {
-	const { loading, data } = useGetRequest<AuthenticatedUser>("/api/user");
-	const {
-		loading: logoutLoading,
-		send: sendLogout,
-		data: logoutData,
-		error: logoutError,
-	} = usePostRequest("/api/auth/logout");
+	const lightTextColor = useColorModeValue("gray.300", "gray.600");
 
-	const router = useRouter();
-
-	if (!logoutError && logoutData) {
-		router.push("/login");
-	}
+	const { isOpen, onOpen, onClose } = useDisclosure();
 
 	return (
-		<Center h="100vh">
-			{loading ? (
-				<Spinner />
-			) : (
-				<VStack>
-					<Heading>Welcome Back, {data?.email}</Heading>
-					<Button
-						isLoading={logoutLoading}
-						onClick={() => {
-							sendLogout();
-						}}>
-						Logout
-					</Button>
-				</VStack>
-			)}
-		</Center>
+		<>
+			<DashboardNav></DashboardNav>
+			<Container py={5}>
+				<Heading>Hallo, Simon Weckler 👋</Heading>
+				<Text mb={16} fontWeight="thin" fontSize="xl">
+					Deine Services:
+				</Text>
+				<HStack gap={5}>
+					<HStack
+						gap={10}
+						w="max-content"
+						_hover={{
+							boxShadow: useColorModeValue("2xl", "dark-lg"),
+							cursor: "pointer",
+						}}
+						borderWidth="2px"
+						borderRadius="lg"
+						p={5}>
+						<Image
+							h={16}
+							w={16}
+							src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg"
+							alt="spotify logo"></Image>
+						<VStack align="end">
+							<Tag fontWeight="bold">Service</Tag>
+							<Heading>Spotify</Heading>
+						</VStack>
+					</HStack>
+					<HStack
+						gap={10}
+						w="max-content"
+						_hover={{
+							boxShadow: useColorModeValue("2xl", "dark-lg"),
+							cursor: "pointer",
+						}}
+						borderWidth="2px"
+						borderRadius="lg"
+						p={5}>
+						<Image
+							h={16}
+							w={16}
+							src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Youtube_Music_icon.svg"
+							alt="spotify logo"></Image>
+						<VStack align="end">
+							<Tag fontWeight="bold">Service</Tag>
+							<Heading>Youtube Music</Heading>
+						</VStack>
+					</HStack>
+					<Center
+						onClick={onOpen}
+						w="max-content"
+						_hover={{
+							boxShadow: useColorModeValue("2xl", "dark-lg"),
+							cursor: "pointer",
+						}}
+						p={5}
+						borderWidth="2px"
+						borderRadius="lg">
+						<AddIcon color={lightTextColor} h={16} w={16}></AddIcon>
+					</Center>
+				</HStack>
+			</Container>
+			<Modal isOpen={isOpen} onClose={onClose}>
+				<ModalOverlay />
+				<ModalContent>
+					<ModalHeader>Add Service</ModalHeader>
+					<ModalCloseButton />
+					<ModalBody>
+						<VStack gap={3}>
+							<Button variant="outline" w="full">
+								<HStack h="full">
+									<Image
+										h={5}
+										w={5}
+										alt="Spotify"
+										src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg"
+									/>
+									<Text>Spotify</Text>
+								</HStack>
+							</Button>
+							<Button variant="outline" w="full">
+								<HStack h="full">
+									<Image
+										h={5}
+										w={5}
+										alt="Spotify"
+										src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Youtube_Music_icon.svg"
+									/>
+									<Text>Youtube Music</Text>
+								</HStack>
+							</Button>
+						</VStack>
+					</ModalBody>
+					<ModalFooter>
+						<Button onClick={onClose}>Cancel</Button>
+					</ModalFooter>
+				</ModalContent>
+			</Modal>
+		</>
 	);
 }
-
-export const getServerSideProps = ssrRequireAuth<{ sessionUser: SessionUser }>(
-	(_ctx, sessionUser) => {
-		return {
-			props: {
-				sessionUser,
-			},
-		};
-	},
-);
