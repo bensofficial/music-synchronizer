@@ -21,13 +21,17 @@ import {
 	useDisclosure,
 	Button,
 	ModalHeader,
+	Link,
 } from "@chakra-ui/react";
 import { AddIcon } from "@chakra-ui/icons";
+import { useRouter } from "next/router";
 
 export default function Index() {
 	const lightTextColor = useColorModeValue("gray.300", "gray.600");
 
 	const { isOpen, onOpen, onClose } = useDisclosure();
+
+	const router = useRouter();
 
 	return (
 		<>
@@ -39,6 +43,9 @@ export default function Index() {
 				</Text>
 				<HStack gap={5}>
 					<HStack
+						onClick={() => {
+							router.push("/dashboard/spotify");
+						}}
 						gap={10}
 						w="max-content"
 						_hover={{
