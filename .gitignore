@@ -275,3 +275,4 @@ $RECYCLE.BIN/
 # === End of specific rules ===
 
 /.idea
+/.idea/workspace.xml
