@@ -5,17 +5,8 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d36572ea-070f-4323-9c97-be80a31f5ab0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/app/buttons/authButton/authWithSpotify.tsx" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/pages/spotify/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_15_04_2022_12_38_[Changes]1/shelved.patch" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Merge_at_15_04_2022_12_38__Changes_1.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.gitignore" beforeDir="false" afterPath="$PROJECT_DIR$/.gitignore" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/theme.ts" beforeDir="false" afterPath="$PROJECT_DIR$/app/theme.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/package.json" beforeDir="false" afterPath="$PROJECT_DIR$/package.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/api/spotify/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/pages/api/spotify/login.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/spotify/callback.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/spotify/callback.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/spotify/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/spotify/login.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
