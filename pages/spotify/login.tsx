@@ -1,17 +1,15 @@
-import { Center, Button } from "@chakra-ui/react";
+import { Center } from "@chakra-ui/react";
 import {SessionUser, ssrRequireAuth} from "$lib/auth";
-import Link from 'next/link'
+import AuthWithSpotifyButton from "$app/buttons/authButton/authWithSpotify";
 
 export default function Login() {
 
     return (
-        <Center h="100vh">
-            <Link href="/api/spotify/login">
-                <a>
-                    <Button>Connect with Spotify</Button>
-                </a>
-            </Link>
-        </Center>
+        <div>
+            <Center h="100vh">
+                <AuthWithSpotifyButton></AuthWithSpotifyButton>
+            </Center>
+        </div>
     )
 }
 

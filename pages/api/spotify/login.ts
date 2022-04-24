@@ -18,9 +18,7 @@ export default apiRequireAuth(async (_req, res, _sessionUser) => {
         }
     });
 
-    console.log('refreshToken: ', user?.spotifyRefreshToken)
-
-    if (user?.spotifyRefreshToken !== "") {
+    if (user?.spotifyRefreshToken == "") {
         res.redirect(307, `http://localhost:3000/spotify/callback?error=user_already_authenticated`)
         return;
     }

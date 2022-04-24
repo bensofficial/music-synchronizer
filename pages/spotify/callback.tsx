@@ -7,10 +7,6 @@ import prisma from "$lib/prisma";
 
 function Callback({ error }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
-    if (error !== null) {
-        console.log('Es gab ein Error: ', error)
-    }
-
     return (
         <Center h="100vh">
             { error === null
@@ -24,7 +20,16 @@ function Callback({ error }: InferGetServerSidePropsType<typeof getServerSidePro
 export default Callback;
 
 export const getServerSideProps = ssrRequireAuth<{ error: string | null, sessionUser: SessionUser }> (
-    (_ctx, sessionUser) => {
+    async (_ctx, sessionUser) => {
+
+        if (await isUserConnected(sessionUser)) {
+            return {
+                props: {
+                    error: 'user_already_authenticated',
+                    sessionUser: sessionUser
+                }
+            }
+        }
 
         const clientId = process.env.SPOTIFY_CLIENT_ID
         const clientSecret = process.env.SPOTIFY_CLIENT_SECRET
@@ -99,5 +104,16 @@ export const getServerSideProps = ssrRequireAuth<{ error: string | null, session
         };
     },
 );
+
+async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
+
+    const user = await prisma.user.findFirst({
+        where: {
+            id: sessionUser.id
+        }
+    });
+
+    return user?.spotifyRefreshToken == "";
+}
 
 
