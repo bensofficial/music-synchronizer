@@ -1,9 +1,9 @@
 import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
 
-export default apiRequireAuth(async (_req, res, sessionUser) => {
+export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 	const user = await prisma.user.findUnique({
-		where: { id: sessionUser.id },
+		where: { id: sessionData.user.id },
 		select: {
 			email: true,
 			id: true,
