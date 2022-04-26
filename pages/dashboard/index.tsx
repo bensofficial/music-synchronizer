@@ -1,104 +1,70 @@
-import DashboardNav from "$app/layout/DashboardNav";
-import Container from "$app/layout/Container";
 import {
-	Box,
-	Center,
-	Flex,
-	Grid,
 	Heading,
-	HStack,
-	Image,
 	Modal,
 	ModalOverlay,
 	ModalContent,
 	ModalCloseButton,
 	ModalBody,
 	ModalFooter,
-	Tag,
 	Text,
-	useColorModeValue,
 	VStack,
 	useDisclosure,
 	Button,
 	ModalHeader,
-	Link,
+	Flex,
+	Icon,
+	Center,
+	useColorModeValue,
 } from "@chakra-ui/react";
-import { AddIcon } from "@chakra-ui/icons";
-import { useRouter } from "next/router";
+import { Page } from "$types/next";
+import DashboardLayout from "$app/layout/DashboardLayout";
+import ServiceCard from "$app/services/ServiceCard";
+import SpotifyIcon from "$app/icons/SpotifyIcon";
+import YoutubeMusicIcon from "$app/icons/YoutubeMusicIcon";
+import AddServiceButton from "$app/services/AddServiceButton";
+import ServiceCardWrapper from "$app/services/ServiceCardWrapper";
+import { IoAdd } from "react-icons/io5";
 
-export default function Index() {
-	const lightTextColor = useColorModeValue("gray.300", "gray.600");
-
+const Index: Page = () => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
-
-	const router = useRouter();
 
 	return (
 		<>
-			<DashboardNav></DashboardNav>
-			<Container py={5}>
-				<Heading>Hallo, Simon Weckler 👋</Heading>
-				<Text mb={16} fontWeight="thin" fontSize="xl">
-					Deine Services:
-				</Text>
-				<HStack gap={5}>
-					<HStack
-						onClick={() => {
-							router.push("/dashboard/spotify");
-						}}
-						gap={10}
-						w="max-content"
-						_hover={{
-							boxShadow: useColorModeValue("2xl", "dark-lg"),
-							cursor: "pointer",
-						}}
-						borderWidth="2px"
-						borderRadius="lg"
-						p={5}>
-						<Image
-							h={16}
+			<Heading mb={4}>Hallo, Simon Weckler 👋</Heading>
+			<Text mb={4} fontWeight="thin" fontSize="2xl">
+				Deine Services:
+			</Text>
+			<Flex flexWrap="wrap">
+				<ServiceCard
+					flexBasis={{ base: "100%", md: "auto" }}
+					href="/dashboard/spotify"
+					mr={{ base: 0, md: 4 }}
+					mb={4}
+					serviceName="Spotify">
+					<SpotifyIcon />
+				</ServiceCard>
+				<ServiceCard
+					mr={{ base: 0, md: 4 }}
+					mb={4}
+					flexBasis={{ base: "100%", md: "auto" }}
+					href="dashboard/youtube"
+					serviceName="Youtube Music">
+					<YoutubeMusicIcon />
+				</ServiceCard>
+				<ServiceCardWrapper
+					mb={4}
+					flexBasis={{ base: "100%", md: "auto" }}
+					onClick={onOpen}>
+					<Center h="full" px={6}>
+						<Icon
+							color={useColorModeValue("gray.200", "gray.600")}
 							w={16}
-							src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg"
-							alt="spotify logo"></Image>
-						<VStack align="end">
-							<Tag fontWeight="bold">Service</Tag>
-							<Heading>Spotify</Heading>
-						</VStack>
-					</HStack>
-					<HStack
-						gap={10}
-						w="max-content"
-						_hover={{
-							boxShadow: useColorModeValue("2xl", "dark-lg"),
-							cursor: "pointer",
-						}}
-						borderWidth="2px"
-						borderRadius="lg"
-						p={5}>
-						<Image
 							h={16}
-							w={16}
-							src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Youtube_Music_icon.svg"
-							alt="spotify logo"></Image>
-						<VStack align="end">
-							<Tag fontWeight="bold">Service</Tag>
-							<Heading>Youtube Music</Heading>
-						</VStack>
-					</HStack>
-					<Center
-						onClick={onOpen}
-						w="max-content"
-						_hover={{
-							boxShadow: useColorModeValue("2xl", "dark-lg"),
-							cursor: "pointer",
-						}}
-						p={5}
-						borderWidth="2px"
-						borderRadius="lg">
-						<AddIcon color={lightTextColor} h={16} w={16}></AddIcon>
+							as={IoAdd}
+						/>
 					</Center>
-				</HStack>
-			</Container>
+				</ServiceCardWrapper>
+			</Flex>
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
 				<ModalContent>
@@ -106,28 +72,12 @@ export default function Index() {
 					<ModalCloseButton />
 					<ModalBody>
 						<VStack gap={3}>
-							<Button variant="outline" w="full">
-								<HStack h="full">
-									<Image
-										h={5}
-										w={5}
-										alt="Spotify"
-										src="https://upload.wikimedia.org/wikipedia/commons/1/19/Spotify_logo_without_text.svg"
-									/>
-									<Text>Spotify</Text>
-								</HStack>
-							</Button>
-							<Button variant="outline" w="full">
-								<HStack h="full">
-									<Image
-										h={5}
-										w={5}
-										alt="Spotify"
-										src="https://upload.wikimedia.org/wikipedia/commons/6/6a/Youtube_Music_icon.svg"
-									/>
-									<Text>Youtube Music</Text>
-								</HStack>
-							</Button>
+							<AddServiceButton serviceName="Spotify">
+								<SpotifyIcon />
+							</AddServiceButton>
+							<AddServiceButton serviceName="Youtube Music">
+								<YoutubeMusicIcon />
+							</AddServiceButton>
 						</VStack>
 					</ModalBody>
 					<ModalFooter>
@@ -137,4 +87,8 @@ export default function Index() {
 			</Modal>
 		</>
 	);
-}
+};
+
+Index.layout = DashboardLayout;
+
+export default Index;

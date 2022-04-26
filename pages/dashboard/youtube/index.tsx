@@ -1,4 +1,4 @@
-import SpotifyIcon from "$app/icons/SpotifyIcon";
+import YoutubeMusicIcon from "$app/icons/YoutubeMusicIcon";
 import DashboardLayout from "$app/layout/DashboardLayout";
 import PlaylistTable from "$app/services/PlaylistTable";
 import { Page } from "$types/next";
@@ -16,8 +16,8 @@ const Index: Page = () => {
 	return (
 		<>
 			<HStack gap={5}>
-				<SpotifyIcon h={16} w={16}></SpotifyIcon>
-				<Heading>Spotify</Heading>
+				<YoutubeMusicIcon h={16} w={16}></YoutubeMusicIcon>
+				<Heading>Youtube Music</Heading>
 			</HStack>
 			<Tabs variant="soft-rounded" mt={8}>
 				<TabList>
