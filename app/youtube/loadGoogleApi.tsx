@@ -28,10 +28,15 @@ function prepareGapi() {
 		"client:auth2",
 		/*callback for when the load finishes*/ async () => {
 			await gapi.auth2.init({
-				client_id:
-					process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
+				client_id: process.env.NEXT_PUBLIC_GOOGLE_CLIENT_ID,
 			});
+
 			gapi.client.setApiKey(process.env.NEXT_PUBLIC_GOOGLE_API_KEY!);
+
+			await gapi.client?.load(
+				"https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest",
+				/*no idea what this parameter does but typescript insists*/ "insert funny joke here",
+			);
 		},
 	);
 }
