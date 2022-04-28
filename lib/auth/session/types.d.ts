@@ -32,7 +32,3 @@ interface Session {
 	save: (data: SessionData) => Promise<void>;
 	destroy: () => void;
 }
-
-type GetSSPResultOpt<P extends { [key: string]: unknown }> =
-	| GetServerSidePropsResult<P>
-	| Promise<GetServerSidePropsResult<P>>;

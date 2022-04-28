@@ -20,48 +20,46 @@ import { Page } from "$types/next";
 import DashboardLayout from "$app/layout/DashboardLayout";
 import ServiceCard from "$app/services/ServiceCard";
 import SpotifyIcon from "$app/icons/SpotifyIcon";
-import YoutubeMusicIcon from "$app/icons/YoutubeMusicIcon";
-import AddServiceButton from "$app/services/AddServiceButton";
 import ServiceCardWrapper from "$app/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
+import { userIsConnectedToSpotify } from "$lib/spotify";
+import { ssrRequireAuth } from "$lib/auth";
+import prisma from "$lib/prisma";
+import { InferGetServerSidePropsType } from "next";
+import { UserWithoutDatesAndPassword } from "$types/user";
+import ConnectSpotifyButton from "$app/buttons/ConnectSpotifyButton";
 
-const Index: Page = () => {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+const Index: Page<Props> = ({ user }: Props) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
+	const addIconColor = useColorModeValue("gray.200", "gray.600");
 
 	return (
 		<>
-			<Heading mb={4}>Hallo, Simon Weckler 👋</Heading>
+			<Heading mb={4}>
+				Hi, {user.firstName} {user.lastName} 👋
+			</Heading>
 			<Text mb={4} fontWeight="thin" fontSize="2xl">
-				Deine Services:
+				Your Services:
 			</Text>
-			<Flex flexWrap="wrap">
-				<ServiceCard
-					flexBasis={{ base: "100%", md: "auto" }}
-					href="/dashboard/spotify"
-					mr={{ base: 0, md: 4 }}
-					mb={4}
-					serviceName="Spotify">
-					<SpotifyIcon />
-				</ServiceCard>
-				<ServiceCard
-					mr={{ base: 0, md: 4 }}
-					mb={4}
-					flexBasis={{ base: "100%", md: "auto" }}
-					href="dashboard/youtube"
-					serviceName="Youtube Music">
-					<YoutubeMusicIcon />
-				</ServiceCard>
+			<Flex flexWrap="wrap" minH={32}>
+				{userIsConnectedToSpotify(user) && (
+					<ServiceCard
+						flexBasis={{ base: "100%", md: "auto" }}
+						href="/dashboard/spotify"
+						mr={{ base: 0, md: 4 }}
+						mb={4}
+						serviceName="Spotify">
+						<SpotifyIcon />
+					</ServiceCard>
+				)}
 				<ServiceCardWrapper
 					mb={4}
 					flexBasis={{ base: "100%", md: "auto" }}
 					onClick={onOpen}>
 					<Center h="full" px={6}>
-						<Icon
-							color={useColorModeValue("gray.200", "gray.600")}
-							w={16}
-							h={16}
-							as={IoAdd}
-						/>
+						<Icon color={addIconColor} w={16} h={16} as={IoAdd} />
 					</Center>
 				</ServiceCardWrapper>
 			</Flex>
@@ -72,12 +70,9 @@ const Index: Page = () => {
 					<ModalCloseButton />
 					<ModalBody>
 						<VStack gap={3}>
-							<AddServiceButton serviceName="Spotify">
-								<SpotifyIcon />
-							</AddServiceButton>
-							<AddServiceButton serviceName="Youtube Music">
-								<YoutubeMusicIcon />
-							</AddServiceButton>
+							{!userIsConnectedToSpotify(user) && (
+								<ConnectSpotifyButton />
+							)}
 						</VStack>
 					</ModalBody>
 					<ModalFooter>
@@ -90,5 +85,38 @@ const Index: Page = () => {
 };
 
 Index.layout = DashboardLayout;
+
+export const getServerSideProps = ssrRequireAuth<{
+	user: UserWithoutDatesAndPassword;
+}>(async (_context, _session, sessionData) => {
+	const user = await prisma.user.findUnique({
+		where: {
+			id: sessionData.user.id,
+		},
+		select: {
+			id: true,
+			email: true,
+			firstName: true,
+			lastName: true,
+			spotifyAccessToken: true,
+			spotifyRefreshToken: true,
+		},
+	});
+
+	if (!user) {
+		return {
+			redirect: {
+				destination: "/login",
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		props: {
+			user,
+		},
+	};
+});
 
 export default Index;

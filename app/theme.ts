@@ -15,7 +15,7 @@ const colors = {
 		errorLight: baseTheme.colors.red[400],
 		errorDark: baseTheme.colors.red[300],
 		spotifyGreen: "#1DB954",
-		spotifyBlack: "#191414",
+		spotifyHover: "#54e888",
 	},
 };
 

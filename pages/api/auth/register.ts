@@ -1,11 +1,13 @@
 import { apiWithSession, hashPassword } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { email, password } from "$lib/validation/rules";
+import { email, password, string } from "$lib/validation/rules";
 import schema from "$lib/validation/Schema";
 
 const requestData = schema({
 	email: email(),
 	password: password(),
+	firstName: string(),
+	lastName: string(),
 });
 
 export default apiWithSession(async (req, res, session) => {
@@ -21,12 +23,16 @@ export default apiWithSession(async (req, res, session) => {
 			.json({ errors: [{ message: "Email is already used" }] });
 	}
 
+	console.log("firstname", data.firstName, "lastName", data.lastName);
+
 	const newUser = await prisma.user.create({
 		data: {
 			email: data.email,
 			password: await hashPassword(data.password),
+			firstName: data.firstName,
+			lastName: data.lastName,
 			spotifyAccessToken: "",
-			spotifyRefreshToken: ""
+			spotifyRefreshToken: "",
 		},
 	});
 

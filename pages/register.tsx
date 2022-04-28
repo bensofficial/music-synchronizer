@@ -15,6 +15,8 @@ import { useRouter } from "next/router";
 export default function Login() {
 	const [passwordInput, setPasswordInput] = useState("");
 	const [emailInput, setEmailInput] = useState("");
+	const [firstNameInput, setFirstNameInput] = useState("");
+	const [lastNameInput, setLastNameInput] = useState("");
 
 	const { loading, error, errorMessage, data, send } =
 		usePostRequest<Record<string, never>>("/api/auth/register");
@@ -53,7 +55,28 @@ export default function Login() {
 					}}
 					name="email"
 					rule={email()}
-					label="Email"></FormInput>
+					label="Email"
+				/>
+				<FormInput
+					type="text"
+					value={firstNameInput}
+					name="first-name"
+					label="First name"
+					rule={string().minLen(1)}
+					onChange={(e) => {
+						setFirstNameInput(e.target.value);
+					}}
+				/>
+				<FormInput
+					type="text"
+					value={lastNameInput}
+					name="last-name"
+					label="Last name"
+					rule={string().minLen(1)}
+					onChange={(e) => {
+						setLastNameInput(e.target.value);
+					}}
+				/>
 				<FormInput
 					type="password"
 					name="password"
@@ -62,7 +85,8 @@ export default function Login() {
 					}}
 					value={passwordInput}
 					rule={password()}
-					label="Password"></FormInput>
+					label="Password"
+				/>
 				<FormInput
 					type="password"
 					name="repeatPassword"
@@ -70,12 +94,15 @@ export default function Login() {
 						passwordInput,
 						"Must be the same password",
 					)}
-					label="Repeat Password"></FormInput>
+					label="Repeat Password"
+				/>
 				<Button
 					onClick={() => {
 						send({
 							email: emailInput,
 							password: passwordInput,
+							firstName: firstNameInput,
+							lastName: lastNameInput,
 						});
 					}}
 					isLoading={loading}

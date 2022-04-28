@@ -3,6 +3,12 @@ import { FaSpotify } from "react-icons/fa";
 
 export default function SpotifyIcon(props: IconProps) {
 	return (
-		<Icon w="full" h="full" {...props} color="green.300" as={FaSpotify} />
+		<Icon
+			w="full"
+			h="full"
+			{...props}
+			color="brand.spotifyGreen"
+			as={FaSpotify}
+		/>
 	);
 }

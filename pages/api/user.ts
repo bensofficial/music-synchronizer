@@ -5,8 +5,12 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 	const user = await prisma.user.findUnique({
 		where: { id: sessionData.user.id },
 		select: {
-			email: true,
 			id: true,
+			email: true,
+			firstName: true,
+			lastName: true,
+			spotifyAccessToken: true,
+			spotifyRefreshToken: true,
 		},
 	});
 

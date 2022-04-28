@@ -1,10 +1,11 @@
 import type {
 	GetServerSidePropsContext,
+	GetServerSidePropsResult,
 	NextApiHandler,
 	NextApiRequest,
 	NextApiResponse,
 } from "next";
-import { GetSSPResultOpt, Session, SessionData } from "./types";
+import { Session, SessionData } from "./types";
 import { getSession, hasAuthCookie } from "./session";
 // eslint-disable-next-line @next/next/no-server-import-in-page
 import { NextMiddleware, NextResponse } from "next/server";
@@ -87,8 +88,10 @@ export function ssrWithSession<
 	handler: (
 		context: GetServerSidePropsContext,
 		session: Session,
-	) => GetSSPResultOpt<P>,
-): (context: GetServerSidePropsContext) => GetSSPResultOpt<P> {
+	) => Promise<GetServerSidePropsResult<P>>,
+): (
+	context: GetServerSidePropsContext,
+) => Promise<GetServerSidePropsResult<P>> {
 	if (!process.env.COOKIE_SECRET) {
 		return async () => ({ notFound: true });
 	}
@@ -97,21 +100,6 @@ export function ssrWithSession<
 		const session = await getSession(context.req.cookies, context.res);
 
 		return handler(context, session);
-	};
-}
-
-export function middlewareRequireAuth(handler: NextMiddleware): NextMiddleware {
-	if (!process.env.COOKIE_SECRET) {
-		return () => NextResponse.error();
-	}
-
-	return async (request, event) => {
-		if (!hasAuthCookie(request.cookies)) {
-			const url = new URL(request.url);
-			return NextResponse.redirect(`${url.protocol}//${url.host}/login`);
-		}
-
-		return handler(request, event);
 	};
 }
 
@@ -146,9 +134,9 @@ export const ssrRequireAuth = <
 		context: GetServerSidePropsContext,
 		session: Session,
 		sessionData: SessionData,
-	) => GetSSPResultOpt<P>,
+	) => Promise<GetServerSidePropsResult<P>>,
 ) => {
-	return ssrWithSession<P>((context, session) => {
+	return ssrWithSession<P>(async (context, session) => {
 		if (!session.data) {
 			return {
 				redirect: {
