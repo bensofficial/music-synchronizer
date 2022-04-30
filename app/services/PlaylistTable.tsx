@@ -17,7 +17,7 @@ import { AiOutlineSync } from "react-icons/ai";
 interface PlaylistItem {
 	title: string;
 	creator: string;
-	type: "public" | "private";
+	type: "public" | "private" | "unlisted";
 }
 
 export default function PlaylistTable({
