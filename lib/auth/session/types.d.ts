@@ -1,3 +1,4 @@
+import { CookieOptions } from "$lib/cookie";
 import { User } from "@prisma/client";
 import {
 	GetServerSidePropsContext,
@@ -7,15 +8,7 @@ import {
 
 interface SessionConfig {
 	cookieName: string;
-	cookieOptions: {
-		httpOnly: boolean;
-		secure: boolean = true;
-		sameSite: "Strict" | "Lax" | "None";
-		maxAge: number;
-		path: string;
-		domain?: string;
-		expires?: Date;
-	};
+	cookieOptions: CookieOptions;
 	password: string;
 }
 

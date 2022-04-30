@@ -1,8 +1,8 @@
 import generateRandomString from "../../../lib/generateRandomString";
 import { apiRequireAuth } from "$lib/auth";
-import cookie from "cookie";
 import prisma from "$lib/prisma";
 import { userIsConnectedToSpotify } from "$lib/spotify";
+import serializeCookie from "$lib/cookie";
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
 const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
@@ -39,11 +39,11 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 
 	res.setHeader(
 		"Set-Cookie",
-		cookie.serialize("spotify_state", state, {
+		serializeCookie("spotify_state", state, {
 			httpOnly: true,
 			secure: process.env.NODE_ENV !== "development",
 			maxAge: 60 * 60,
-			sameSite: "lax",
+			sameSite: "Lax",
 			path: "/",
 		}),
 	);

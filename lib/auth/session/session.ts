@@ -1,6 +1,7 @@
 import { Session, SessionConfig, SessionData } from "./types";
 import { defaults, seal, unseal } from "@hapi/iron";
 import { ServerResponse } from "http";
+import serializeCookie from "$lib/cookie";
 
 const config: SessionConfig = {
 	cookieName: "auth",
@@ -27,19 +28,13 @@ const sealData = async (sessionData: SessionData): Promise<string> => {
 		);
 	}
 
-	const httpOnly = config.cookieOptions.httpOnly ? "HttpOnly" : "";
-	const secure = config.cookieOptions.secure ? "Secure" : "";
-	const sameSite = `SameSite=${config.cookieOptions.sameSite}`;
-	const maxAge = `Max-Age=${config.cookieOptions.maxAge}`;
-	const path = `Path=${config.cookieOptions.path}`;
-	const domain = config.cookieOptions.domain
-		? `Domain=${config.cookieOptions.domain};`
-		: "";
-	const expires = config.cookieOptions.expires
-		? `Expires=${config.cookieOptions.expires}`
-		: "";
-
-	return `${config.cookieName}=${sealedData};${httpOnly};${secure};${sameSite};${maxAge};${path};${domain}${expires}`;
+	const header = serializeCookie(
+		config.cookieName,
+		sealedData,
+		config.cookieOptions,
+	);
+	console.log(header);
+	return header;
 };
 
 const destroyCookie = () => {
