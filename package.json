@@ -38,6 +38,7 @@
 		"acorn": "^8.7.0",
 		"argon2": "^0.28.5",
 		"framer-motion": "^6.2.9",
+		"js-cookie": "^3.0.1",
 		"next": "12.1.4",
 		"prisma": "^3.12.0",
 		"query-string": "^7.1.1",
