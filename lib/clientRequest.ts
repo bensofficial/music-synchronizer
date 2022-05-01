@@ -116,17 +116,13 @@ function useRequest<T>(url: string, method: RequestMethod) {
 			})
 			.then((data) => {
 				if (reqError) {
-					console.log("extracting errMessage");
 					/*
 					Surrounded with a try catch expr since its not sure
 					if this value exists on the response data
 					*/
 					try {
 						setErrorMessage(data.errors[0].message);
-						console.log("setErrorMessage", data.errors[0].message);
-					} catch (e) {
-						console.log("Unable to extract errorMessage");
-					}
+					} catch (e) {}
 				}
 
 				setData(data);

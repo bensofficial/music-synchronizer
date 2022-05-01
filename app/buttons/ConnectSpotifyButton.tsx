@@ -8,7 +8,7 @@ export default function ConnectSpotifyButton() {
 			<Button
 				w="full"
 				leftIcon={<FaSpotify />}
-				textColor={"gray.900"}
+				textColor="gray.900"
 				_hover={{ backgroundColor: "brand.spotifyHover" }}
 				backgroundColor={"brand.spotifyGreen"}>
 				Connect with Spotify

@@ -23,8 +23,6 @@ export default apiWithSession(async (req, res, session) => {
 			.json({ errors: [{ message: "Email is already used" }] });
 	}
 
-	console.log("firstname", data.firstName, "lastName", data.lastName);
-
 	const newUser = await prisma.user.create({
 		data: {
 			email: data.email,

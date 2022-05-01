@@ -1,5 +1,5 @@
 import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /*
 This loads the google Api (gapi) and loads the oauth2 script.

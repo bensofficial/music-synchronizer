@@ -28,13 +28,7 @@ const sealData = async (sessionData: SessionData): Promise<string> => {
 		);
 	}
 
-	const header = serializeCookie(
-		config.cookieName,
-		sealedData,
-		config.cookieOptions,
-	);
-	console.log(header);
-	return header;
+	return serializeCookie(config.cookieName, sealedData, config.cookieOptions);
 };
 
 const destroyCookie = () => {

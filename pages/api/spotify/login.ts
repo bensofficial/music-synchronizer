@@ -1,7 +1,7 @@
 import generateRandomString from "../../../lib/generateRandomString";
 import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { userIsConnectedToSpotify } from "$lib/spotify";
+import { userIsConnectedToSpotify } from "$lib/spotify/auth";
 import serializeCookie from "$lib/cookie";
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;

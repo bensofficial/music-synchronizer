@@ -22,23 +22,27 @@ import ServiceCard from "$app/services/ServiceCard";
 import SpotifyIcon from "$app/icons/SpotifyIcon";
 import ServiceCardWrapper from "$app/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
-import { userIsConnectedToSpotify } from "$lib/spotify";
+import { userIsConnectedToSpotify } from "$lib/spotify/auth";
 import { ssrRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { InferGetServerSidePropsType } from "next";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import ConnectSpotifyButton from "$app/buttons/ConnectSpotifyButton";
+import { useUserIsConnectedToYoutube } from "$lib/youtube/auth";
+import YoutubeMusicIcon from "$app/icons/YoutubeMusicIcon";
+import ConnectYoutubeButton from "$app/buttons/ConnectYoutubeButton";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const Index: Page<Props> = ({ user }: Props) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
+	const userIsConnectedToYoutube = useUserIsConnectedToYoutube();
 
 	return (
 		<>
 			<Heading mb={4}>
-				Hi, {user.firstName} {user.lastName} 👋
+				Hi, {user.firstName} {user.lastName}
 			</Heading>
 			<Text mb={4} fontWeight="thin" fontSize="2xl">
 				Your Services:
@@ -52,6 +56,16 @@ const Index: Page<Props> = ({ user }: Props) => {
 						mb={4}
 						serviceName="Spotify">
 						<SpotifyIcon />
+					</ServiceCard>
+				)}
+				{userIsConnectedToYoutube && (
+					<ServiceCard
+						flexBasis={{ base: "100%", md: "auto" }}
+						href="/dashboard/youtube"
+						mr={{ base: 0, md: 4 }}
+						mb={4}
+						serviceName="Youtube Music">
+						<YoutubeMusicIcon />
 					</ServiceCard>
 				)}
 				<ServiceCardWrapper
@@ -72,6 +86,9 @@ const Index: Page<Props> = ({ user }: Props) => {
 						<VStack gap={3}>
 							{!userIsConnectedToSpotify(user) && (
 								<ConnectSpotifyButton />
+							)}
+							{!userIsConnectedToYoutube && (
+								<ConnectYoutubeButton />
 							)}
 						</VStack>
 					</ModalBody>
