@@ -23,16 +23,14 @@ export default Callback;
 export const getServerSideProps = ssrRequireAuth<{ error: string | null, sessionUser: SessionUser }> (
     async (_ctx, sessionUser) => {
 
-        const { data } = await requestNewAccessToken(sessionUser);
-
-        if (await isUserConnected(sessionUser)) {
-            return {
-                props: {
-                    error: 'user_already_authenticated',
-                    sessionUser: sessionUser
-                }
-            }
-        }
+        // if (await isUserConnected(sessionUser)) {
+        //     return {
+        //         props: {
+        //             error: 'user_already_authenticated',
+        //             sessionUser: sessionUser
+        //         }
+        //     }
+        // }
 
         const clientId = process.env.SPOTIFY_CLIENT_ID
         const clientSecret = process.env.SPOTIFY_CLIENT_SECRET
@@ -88,7 +86,7 @@ export const getServerSideProps = ssrRequireAuth<{ error: string | null, session
         fetch('https://accounts.spotify.com/api/token', authOptions).then(async (response) => {
             const data = await response.json();
 
-            prisma.user.update({
+            await prisma.user.update({
                 data: {
                     spotifyAccessToken: data.access_token,
                     spotifyRefreshToken: data.refresh_token,
@@ -108,15 +106,15 @@ export const getServerSideProps = ssrRequireAuth<{ error: string | null, session
     },
 );
 
-async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
-
-    const user = await prisma.user.findFirst({
-        where: {
-            id: sessionUser.id
-        }
-    });
-
-    return user?.spotifyRefreshToken == "";
-}
+// async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
+//
+//     const user = await prisma.user.findFirst({
+//         where: {
+//             id: sessionUser.id
+//         }
+//     });
+//
+//     return user?.spotifyRefreshToken != "";
+// }
 
 
