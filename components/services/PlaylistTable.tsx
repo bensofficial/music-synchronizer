@@ -29,7 +29,6 @@ export default function PlaylistTable({
 	return (
 		<TableContainer {...props} my={8}>
 			<Table variant="simple">
-				<TableCaption>All your spotify playlists</TableCaption>
 				<Thead>
 					<Tr>
 						<Th>Title</Th>

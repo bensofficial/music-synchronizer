@@ -1,4 +1,4 @@
-export function userIsConnectedToSpotify(
+export function userIsLoggedInWithSpotify(
 	user:
 		| {
 				spotifyRefreshToken: string;

@@ -7,7 +7,7 @@ export default function YoutubeMusicIcon(props: IconProps) {
 			w="full"
 			h="full"
 			{...props}
-			color="red.400"
+			color="brand.youtubeRed"
 			as={SiYoutubemusic}
 		/>
 	);

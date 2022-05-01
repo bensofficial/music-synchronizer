@@ -17,38 +17,43 @@ import {
 	useColorModeValue,
 } from "@chakra-ui/react";
 import { Page } from "$types/next";
-import DashboardLayout from "$app/layout/DashboardLayout";
-import ServiceCard from "$app/services/ServiceCard";
-import SpotifyIcon from "$app/icons/SpotifyIcon";
-import ServiceCardWrapper from "$app/services/ServiceCardWrapper";
+import DashboardLayout from "$/components/layout/DashboardLayout";
+import ServiceCard from "$/components/services/ServiceCard";
+import SpotifyIcon from "$/components/icons/SpotifyIcon";
+import ServiceCardWrapper from "$/components/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
-import { userIsConnectedToSpotify } from "$lib/spotify/auth";
+import { userIsLoggedInWithSpotify } from "$lib/spotify/auth";
 import { ssrRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { InferGetServerSidePropsType } from "next";
 import { UserWithoutDatesAndPassword } from "$types/user";
-import ConnectSpotifyButton from "$app/buttons/ConnectSpotifyButton";
-import { useUserIsConnectedToYoutube } from "$lib/youtube/auth";
-import YoutubeMusicIcon from "$app/icons/YoutubeMusicIcon";
-import ConnectYoutubeButton from "$app/buttons/ConnectYoutubeButton";
+import ConnectSpotifyButton from "$/components/buttons/ConnectSpotifyButton";
+import { userIsLoggedInWithGoogle } from "$lib/youtube/auth";
+import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
+import ConnectYoutubeButton from "$/components/buttons/ConnectYoutubeButton";
+import LoadGoogleApi from "$/components/youtube/loadGoogleApi";
+import { useState } from "react";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const Index: Page<Props> = ({ user }: Props) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
-	const userIsConnectedToYoutube = useUserIsConnectedToYoutube();
+	const [loggedInWithGoogle, setLoggedInWithGoogle] = useState(false);
 
 	return (
 		<>
-			<Heading mb={4}>
-				Hi, {user.firstName} {user.lastName}
-			</Heading>
+			<LoadGoogleApi
+				onLoad={async () => {
+					const signedIn = await userIsLoggedInWithGoogle();
+					setLoggedInWithGoogle(signedIn);
+				}}></LoadGoogleApi>
+			<Heading mb={4}>Hi, {user.username}</Heading>
 			<Text mb={4} fontWeight="thin" fontSize="2xl">
 				Your Services:
 			</Text>
 			<Flex flexWrap="wrap" minH={32}>
-				{userIsConnectedToSpotify(user) && (
+				{userIsLoggedInWithSpotify(user) && (
 					<ServiceCard
 						flexBasis={{ base: "100%", md: "auto" }}
 						href="/dashboard/spotify"
@@ -58,7 +63,7 @@ const Index: Page<Props> = ({ user }: Props) => {
 						<SpotifyIcon />
 					</ServiceCard>
 				)}
-				{userIsConnectedToYoutube && (
+				{loggedInWithGoogle && (
 					<ServiceCard
 						flexBasis={{ base: "100%", md: "auto" }}
 						href="/dashboard/youtube"
@@ -84,12 +89,10 @@ const Index: Page<Props> = ({ user }: Props) => {
 					<ModalCloseButton />
 					<ModalBody>
 						<VStack gap={3}>
-							{!userIsConnectedToSpotify(user) && (
+							{!userIsLoggedInWithSpotify(user) && (
 								<ConnectSpotifyButton />
 							)}
-							{!userIsConnectedToYoutube && (
-								<ConnectYoutubeButton />
-							)}
+							{!loggedInWithGoogle && <ConnectYoutubeButton />}
 						</VStack>
 					</ModalBody>
 					<ModalFooter>
@@ -113,8 +116,7 @@ export const getServerSideProps = ssrRequireAuth<{
 		select: {
 			id: true,
 			email: true,
-			firstName: true,
-			lastName: true,
+			username: true,
 			spotifyAccessToken: true,
 			spotifyRefreshToken: true,
 		},

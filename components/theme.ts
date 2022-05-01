@@ -16,6 +16,8 @@ const colors = {
 		errorDark: baseTheme.colors.red[300],
 		spotifyGreen: "#1DB954",
 		spotifyHover: "#54e888",
+		youtubeRed: "#FF0000",
+		youtubeHover: baseTheme.colors.red[400],
 	},
 };
 

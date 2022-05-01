@@ -1,6 +1,6 @@
 import { ChakraProvider } from "@chakra-ui/react";
-import ToggleColorModeButton from "$app/colormode/ToggleColorModeButton";
-import theme from "$app/theme";
+import ToggleColorModeButton from "$/components/colormode/ToggleColorModeButton";
+import theme from "$/components/theme";
 import { AppProps } from "next/app";
 import { Page } from "$types/next";
 import { Fragment } from "react";

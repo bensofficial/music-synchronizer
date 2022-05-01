@@ -1,5 +1,5 @@
 import { FaSpotify } from "react-icons/fa";
-import Link from "$app/chakra/Link";
+import Link from "$/components/chakra/Link";
 import { Button } from "@chakra-ui/react";
 
 export default function ConnectSpotifyButton() {

@@ -6,8 +6,7 @@ import schema from "$lib/validation/Schema";
 const requestData = schema({
 	email: email(),
 	password: password(),
-	firstName: string(),
-	lastName: string(),
+	username: string(),
 });
 
 export default apiWithSession(async (req, res, session) => {
@@ -27,8 +26,7 @@ export default apiWithSession(async (req, res, session) => {
 		data: {
 			email: data.email,
 			password: await hashPassword(data.password),
-			firstName: data.firstName,
-			lastName: data.lastName,
+			username: data.username,
 			spotifyAccessToken: "",
 			spotifyRefreshToken: "",
 		},

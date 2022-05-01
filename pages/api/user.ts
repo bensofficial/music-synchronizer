@@ -7,8 +7,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		select: {
 			id: true,
 			email: true,
-			firstName: true,
-			lastName: true,
+			username: true,
 			spotifyAccessToken: true,
 			spotifyRefreshToken: true,
 		},

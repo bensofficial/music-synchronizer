@@ -1,6 +1,6 @@
-import SpotifyIcon from "$app/icons/SpotifyIcon";
-import DashboardLayout from "$app/layout/DashboardLayout";
-import PlaylistTable from "$app/services/PlaylistTable";
+import SpotifyIcon from "$/components/icons/SpotifyIcon";
+import DashboardLayout from "$/components/layout/DashboardLayout";
+import PlaylistTable from "$/components/services/PlaylistTable";
 import { Page } from "$types/next";
 import {
 	Heading,

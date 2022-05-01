@@ -8,10 +8,12 @@ using gapi the client can connect his google account.
 */
 
 export default function LoadGoogleApi(props: { onLoad?: () => void }) {
-	//call prepareGapi() when the component is first rendered
-	useEffect(() => {
+	const [loaded, setLoaded] = useState(false);
+
+	if (typeof gapi !== "undefined" && !loaded) {
+		setLoaded(true);
 		prepareGapi(props.onLoad);
-	}, []);
+	}
 
 	return (
 		<Script

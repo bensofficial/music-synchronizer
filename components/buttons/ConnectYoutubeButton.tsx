@@ -11,8 +11,8 @@ export default function ConnectYoutubeButton() {
 			w="full"
 			leftIcon={<SiYoutubemusic />}
 			textColor="gray.900"
-			_hover={{ backgroundColor: "red.400" }}
-			backgroundColor="red.500">
+			_hover={{ backgroundColor: "brand.youtubeHover" }}
+			backgroundColor="brand.youtubeRed">
 			Connect with YoutubeMusic
 		</Button>
 	);

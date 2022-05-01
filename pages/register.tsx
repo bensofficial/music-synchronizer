@@ -6,7 +6,7 @@ import {
 	useColorModeValue,
 	VStack,
 } from "@chakra-ui/react";
-import { FormInput } from "$app/form";
+import { FormInput } from "$/components/form";
 import { useState } from "react";
 import { password, string, email } from "$lib/validation/rules";
 import { usePostRequest } from "$lib/clientRequest";
@@ -15,8 +15,7 @@ import { useRouter } from "next/router";
 export default function Login() {
 	const [passwordInput, setPasswordInput] = useState("");
 	const [emailInput, setEmailInput] = useState("");
-	const [firstNameInput, setFirstNameInput] = useState("");
-	const [lastNameInput, setLastNameInput] = useState("");
+	const [usernameInput, setUsernameInput] = useState("");
 
 	const { loading, error, errorMessage, data, send } =
 		usePostRequest<Record<string, never>>("/api/auth/register");
@@ -59,22 +58,12 @@ export default function Login() {
 				/>
 				<FormInput
 					type="text"
-					value={firstNameInput}
-					name="first-name"
-					label="First name"
+					value={usernameInput}
+					name="username"
+					label="Username"
 					rule={string().minLen(1)}
 					onChange={(e) => {
-						setFirstNameInput(e.target.value);
-					}}
-				/>
-				<FormInput
-					type="text"
-					value={lastNameInput}
-					name="last-name"
-					label="Last name"
-					rule={string().minLen(1)}
-					onChange={(e) => {
-						setLastNameInput(e.target.value);
+						setUsernameInput(e.target.value);
 					}}
 				/>
 				<FormInput
@@ -101,8 +90,7 @@ export default function Login() {
 						send({
 							email: emailInput,
 							password: passwordInput,
-							firstName: firstNameInput,
-							lastName: lastNameInput,
+							username: usernameInput,
 						});
 					}}
 					isLoading={loading}

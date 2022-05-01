@@ -1,9 +1,8 @@
-import YoutubeMusicIcon from "$app/icons/YoutubeMusicIcon";
-import DashboardLayout from "$app/layout/DashboardLayout";
-import PlaylistTable from "$app/services/PlaylistTable";
-import LoadGoogleApi from "$app/youtube/loadGoogleApi";
+import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
+import DashboardLayout from "$/components/layout/DashboardLayout";
+import PlaylistTable from "$/components/services/PlaylistTable";
+import LoadGoogleApi from "$/components/youtube/loadGoogleApi";
 import getPlaylists from "$lib/youtube/getPlaylists";
-import ifNeededSignInWithGoogle from "$lib/youtube/ifNeededSignInWithGoogle";
 import { YoutubePlaylist } from "$lib/youtube/YoutubePlaylist";
 import { Page } from "$types/next";
 import {
@@ -15,7 +14,7 @@ import {
 	TabPanels,
 	TabPanel,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 const Index: Page = () => {
 	const [playlists, setPlaylists] = useState<YoutubePlaylist[]>([]);

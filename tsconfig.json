@@ -21,8 +21,8 @@
 		"incremental": true,
 		"baseUrl": "./",
 		"paths": {
-			"$app/*": ["app/*"],
-			"$app": ["app"],
+			"$components/*": ["components/*"],
+			"$components": ["components"],
 			"$lib/*": ["lib/*"],
 			"$lib": ["lib"],
 			"$pages/*": ["pages/*"],
