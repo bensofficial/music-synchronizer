@@ -4,6 +4,7 @@ import {SessionUser, ssrRequireAuth} from "$lib/auth";
 import {InferGetServerSidePropsType} from "next";
 import Cookies from "js-cookie";
 import prisma from "$lib/prisma";
+import {requestNewAccessToken} from "$lib/spotify/requestNewAccessToken";
 
 function Callback({ error }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 
@@ -21,6 +22,8 @@ export default Callback;
 
 export const getServerSideProps = ssrRequireAuth<{ error: string | null, sessionUser: SessionUser }> (
     async (_ctx, sessionUser) => {
+
+        const { data } = await requestNewAccessToken(sessionUser);
 
         if (await isUserConnected(sessionUser)) {
             return {
