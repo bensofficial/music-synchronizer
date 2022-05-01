@@ -5,6 +5,7 @@
 	"[ignore]": {
 		"editor.defaultFormatter": "foxundermoon.shell-format"
 	},
+	"cSpell.words": ["Chakra", "colormode", "gapi", "Youtubemusic"],
 	"editor.codeActionsOnSave": {
 		"source.fixAll.eslint": true
 	},

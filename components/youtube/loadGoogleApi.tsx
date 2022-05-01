@@ -1,5 +1,5 @@
 import Script from "next/script";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 /*
 This loads the google Api (gapi) and loads the oauth2 script.
@@ -7,11 +7,13 @@ After this component is rendered, gapi as well as gapi.client and gapi.auth2 can
 using gapi the client can connect his google account.
 */
 
-export default function LoadGoogleApi() {
-	//call prepareGapi() when the component is first rendered
-	useEffect(() => {
-		prepareGapi();
-	}, []);
+export default function LoadGoogleApi(props: { onLoad?: () => void }) {
+	const [loaded, setLoaded] = useState(false);
+
+	if (typeof gapi !== "undefined" && !loaded) {
+		setLoaded(true);
+		prepareGapi(props.onLoad);
+	}
 
 	return (
 		<Script
@@ -22,7 +24,7 @@ export default function LoadGoogleApi() {
 	);
 }
 
-function prepareGapi() {
+function prepareGapi(callback?: () => void) {
 	//adds the .auth2 property to gapi
 	gapi.load(
 		"client:auth2",
@@ -37,6 +39,8 @@ function prepareGapi() {
 				"https://www.googleapis.com/discovery/v1/apis/youtube/v3/rest",
 				/*no idea what this parameter does but typescript insists*/ "insert funny joke here",
 			);
+
+			if (callback) callback();
 		},
 	);
 }

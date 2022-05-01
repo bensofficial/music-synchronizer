@@ -1,14 +1,15 @@
 import { apiWithSession, hashPassword } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { email, password } from "$lib/validation/rules";
+import { email, password, string } from "$lib/validation/rules";
 import schema from "$lib/validation/Schema";
 
 const requestData = schema({
 	email: email(),
 	password: password(),
+	username: string(),
 });
 
-export default apiWithSession(async (req, res) => {
+export default apiWithSession(async (req, res, session) => {
 	if (!requestData.validate(req, res)) {
 		return;
 	}
@@ -25,17 +26,13 @@ export default apiWithSession(async (req, res) => {
 		data: {
 			email: data.email,
 			password: await hashPassword(data.password),
+			username: data.username,
 			spotifyAccessToken: "",
-			spotifyRefreshToken: ""
+			spotifyRefreshToken: "",
 		},
 	});
 
-	// login in the user once his account is created
-	req.session.user = {
-		id: newUser.id,
-	};
-
-	await req.session.save();
+	await session.save({ user: { id: newUser.id } });
 
 	return res.status(200).json({});
 });

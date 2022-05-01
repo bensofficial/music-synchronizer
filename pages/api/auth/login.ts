@@ -13,7 +13,7 @@ const requestData = schema({
 	password: string(),
 });
 
-export default apiWithSession(async (req, res) => {
+export default apiWithSession(async (req, res, session) => {
 	if (!requestData.validate(req, res)) {
 		return;
 	}
@@ -52,17 +52,13 @@ export default apiWithSession(async (req, res) => {
 		});
 	}
 
-	if (req.session.user) {
+	if (session.data) {
 		return res
 			.status(400)
 			.send({ errors: [{ message: "Already logged in" }] });
 	}
 
-	req.session.user = {
-		id: user.id,
-	};
-
-	await req.session.save();
+	await session.save({ user: { id: user.id } });
 
 	return res.status(200).json({});
 });

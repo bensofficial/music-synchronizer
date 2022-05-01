@@ -3,7 +3,7 @@ import { useEffect, useState } from "react";
 type RequestMethod = "POST" | "GET";
 
 /**
- * The `usePostRequest` hook can be used in ReactComponents to send data to an api and use the reponse data.
+ * The `usePostRequest` hook can be used in ReactComponents to send data to an api and use the response data.
  *
  * `usePostRequest` is a generic function. It needs to know the type of the
  * response data. Pass it in angled brackets like this:
@@ -37,7 +37,7 @@ export function usePostRequest<T = Record<string, never>>(url: string) {
 }
 
 /**
- * The `useGetRequest` hook can be used in ReactComponents to retrieve data from an api and use the reponse data.
+ * The `useGetRequest` hook can be used in ReactComponents to retrieve data from an api and use the response data.
  *
  * `useGetRequest` is a generic function. It needs to know the type of the
  * response data. Pass it in angled brackets like this:
@@ -48,7 +48,7 @@ export function usePostRequest<T = Record<string, never>>(url: string) {
  *
  * If no data type is given, it is assumed that the response data is an empty object
  *
- * The request is sent immediatley the first time the hook is called.
+ * The request is sent immediately the first time the hook is called.
  *
  * It returns information about the request in an object (use object destructuring!)
  * https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/Destructuring_assignment#object_destructuring
@@ -75,6 +75,7 @@ export function useGetRequest<T>(url: string) {
 	*/
 	useEffect(() => {
 		send();
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return { ...values };
@@ -115,17 +116,13 @@ function useRequest<T>(url: string, method: RequestMethod) {
 			})
 			.then((data) => {
 				if (reqError) {
-					console.log("extracting errMessage");
 					/*
 					Surrounded with a try catch expr since its not sure
 					if this value exists on the response data
 					*/
 					try {
 						setErrorMessage(data.errors[0].message);
-						console.log("setErrorMessage", data.errors[0].message);
-					} catch (e) {
-						console.log("Unable to extract errorMessage");
-					}
+					} catch (e) {}
 				}
 
 				setData(data);

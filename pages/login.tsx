@@ -6,7 +6,7 @@ import {
 	useColorModeValue,
 	VStack,
 } from "@chakra-ui/react";
-import { FormInput } from "$app/form";
+import { FormInput } from "$/components/form";
 import { email, string } from "$lib/validation/rules";
 import { usePostRequest } from "$lib/clientRequest";
 import { useState } from "react";
