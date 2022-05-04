@@ -8,8 +8,7 @@ const clientId = process.env.SPOTIFY_CLIENT_ID;
 const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
 
 const state = generateRandomString(16);
-const scope =
-	"playlist-modify-public playlist-read-private playlist-modify-private";
+const scope = "playlist-modify-public playlist-read-private playlist-modify-private";
 
 export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 	const user = await prisma.user.findFirst({
