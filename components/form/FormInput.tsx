@@ -1,5 +1,5 @@
 import { ValidationRule } from "$lib/validation/rules";
-import { ViewIcon, ViewOffIcon } from "@chakra-ui/icons";
+import { IoIosEyeOff, IoIosEye } from "react-icons/io";
 import {
 	FormControl,
 	FormErrorMessage,
@@ -57,7 +57,11 @@ export default function FormInput({
 								viewPassword ? "Hide password" : "Show password"
 							}
 							icon={
-								viewPassword ? <ViewOffIcon /> : <ViewIcon />
+								viewPassword ? (
+									<Icon as={IoIosEyeOff} />
+								) : (
+									<Icon as={IoIosEye} />
+								)
 							}></IconButton>
 					</InputRightElement>
 				)}

@@ -1,38 +1,32 @@
-import type { IronSessionOptions } from "iron-session";
 import type {
-	NextApiHandler,
-	GetServerSidePropsResult,
 	GetServerSidePropsContext,
+	GetServerSidePropsResult,
+	NextApiHandler,
 	NextApiRequest,
 	NextApiResponse,
 } from "next";
-import { withIronSessionApiRoute, withIronSessionSsr } from "iron-session/next";
-import "./auth.d.ts";
-import SessionUser from "./auth";
-
-const config: IronSessionOptions = {
-	cookieName: "auth",
-	cookieOptions: {
-		httpOnly: true,
-		sameSite: process.env.NODE_ENV !== "development" ? "strict" : "none",
-		secure: true,
-	},
-	password: process.env["COOKIE_SECRET"]!,
-};
+import { Session, SessionData } from "./types";
+import { getSession, hasAuthCookie } from "./session";
+// eslint-disable-next-line @next/next/no-server-import-in-page
+import { NextMiddleware, NextResponse } from "next/server";
 
 /**
  *
- * Can be used in `api routes` to access the session data via `req.session`. E.g:
+ * Can be used in `api routes` to access the session data via `session`. E.g:
  *
  * ```
- * export default apiWithSession((req, res) => {
- * 	const sessionUser = req.session.user
+ * export default apiWithSession((req, res, session) => {
+ * 	const sessionUser = req.session.data?.user
  * })
  * ```
  */
-export const apiWithSession = (
-	handler: Parameters<typeof withIronSessionApiRoute>[0],
-): NextApiHandler => {
+export function apiWithSession(
+	handler: (
+		req: NextApiRequest,
+		res: NextApiResponse,
+		session: Session,
+	) => void | Promise<void>,
+): NextApiHandler {
 	if (!process.env.COOKIE_SECRET) {
 		return (_req, res) => {
 			res.status(500).send({
@@ -46,11 +40,15 @@ export const apiWithSession = (
 		};
 	}
 
-	return withIronSessionApiRoute(handler, config);
-};
+	return async (req, res) => {
+		const session = await getSession(req.cookies, res);
+
+		return handler(req, res, session);
+	};
+}
 
 /**
- * Can be used in `getServerSideProps` to access the session data via `req.session`.
+ * Can be used in `getServerSideProps` to access the session data via `session`
  *
  * The function is generic, you have to define the type of the props in
  * angled brackets. If no type is given it is assumed to be an empty object
@@ -59,8 +57,8 @@ export const apiWithSession = (
  * ```
  * import type {SessionUser} from "$lib/auth";
  *
- * export const getServerSideProps = ssrWithSession<{sessionUser: sessionUser}>(({req}) => {
- * 		const sessionUser = req.session.user;
+ * export const getServerSideProps = ssrWithSession<{sessionUser: sessionUser}>(({req}, session) => {
+ * 		const sessionUser = session.data?.user;
  *
  * 		return {
  * 			props: {
@@ -72,8 +70,8 @@ export const apiWithSession = (
  * This Syntax must be used. The following would not work:
  * ```
  * export function getServerSideProps() {
- * 		return ssrWithSession(({req}) => {
- * 			const sessionUser = req.session.user;
+ * 		return ssrWithSession(({req}, session) => {
+ * 			const sessionUser = session.data?.user;
  *
  * 			return {
  * 				props: {
@@ -84,19 +82,26 @@ export const apiWithSession = (
  * }
  * ```
  */
-export const ssrWithSession = <
+export function ssrWithSession<
 	P extends { [key: string]: unknown } = Record<string, never>,
 >(
 	handler: (
 		context: GetServerSidePropsContext,
-	) => GetServerSidePropsResult<P> | Promise<GetServerSidePropsResult<P>>,
-) => {
+		session: Session,
+	) => Promise<GetServerSidePropsResult<P>>,
+): (
+	context: GetServerSidePropsContext,
+) => Promise<GetServerSidePropsResult<P>> {
 	if (!process.env.COOKIE_SECRET) {
 		return async () => ({ notFound: true });
 	}
 
-	return withIronSessionSsr(handler, config);
-};
+	return async (context) => {
+		const session = await getSession(context.req.cookies, context.res);
+
+		return handler(context, session);
+	};
+}
 
 /**
  * Can be used in `getServerSideProps` to ensure that the callback is only executed
@@ -112,11 +117,11 @@ export const ssrWithSession = <
  * ```
  * import type {SessionUser} from "$lib/auth";
  *
- * export const getServerSideProps = ssrRequireAuth<{sessionUser: sessionUser}>(({req}, sessionUser) => {
+ * export const getServerSideProps = ssrRequireAuth<{sessionUser: sessionUser}>(({req}, _session, sessionData) => {
  * 		//do something with the sessionUser. Most simple thing to do:
  * 		return {
  * 			props: {
- * 				sessionUser
+ * 				sessionUser: sessionData.user
  * 			}
  * 		}
  * });
@@ -125,15 +130,14 @@ export const ssrWithSession = <
 export const ssrRequireAuth = <
 	P extends { [key: string]: unknown } = Record<string, never>,
 >(
-	callback: (
+	handler: (
 		context: GetServerSidePropsContext,
-		sessionUser: SessionUser,
-	) => GetServerSidePropsResult<P> | Promise<GetServerSidePropsResult<P>>,
+		session: Session,
+		sessionData: SessionData,
+	) => Promise<GetServerSidePropsResult<P>>,
 ) => {
-	return ssrWithSession((context) => {
-		const sessionUser = context.req.session.user;
-
-		if (!sessionUser) {
+	return ssrWithSession<P>(async (context, session) => {
+		if (!session.data) {
 			return {
 				redirect: {
 					destination: "/login",
@@ -142,7 +146,7 @@ export const ssrRequireAuth = <
 			};
 		}
 
-		return callback(context, sessionUser);
+		return handler(context, session, session.data);
 	});
 };
 
@@ -154,22 +158,21 @@ export const ssrRequireAuth = <
  * sent. (Status Code: 403)
  *
  * ```
- * export default apiRequireAuth((req, res, sessionUser) => {
- * 		//do something with the sessionUser
+ * export default apiRequireAuth((req, res, session, sessionData) => {
+ * 		//do something with the sessionData
  * });
  * ```
  */
 export const apiRequireAuth = (
-	callback: (
+	handler: (
 		req: NextApiRequest,
 		res: NextApiResponse,
-		sessionUser: SessionUser,
+		session: Session,
+		sessionData: SessionData,
 	) => void | Promise<void>,
 ) => {
-	return apiWithSession((req, res) => {
-		const sessionUser = req.session.user;
-
-		if (!sessionUser) {
+	return apiWithSession((req, res, session) => {
+		if (!session.data) {
 			return res.status(403).send({
 				errors: [
 					{
@@ -179,6 +182,6 @@ export const apiRequireAuth = (
 			});
 		}
 
-		return callback(req, res, sessionUser);
+		return handler(req, res, session, session.data);
 	});
 };

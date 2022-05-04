@@ -1,5 +1,6 @@
 {
 	"compilerOptions": {
+		"types": ["gapi", "gapi.auth2"],
 		"target": "es5",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
@@ -20,14 +21,16 @@
 		"incremental": true,
 		"baseUrl": "./",
 		"paths": {
-			"$app/*": ["app/*"],
-			"$app": ["app"],
+			"$components/*": ["components/*"],
+			"$components": ["components"],
 			"$lib/*": ["lib/*"],
 			"$lib": ["lib"],
 			"$pages/*": ["pages/*"],
 			"$pages": ["pages"],
 			"$db/*": ["db/*"],
 			"$db": ["db"],
+			"$types": ["types"],
+			"$types/*": ["types/*"],
 			"$/*": ["*"],
 			"$": ["."]
 		}

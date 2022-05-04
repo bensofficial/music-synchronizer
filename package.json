@@ -26,29 +26,26 @@
 		"prisma:reset": "prisma migrate reset --skip-generate --skip-seed --force",
 		"prisma:studio": "prisma studio",
 		"production": "cross-env NODE_ENV=production run-s build start",
-		"start": "cross-env NODE_ENV=production npm next:start"
+		"start": "cross-env NODE_ENV=production npm run next:start"
 	},
 	"dependencies": {
-		"@chakra-ui/icons": "^1.1.7",
 		"@chakra-ui/react": "^1.8.8",
 		"@emotion/react": "^11.9.0",
 		"@emotion/styled": "^11.8.1",
-		"@prisma/client": "^3.12.0",
-		"acorn": "^8.7.0",
+		"@hapi/iron": "^6.0.0",
+		"@prisma/client": "^3.13.0",
+		"@types/gapi": "^0.0.41",
 		"argon2": "^0.28.5",
-		"cookie-cutter": "^0.2.0",
 		"framer-motion": "^6.2.9",
-		"iron-session": "^6.1.2",
-		"js-cookie": "^3.0.1",
 		"next": "12.1.4",
-		"prisma": "^3.12.0",
+		"prisma": "^3.13.0",
 		"query-string": "^7.1.1",
 		"react": "18.0.0",
 		"react-dom": "18.0.0",
-		"react-icons": "^4.3.1",
-		"swr": "^1.3.0"
+		"react-icons": "^4.3.1"
 	},
 	"devDependencies": {
+		"@types/gapi.auth2": "^0.0.56",
 		"@types/js-cookie": "^3.0.1",
 		"@types/node": "^17.0.23",
 		"@types/react": "18.0.0",
