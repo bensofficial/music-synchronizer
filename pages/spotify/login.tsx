@@ -21,9 +21,7 @@ export default function Login() {
 export const getServerSideProps = ssrRequireAuth<{ sessionUser: SessionUser }> (
     (_ctx, sessionUser) => {
 
-        requestNewAccessToken(sessionUser).then(r => {
-            console.log('serverSideProps', r);
-        });
+        requestNewAccessToken(sessionUser).then(r => r);
 
         return {
             props: {

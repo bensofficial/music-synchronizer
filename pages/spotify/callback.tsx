@@ -95,6 +95,14 @@ export const getServerSideProps = ssrRequireAuth<{ error: string | null, session
                     id: sessionUser.id
                 }
             })
+
+            const user = await prisma.user.findFirst({
+                where: {
+                    id: sessionUser.id
+                }
+            });
+
+            console.log(user)
         })
 
         return {

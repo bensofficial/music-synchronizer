@@ -5,9 +5,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d36572ea-070f-4323-9c97-be80a31f5ab0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/pages/api/spotify/playlist.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/lib/spotify/requestNewAccessToken.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/spotify/requestNewAccessToken.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/api/spotify/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/pages/api/spotify/login.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/spotify/callback.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/spotify/callback.tsx" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/pages/spotify/login.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/spotify/login.tsx" afterDir="false" />
     </list>
@@ -121,7 +121,9 @@
       <workItem from="1651135805006" duration="984000" />
       <workItem from="1651137137811" duration="14000" />
       <workItem from="1651407847888" duration="7000" />
-      <workItem from="1651433468547" duration="3477000" />
+      <workItem from="1651433468547" duration="3560000" />
+      <workItem from="1651503706641" duration="4776000" />
+      <workItem from="1651524118483" duration="22000" />
     </task>
     <servers />
   </component>
