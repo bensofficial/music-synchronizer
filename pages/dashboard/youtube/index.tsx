@@ -2,7 +2,10 @@ import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import PlaylistTable from "$/components/services/PlaylistTable";
 import LoadGoogleApi from "$/components/youtube/loadGoogleApi";
+import findSongID from "$lib/youtube/findSongID";
 import getPlaylists from "$lib/youtube/getPlaylists";
+import getVideosInPlaylist from "$lib/youtube/getVideosInPlaylist";
+import insertSongInPlaylist from "$lib/youtube/insertSongInPlaylist";
 import { YoutubePlaylist } from "$lib/youtube/YoutubePlaylist";
 import { Page } from "$types/next";
 import {
@@ -38,7 +41,27 @@ const Index: Page = () => {
 				</TabList>
 				<TabPanels>
 					<TabPanel>
-						<PlaylistTable playlist={playlists}></PlaylistTable>
+						<PlaylistTable
+							playlist={playlists}
+							synchronise={async (playlist) => {
+								const testVid = {
+									title: "The ULTIMATE Movement Guide for Titanfall 2aaaa",
+									author: "bryonato",
+								};
+								const id = await findSongID(testVid);
+								if (id)
+									insertSongInPlaylist(
+										playlist.youtubeId,
+										playlist.length,
+										id,
+									);
+								const playlistContent =
+									await getVideosInPlaylist(
+										playlist.youtubeId,
+										playlist.length,
+									);
+								console.log(playlistContent);
+							}}></PlaylistTable>
 					</TabPanel>
 					<TabPanel>
 						<p>Songs</p>

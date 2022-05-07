@@ -1,6 +1,7 @@
 export interface YoutubePlaylist {
 	title: string;
-	id: string;
+	youtubeId: string;
 	creator: string;
 	type: "public" | "private" | "unlisted";
+	length: number;
 }

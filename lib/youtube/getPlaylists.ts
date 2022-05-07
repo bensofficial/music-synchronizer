@@ -4,7 +4,7 @@ export default async function getPlaylists(): Promise<
 	YoutubePlaylist[] | null
 > {
 	//ts doesn't recognise gapi.client.youtube
-	const youtube = (gapi.client as any).youtube;
+	const youtube = (gapi?.client as any)?.youtube;
 
 	//if this is false, then youtube wasn't loaded in
 	//a loadGoogleApi component has to be rendered before this function is called
@@ -24,9 +24,10 @@ export default async function getPlaylists(): Promise<
 
 				return {
 					title: snippet.title,
-					id: playlist.id,
+					youtubeId: playlist.id,
 					creator: snippet.channelTitle,
 					type: status.privacyStatus,
+					length: snippet.itemCount,
 				};
 			});
 

@@ -18,13 +18,17 @@ interface PlaylistItem {
 	title: string;
 	creator: string;
 	type: "public" | "private" | "unlisted";
+	length: number;
+	youtubeId: string;
 }
 
 export default function PlaylistTable({
 	playlist,
+	synchronise,
 	...props
 }: TableContainerProps & {
 	playlist: PlaylistItem[];
+	synchronise: (playlist: PlaylistItem) => void;
 }) {
 	return (
 		<TableContainer {...props} my={8}>
@@ -45,6 +49,7 @@ export default function PlaylistTable({
 							<Td>{playlistItem.type}</Td>
 							<Td>
 								<Button
+									onClick={() => synchronise(playlistItem)}
 									size="sm"
 									leftIcon={<Icon as={AiOutlineSync} />}>
 									Synchronize
