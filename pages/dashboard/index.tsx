@@ -41,6 +41,11 @@ const Index: Page<Props> = ({ user }: Props) => {
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
 	const [loggedInWithGoogle, setLoggedInWithGoogle] = useState(false);
 
+	console.log('spotifyAccessToken', user.spotifyAccessToken);
+	console.log('spotifyRefreshToken', user.spotifyRefreshToken);
+
+	console.log('spotifyUserID', )
+
 	return (
 		<>
 			<LoadGoogleApi

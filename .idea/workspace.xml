@@ -4,7 +4,17 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d36572ea-070f-4323-9c97-be80a31f5ab0" name="Changes" comment="" />
+    <list default="true" id="d36572ea-070f-4323-9c97-be80a31f5ab0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/spotify/user/getUser.ts" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/pages/api/spotify/user.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/db/schema.prisma" beforeDir="false" afterPath="$PROJECT_DIR$/db/schema.prisma" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/serverRequest.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/serverRequest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/api/spotify/playlist.ts" beforeDir="false" afterPath="$PROJECT_DIR$/pages/api/spotify/playlistTest.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/dashboard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/dashboard/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/dashboard/spotify/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/dashboard/spotify/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/spotify/callback.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/spotify/callback.tsx" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -16,8 +26,9 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript File" />
         <option value="TypeScript JSX File" />
+        <option value="TypeScript File" />
+        <option value="TypeScript File" />
       </list>
     </option>
   </component>

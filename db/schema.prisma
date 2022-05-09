@@ -19,4 +19,5 @@ model User {
     updatedAt   DateTime    @updatedAt
     spotifyAccessToken String @default("")
     spotifyRefreshToken String @default("")
+    spotifyUserId String @default("")
 }

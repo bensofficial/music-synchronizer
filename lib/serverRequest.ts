@@ -1,51 +1,33 @@
-import {useEffect, useState} from "react";
+import {User} from "@prisma/client";
 
-export function useGetRequest<T>(uri: string, authOptions: RequestInit) {
-    const { error, errorMessage, data, send } = useRequest<T>(uri);
-
-    useEffect(() => {
-        send(authOptions);
-    })
-
-    return { error, errorMessage, data }
+export function getRequest(user: User, uri: string, authOptions: RequestInit = {}) {
+    return request(user, uri, authOptions);
 }
 
-function useRequest<T>(uri: string) {
-    const [error, setError] = useState(false);
-    const [errorMessage, setErrorMessage] = useState("");
-    const [data, setData] = useState<T | null>(null);
+async function request(user: User, uri: string, authOptions: RequestInit) {
 
-    function send(authOptions: RequestInit) {
-
-        /*
-        A second error var has to be used to store whether the request failed or not.
-        If the information is saved in the state "error" it wont have updated once the response body
-        is parsed and the errorMessage wont be extracted
-        */
-        let reqError = false;
-        /*
-        Chained callback functions must be used here instead of await.
-        Otherwise the states (loading, error, data, etc..) wouldn't update correctly
-        */
-
-        fetch(uri, authOptions).then((res) => {
-            setError(!res.ok);
-            reqError = !res.ok;
-            return res.json();
-        }).then((data) => {
-            if (reqError) {
-                /*
-                Surrounded with a try catch expr since its not sure
-                if this value exists on the response data
-                */
-                try {
-                    setErrorMessage(data.errors[0].message);
-                } catch (e) {}
-            }
-
-            setData(data);
-        });
+    if (uri.startsWith('https://api.spotify.com')) {
+        authOptions.headers = {
+            'Authorization': 'Bearer ' + user.spotifyAccessToken,
+            'Content-Type': 'application/json'
+        }
     }
 
-    return { error, errorMessage, data, send };
+    let error: boolean;
+    let errorMessage = "";
+    let responseData = null;
+
+    const res: Response = await fetch(uri, authOptions)
+
+    error = !res.ok;
+
+    responseData = await res.json()
+
+    if (error) {
+        try {
+            errorMessage = responseData.error.message;
+        } catch (e) {}
+    }
+
+    return { error, errorMessage, responseData };
 }

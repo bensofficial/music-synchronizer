@@ -1,20 +1,16 @@
 import SpotifyIcon from "$/components/icons/SpotifyIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import PlaylistTable from "$/components/services/PlaylistTable";
-import { Page } from "$types/next";
-import {
-	Heading,
-	HStack,
-	Tabs,
-	TabList,
-	Tab,
-	TabPanels,
-	TabPanel,
-} from "@chakra-ui/react";
+import {Page} from "$types/next";
+import {Heading, HStack, Tab, TabList, TabPanel, TabPanels, Tabs,} from "@chakra-ui/react";
+import {useGetRequest} from "$lib/clientRequest";
 
 const Index: Page = () => {
 
-	//TODO: hier interceptor in API testen
+	const { loading, errorMessage, error, data } = useGetRequest<Record<string, never>>("/api/spotify/playlistTest");
+
+	console.log(error)
+	console.log(data);
 
 	return (
 		<>
