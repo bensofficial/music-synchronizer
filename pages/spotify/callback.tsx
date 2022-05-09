@@ -3,7 +3,7 @@ import * as queryString from "query-string";
 import { SessionUser, ssrRequireAuth } from "$lib/auth";
 import { InferGetServerSidePropsType } from "next";
 import prisma from "$lib/prisma";
-import { userIsLoggedInWithSpotify } from "$lib/spotify/auth";
+import { isUserLoggedInWithSpotify } from "$lib/spotify/auth";
 import Link from "$/components/chakra/Link";
 
 function Callback({
@@ -128,7 +128,7 @@ async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
 		},
 	});
 
-	return userIsLoggedInWithSpotify(user);
+	return isUserLoggedInWithSpotify(user);
 }
 
 

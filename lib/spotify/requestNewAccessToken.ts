@@ -1,9 +1,9 @@
 import { SessionUser } from "$lib/auth";
 import prisma from "$lib/prisma";
 import * as queryString from "query-string";
+import {isUserLoggedInWithSpotify} from "$lib/spotify/auth";
 
-//TODO: Ich glaube hier ist es useless was zu returnen oder? Wie macht man dann das mit dem Error? Eine Exception?
-export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{ data: any, error: any }> {
+export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{ error: any }> {
 
     const user = await prisma.user.findFirst({
         where: {
@@ -15,10 +15,8 @@ export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{
     const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
     const refreshToken = user?.spotifyRefreshToken;
 
-    //TODO: mit methode von Simon austauschen
-    if (refreshToken == '') {
+    if (!isUserLoggedInWithSpotify({spotifyRefreshToken: user!.spotifyRefreshToken})) {
         return {
-            data: null,
             error: 'user_is_not_authenticated'
         }
     }
@@ -40,7 +38,6 @@ export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{
 
     if (response.status == 400) {
         return {
-            data: null,
             error: 'token_still_valid'
         }
     }
@@ -48,7 +45,6 @@ export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{
     await setNewToken(response, sessionUser);
 
     return {
-        data: null,
         error: null
     }
 }

@@ -22,7 +22,7 @@ import ServiceCard from "$/components/services/ServiceCard";
 import SpotifyIcon from "$/components/icons/SpotifyIcon";
 import ServiceCardWrapper from "$/components/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
-import { userIsLoggedInWithSpotify } from "$lib/spotify/auth";
+import { isUserLoggedInWithSpotify } from "$lib/spotify/auth";
 import { ssrRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { InferGetServerSidePropsType } from "next";
@@ -53,7 +53,7 @@ const Index: Page<Props> = ({ user }: Props) => {
 				Your Services:
 			</Text>
 			<Flex flexWrap="wrap" minH={32}>
-				{userIsLoggedInWithSpotify(user) && (
+				{isUserLoggedInWithSpotify(user) && (
 					<ServiceCard
 						flexBasis={{ base: "100%", md: "auto" }}
 						href="/dashboard/spotify"
@@ -89,7 +89,7 @@ const Index: Page<Props> = ({ user }: Props) => {
 					<ModalCloseButton />
 					<ModalBody>
 						<VStack gap={3}>
-							{!userIsLoggedInWithSpotify(user) && (
+							{!isUserLoggedInWithSpotify(user) && (
 								<ConnectSpotifyButton />
 							)}
 							{!loggedInWithGoogle && <ConnectYoutubeButton />}

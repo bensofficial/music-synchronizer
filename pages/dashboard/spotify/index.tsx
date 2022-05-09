@@ -13,6 +13,9 @@ import {
 } from "@chakra-ui/react";
 
 const Index: Page = () => {
+
+	//TODO: hier interceptor in API testen
+
 	return (
 		<>
 			<HStack gap={5}>
