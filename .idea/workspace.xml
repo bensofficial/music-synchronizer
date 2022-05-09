@@ -4,16 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="d36572ea-070f-4323-9c97-be80a31f5ab0" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/lib/serverRequest.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/spotify/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/spotify/auth.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/lib/spotify/requestNewAccessToken.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/spotify/requestNewAccessToken.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/api/spotify/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/pages/api/spotify/login.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/api/spotify/playlist.ts" beforeDir="false" afterPath="$PROJECT_DIR$/pages/api/spotify/playlist.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/dashboard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/dashboard/index.tsx" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/pages/spotify/callback.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/spotify/callback.tsx" afterDir="false" />
-    </list>
+    <list default="true" id="d36572ea-070f-4323-9c97-be80a31f5ab0" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -25,15 +16,15 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="TypeScript JSX File" />
         <option value="TypeScript File" />
+        <option value="TypeScript JSX File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="main" />
+        <entry key="$PROJECT_DIR$" value="spotify-auth" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -56,8 +47,6 @@
   </component>
   <component name="PropertiesComponent">{
   &quot;keyToString&quot;: {
-    &quot;RunOnceActivity.OpenProjectViewOnStart&quot;: &quot;true&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
     &quot;WebServerToolWindowFactoryState&quot;: &quot;false&quot;,
     &quot;dart.analysis.tool.window.visible&quot;: &quot;false&quot;,
     &quot;last_opened_file_path&quot;: &quot;C:/Users/basti/Documents/Projekte/CHECK24/music-synchronizer&quot;,
@@ -118,15 +107,6 @@
       <workItem from="1650559834117" duration="57000" />
       <workItem from="1650812685096" duration="2455000" />
       <workItem from="1650825086744" duration="2844000" />
-      <workItem from="1650891447248" duration="1065000" />
-      <workItem from="1650904911709" duration="43000" />
-      <workItem from="1650971095507" duration="2094000" />
-      <workItem from="1651135805006" duration="984000" />
-      <workItem from="1651137137811" duration="14000" />
-      <workItem from="1651407847888" duration="7000" />
-      <workItem from="1651433468547" duration="3560000" />
-      <workItem from="1651503706641" duration="4776000" />
-      <workItem from="1651524118483" duration="22000" />
     </task>
     <servers />
   </component>
