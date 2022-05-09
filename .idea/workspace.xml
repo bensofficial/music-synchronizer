@@ -5,8 +5,14 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d36572ea-070f-4323-9c97-be80a31f5ab0" name="Changes" comment="">
+      <change afterPath="$PROJECT_DIR$/lib/serverRequest.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/package-lock.json" beforeDir="false" afterPath="$PROJECT_DIR$/package-lock.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/spotify/auth.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/spotify/auth.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/lib/spotify/requestNewAccessToken.ts" beforeDir="false" afterPath="$PROJECT_DIR$/lib/spotify/requestNewAccessToken.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/api/spotify/login.ts" beforeDir="false" afterPath="$PROJECT_DIR$/pages/api/spotify/login.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/api/spotify/playlist.ts" beforeDir="false" afterPath="$PROJECT_DIR$/pages/api/spotify/playlist.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/dashboard/index.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/dashboard/index.tsx" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/pages/spotify/callback.tsx" beforeDir="false" afterPath="$PROJECT_DIR$/pages/spotify/callback.tsx" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -60,7 +66,7 @@
     &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
     &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
     &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.lookFeel&quot;,
+    &quot;settings.editor.selected.configurable&quot;: &quot;preferences.pluginManager&quot;,
     &quot;show.migrate.to.gradle.popup&quot;: &quot;false&quot;,
     &quot;ts.external.directory.path&quot;: &quot;C:\\Users\\basti\\Documents\\Projekte\\CHECK24\\music-synchronizer\\node_modules\\typescript\\lib&quot;
   }
@@ -121,9 +127,6 @@
       <workItem from="1651433468547" duration="3560000" />
       <workItem from="1651503706641" duration="4776000" />
       <workItem from="1651524118483" duration="22000" />
-      <workItem from="1651700922999" duration="741000" />
-      <workItem from="1651836032350" duration="58000" />
-      <workItem from="1652020402576" duration="1950000" />
     </task>
     <servers />
   </component>

@@ -1,7 +1,7 @@
 import generateRandomString from "../../../lib/generateRandomString";
 import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { userIsLoggedInWithSpotify } from "$lib/spotify/auth";
+import { isUserLoggedInWithSpotify } from "$lib/spotify/auth";
 import serializeCookie from "$lib/cookie";
 
 const clientId = process.env.SPOTIFY_CLIENT_ID;
@@ -28,7 +28,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		});
 	}
 
-	if (userIsLoggedInWithSpotify(user)) {
+	if (isUserLoggedInWithSpotify(user)) {
 		res.redirect(
 			307,
 			`http://localhost:3000/spotify/callback?error=user_already_authenticated`,
