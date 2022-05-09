@@ -3,10 +3,11 @@ import * as queryString from "query-string";
 import { SessionUser, ssrRequireAuth } from "$lib/auth";
 import { InferGetServerSidePropsType } from "next";
 import prisma from "$lib/prisma";
-import { userIsLoggedInWithSpotify } from "$lib/spotify/auth";
+import { userIsLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import Link from "$/components/chakra/Link";
+import getEnvVar from "$lib/env";
 
-function Callback({
+export default function Spotify({
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	return (
@@ -27,8 +28,6 @@ function Callback({
 	);
 }
 
-export default Callback;
-
 export const getServerSideProps = ssrRequireAuth<{
 	error: string | null;
 }>(async (_ctx, _session, sessionData) => {
@@ -40,17 +39,9 @@ export const getServerSideProps = ssrRequireAuth<{
 		};
 	}
 
-	const clientId = process.env.SPOTIFY_CLIENT_ID;
-	const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-	const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
-
-	if (!clientId || !clientSecret || !redirectUri) {
-		return {
-			props: {
-				error: "missing_environment_variables",
-			},
-		};
-	}
+	const clientId = getEnvVar("SPOTIFY_CLIENT_ID");
+	const clientSecret = getEnvVar("SPOTIFY_CLIENT_SECRET");
+	const baseUrl = getEnvVar("BASE_URL");
 
 	const code = _ctx.query.code || null;
 	const error = _ctx.query.error || null;
@@ -86,7 +77,7 @@ export const getServerSideProps = ssrRequireAuth<{
 		method: "POST",
 		body: queryString.stringify({
 			code: code,
-			redirect_uri: redirectUri,
+			redirect_uri: `${baseUrl}/spotify/callback`,
 			grant_type: "authorization_code",
 		}),
 		headers: {

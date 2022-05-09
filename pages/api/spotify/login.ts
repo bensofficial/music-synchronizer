@@ -1,11 +1,12 @@
 import generateRandomString from "../../../lib/generateRandomString";
 import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { userIsLoggedInWithSpotify } from "$lib/spotify/auth";
+import { userIsLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import serializeCookie from "$lib/cookie";
+import getEnvVar from "$lib/env";
 
-const clientId = process.env.SPOTIFY_CLIENT_ID;
-const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
+const clientId = getEnvVar("SPOTIFY_CLIENT_ID");
+const baseUrl = getEnvVar("BASE_URL");
 
 const state = generateRandomString(16);
 const scope =
@@ -18,7 +19,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		},
 	});
 
-	if (!clientId || !redirectUri) {
+	if (!clientId || !baseUrl) {
 		return res.status(500).send({
 			errors: [
 				{
@@ -53,7 +54,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 			307,
 			"https://accounts.spotify.com/authorize?" +
 				new URLSearchParams(
-					`response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${redirectUri}&state=${state}`,
+					`response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${baseUrl}/spotify/callback&state=${state}`,
 				),
 		);
 	} catch (err) {

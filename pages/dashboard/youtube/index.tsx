@@ -1,9 +1,6 @@
 import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import PlaylistTable from "$/components/services/PlaylistTable";
-import LoadGoogleApi from "$/components/youtube/loadGoogleApi";
-import getPlaylists from "$lib/youtube/getPlaylists";
-import { YoutubePlaylist } from "$lib/youtube/YoutubePlaylist";
 import { Page } from "$types/next";
 import {
 	Heading,
@@ -14,19 +11,10 @@ import {
 	TabPanels,
 	TabPanel,
 } from "@chakra-ui/react";
-import { useState } from "react";
 
 const Index: Page = () => {
-	const [playlists, setPlaylists] = useState<YoutubePlaylist[]>([]);
-
 	return (
 		<>
-			<LoadGoogleApi
-				onLoad={async () => {
-					const fetchedPlaylists = await getPlaylists();
-					if (fetchedPlaylists) setPlaylists(fetchedPlaylists);
-				}}
-			/>
 			<HStack gap={5}>
 				<YoutubeMusicIcon h={16} w={16}></YoutubeMusicIcon>
 				<Heading>Youtube Music</Heading>
@@ -38,7 +26,14 @@ const Index: Page = () => {
 				</TabList>
 				<TabPanels>
 					<TabPanel>
-						<PlaylistTable playlist={playlists}></PlaylistTable>
+						<PlaylistTable
+							playlist={[
+								{
+									title: "2022",
+									creator: "Flosi21",
+									type: "private",
+								},
+							]}></PlaylistTable>
 					</TabPanel>
 					<TabPanel>
 						<p>Songs</p>

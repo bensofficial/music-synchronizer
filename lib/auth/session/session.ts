@@ -2,6 +2,7 @@ import { Session, SessionConfig, SessionData } from "./types";
 import { defaults, seal, unseal } from "@hapi/iron";
 import { ServerResponse } from "http";
 import serializeCookie from "$lib/cookie";
+import getEnvVar from "$lib/env";
 
 const config: SessionConfig = {
 	cookieName: "auth",
@@ -12,7 +13,7 @@ const config: SessionConfig = {
 		sameSite: process.env.NODE_ENV !== "development" ? "Strict" : "None",
 		maxAge: 30 * 24 * 60 * 60,
 	},
-	password: process.env["COOKIE_SECRET"]!,
+	password: getEnvVar("COOKIE_SECRET"),
 };
 
 const unsealData = async (cookie: string): Promise<SessionData | null> => {
