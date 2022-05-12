@@ -42,7 +42,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		"Set-Cookie",
 		serializeCookie("spotify_state", state, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV !== "development",
+			secure: true,
 			maxAge: 60 * 60,
 			sameSite: "Lax",
 			path: "/",

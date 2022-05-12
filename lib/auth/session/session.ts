@@ -10,7 +10,7 @@ const config: SessionConfig = {
 		httpOnly: true,
 		secure: true,
 		path: "/",
-		sameSite: process.env.NODE_ENV !== "development" ? "Strict" : "None",
+		sameSite: "None",
 		maxAge: 30 * 24 * 60 * 60,
 	},
 	password: getEnvVar("COOKIE_SECRET"),

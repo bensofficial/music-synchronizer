@@ -1,6 +1,8 @@
 import getEnvVar from "$lib/env";
+import { User } from "@prisma/client";
 import { google } from "googleapis";
 import prisma from "lib/prisma";
+import { userIsLoggedInWithGoogle } from "./authFrontend";
 
 const GOOGLE_CLIENT_ID = getEnvVar("GOOGLE_CLIENT_ID");
 const GOOGLE_CLIENT_SECRET = getEnvVar("GOOGLE_CLIENT_SECRET");
@@ -43,5 +45,13 @@ export async function handleCallback(
 		},
 	});
 
-	oauth2Client.credentials = tokens;
+	oauth2Client.setCredentials({ refresh_token: tokens.refresh_token });
+}
+
+export function authorizeUser(user: User): void | Error {
+	if (!userIsLoggedInWithGoogle(user)) {
+		return new Error("User is not logged in with google");
+	}
+
+	oauth2Client.setCredentials({ refresh_token: user.youtubeRefreshToken });
 }

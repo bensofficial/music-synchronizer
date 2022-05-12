@@ -19,6 +19,14 @@ model User {
     updatedAt           DateTime    @updatedAt
     spotifyAccessToken  String      @default("")
     spotifyRefreshToken String      @default("")
-    youtubeAccessToken  String      @default("")
-    youtubeRefreshToken String      @default("")
+    youtubeAccessToken  String?     
+    youtubeRefreshToken String?      
+}
+
+model Song {
+    id          Int             @id @default(autoincrement())
+    youtubeId   String?
+    spotifyId   String?
+    title       String
+    artist      String
 }
