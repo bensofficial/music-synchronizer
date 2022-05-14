@@ -11,12 +11,22 @@ datasource db {
 }
 
 model User {
-    id          Int         @id @default(autoincrement())
-    username    String
-    email       String      @unique
-    password    String
-    createdAt   DateTime    @default(now())
-    updatedAt   DateTime    @updatedAt
-    spotifyAccessToken String @default("")
-    spotifyRefreshToken String @default("")
+    id                  Int         @id @default(autoincrement())
+    username            String
+    email               String      @unique
+    password            String
+    createdAt           DateTime    @default(now())
+    updatedAt           DateTime    @updatedAt
+    spotifyAccessToken  String      @default("")
+    spotifyRefreshToken String      @default("")
+    youtubeAccessToken  String?     
+    youtubeRefreshToken String?      
+}
+
+model Song {
+    id          Int             @id @default(autoincrement())
+    youtubeId   String?
+    spotifyId   String?
+    title       String
+    artist      String
 }
