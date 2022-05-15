@@ -15,7 +15,11 @@ export default async function getPlaylists(
 
 	const youtube = google.youtube("v3");
 
-	const res = await youtube.playlists.list({ mine: true });
+	const res = await youtube.playlists.list({
+		mine: true,
+		part: ["snippet", "status"],
+		maxResults: 50,
+	});
 
 	let playlists: Playlist[] = [];
 

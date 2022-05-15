@@ -1,8 +1,8 @@
+import { Playlist, playlistTypeToString } from "$lib/services/types";
 import {
 	Table,
 	TableContainer,
 	TableContainerProps,
-	TableCaption,
 	Thead,
 	Tr,
 	Th,
@@ -14,17 +14,11 @@ import {
 
 import { AiOutlineSync } from "react-icons/ai";
 
-interface PlaylistItem {
-	title: string;
-	creator: string;
-	type: "public" | "private" | "unlisted";
-}
-
 export default function PlaylistTable({
-	playlist,
+	playlists,
 	...props
 }: TableContainerProps & {
-	playlist: PlaylistItem[];
+	playlists: Playlist[];
 }) {
 	return (
 		<TableContainer {...props} my={8}>
@@ -38,11 +32,11 @@ export default function PlaylistTable({
 					</Tr>
 				</Thead>
 				<Tbody>
-					{playlist.map((playlistItem, i) => (
+					{playlists.map((playlist, i) => (
 						<Tr key={i}>
-							<Td>{playlistItem.title}</Td>
-							<Td>{playlistItem.creator}</Td>
-							<Td>{playlistItem.type}</Td>
+							<Td>{playlist.title}</Td>
+							<Td>{playlist.creator}</Td>
+							<Td>{playlistTypeToString(playlist.type)}</Td>
 							<Td>
 								<Button
 									size="sm"

@@ -1,6 +1,8 @@
 import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import PlaylistTable from "$/components/services/PlaylistTable";
+import { useGetRequest } from "$lib/clientRequest";
+import { Playlist } from "$lib/services/types";
 import { Page } from "$types/next";
 import {
 	Heading,
@@ -10,9 +12,14 @@ import {
 	Tab,
 	TabPanels,
 	TabPanel,
+	Spinner,
 } from "@chakra-ui/react";
 
 const Index: Page = () => {
+	const { loading, data } = useGetRequest<Playlist[]>(
+		"/api/youtube/playlists",
+	);
+
 	return (
 		<>
 			<HStack gap={5}>
@@ -26,14 +33,11 @@ const Index: Page = () => {
 				</TabList>
 				<TabPanels>
 					<TabPanel>
-						<PlaylistTable
-							playlist={[
-								{
-									title: "2022",
-									creator: "Flosi21",
-									type: "private",
-								},
-							]}></PlaylistTable>
+						{loading || !data ? (
+							<Spinner></Spinner>
+						) : (
+							<PlaylistTable playlists={data}></PlaylistTable>
+						)}
 					</TabPanel>
 					<TabPanel>
 						<p>Songs</p>

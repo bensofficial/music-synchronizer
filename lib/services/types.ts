@@ -22,7 +22,7 @@ export type PlaylistWithSongs = Playlist & {
 	songs: Song[];
 };
 
-export interface Service {
+export default interface Service {
 	getSong: (name: string) => Promise<Song | Error>;
 	getPlaylistId: (user: User, name: string) => Promise<string | Error>;
 	getPlaylist: (user: User, playlistId: string) => Promise<Playlist | Error>;
@@ -37,4 +37,13 @@ export interface Service {
 		playlistId: string,
 	) => Promise<void | Error>;
 	createPlaylist: (name: string) => Promise<void | Error>;
+}
+
+export function playlistTypeToString(type: PlaylistType): string {
+	switch (type) {
+		case PlaylistType.public:
+			return "public";
+		case PlaylistType.private:
+			return "private";
+	}
 }
