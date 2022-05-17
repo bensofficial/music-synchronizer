@@ -22,37 +22,27 @@ import ServiceCard from "$/components/services/ServiceCard";
 import SpotifyIcon from "$/components/icons/SpotifyIcon";
 import ServiceCardWrapper from "$/components/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
-import { isUserLoggedInWithSpotify } from "$lib/spotify/auth";
+import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import { ssrRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { InferGetServerSidePropsType } from "next";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import ConnectSpotifyButton from "$/components/buttons/ConnectSpotifyButton";
-import { userIsLoggedInWithGoogle } from "$lib/youtube/auth";
+import { generateAuthUrl } from "$lib/services/youtube/authServer";
+import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
 import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
 import ConnectYoutubeButton from "$/components/buttons/ConnectYoutubeButton";
-import LoadGoogleApi from "$/components/youtube/loadGoogleApi";
-import { useState } from "react";
+import {useState} from "react";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-const Index: Page<Props> = ({ user }: Props) => {
+const Index: Page<Props> = ({ user, googleAuthUrl }: Props) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
 	const [loggedInWithGoogle, setLoggedInWithGoogle] = useState(false);
 
-	console.log('spotifyAccessToken', user.spotifyAccessToken);
-	console.log('spotifyRefreshToken', user.spotifyRefreshToken);
-
-	console.log('spotifyUserID', )
-
 	return (
 		<>
-			<LoadGoogleApi
-				onLoad={async () => {
-					const signedIn = await userIsLoggedInWithGoogle();
-					setLoggedInWithGoogle(signedIn);
-				}}></LoadGoogleApi>
 			<Heading mb={4}>Hi, {user.username}</Heading>
 			<Text mb={4} fontWeight="thin" fontSize="2xl">
 				Your Services:
@@ -68,7 +58,7 @@ const Index: Page<Props> = ({ user }: Props) => {
 						<SpotifyIcon />
 					</ServiceCard>
 				)}
-				{loggedInWithGoogle && (
+				{userIsLoggedInWithGoogle(user) && (
 					<ServiceCard
 						flexBasis={{ base: "100%", md: "auto" }}
 						href="/dashboard/youtube"
@@ -97,7 +87,11 @@ const Index: Page<Props> = ({ user }: Props) => {
 							{!isUserLoggedInWithSpotify(user) && (
 								<ConnectSpotifyButton />
 							)}
-							{!loggedInWithGoogle && <ConnectYoutubeButton />}
+							{!userIsLoggedInWithGoogle(user) && (
+								<ConnectYoutubeButton
+									googleAuthUrl={googleAuthUrl}
+								/>
+							)}
 						</VStack>
 					</ModalBody>
 					<ModalFooter>
@@ -113,6 +107,7 @@ Index.layout = DashboardLayout;
 
 export const getServerSideProps = ssrRequireAuth<{
 	user: UserWithoutDatesAndPassword;
+	googleAuthUrl: string;
 }>(async (_context, _session, sessionData) => {
 	const user = await prisma.user.findUnique({
 		where: {
@@ -124,6 +119,8 @@ export const getServerSideProps = ssrRequireAuth<{
 			username: true,
 			spotifyAccessToken: true,
 			spotifyRefreshToken: true,
+			youtubeAccessToken: true,
+			youtubeRefreshToken: true,
 		},
 	});
 
@@ -136,9 +133,12 @@ export const getServerSideProps = ssrRequireAuth<{
 		};
 	}
 
+	const googleAuthUrl = generateAuthUrl();
+
 	return {
 		props: {
 			user,
+			googleAuthUrl,
 		},
 	};
 });

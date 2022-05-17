@@ -3,12 +3,14 @@ import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { isUserLoggedInWithSpotify } from "$lib/spotify/auth";
 import serializeCookie from "$lib/cookie";
+import getEnvVar from "$lib/env";
 
-const clientId = process.env.SPOTIFY_CLIENT_ID;
-const redirectUri = process.env.SPOTIFY_REDIRECT_URI;
+const clientId = getEnvVar("SPOTIFY_CLIENT_ID");
+const baseUrl = getEnvVar("BASE_URL");
 
 const state = generateRandomString(16);
-const scope = "playlist-modify-public playlist-read-private playlist-modify-private";
+const scope =
+	"playlist-modify-public playlist-read-private playlist-modify-private";
 
 export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 	const user = await prisma.user.findFirst({
@@ -17,7 +19,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		},
 	});
 
-	if (!clientId || !redirectUri) {
+	if (!clientId || !baseUrl) {
 		return res.status(500).send({
 			errors: [
 				{
@@ -28,7 +30,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		});
 	}
 
-	if (isUserLoggedInWithSpotify(user)) {
+	if (userIsLoggedInWithSpotify(user)) {
 		res.redirect(
 			307,
 			`http://localhost:3000/spotify/callback?error=user_already_authenticated`,
@@ -40,7 +42,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		"Set-Cookie",
 		serializeCookie("spotify_state", state, {
 			httpOnly: true,
-			secure: process.env.NODE_ENV !== "development",
+			secure: true,
 			maxAge: 60 * 60,
 			sameSite: "Lax",
 			path: "/",
@@ -52,13 +54,10 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 			307,
 			"https://accounts.spotify.com/authorize?" +
 				new URLSearchParams(
-					`response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${redirectUri}&state=${state}`,
+					`response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${baseUrl}/spotify/callback&state=${state}`,
 				),
 		);
 	} catch (err) {
 		res.status(500).send({ error: "failed to fetch data" });
 	}
 });
-
-
-

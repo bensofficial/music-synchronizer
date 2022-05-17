@@ -1,8 +1,17 @@
 import SpotifyIcon from "$/components/icons/SpotifyIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import PlaylistTable from "$/components/services/PlaylistTable";
-import {Page} from "$types/next";
-import {Heading, HStack, Tab, TabList, TabPanel, TabPanels, Tabs,} from "@chakra-ui/react";
+import { PlaylistType } from "$lib/services/types";
+import { Page } from "$types/next";
+import {
+	Heading,
+	HStack,
+	Tabs,
+	TabList,
+	Tab,
+	TabPanels,
+	TabPanel,
+} from "@chakra-ui/react";
 import {useGetRequest} from "$lib/clientRequest";
 
 const Index: Page = () => {
@@ -26,11 +35,11 @@ const Index: Page = () => {
 				<TabPanels>
 					<TabPanel>
 						<PlaylistTable
-							playlist={[
+							playlists={[
 								{
 									title: "2022",
 									creator: "You",
-									type: "public",
+									type: PlaylistType.public,
 								},
 							]}></PlaylistTable>
 					</TabPanel>

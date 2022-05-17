@@ -1,6 +1,5 @@
 {
 	"compilerOptions": {
-		"types": ["gapi", "gapi.auth2"],
 		"target": "es5",
 		"lib": ["dom", "dom.iterable", "esnext"],
 		"allowJs": true,
@@ -36,5 +35,5 @@
 		}
 	},
 	"exclude": ["node_modules"],
-	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx"]
+	"include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "**/*.d.ts"]
 }
