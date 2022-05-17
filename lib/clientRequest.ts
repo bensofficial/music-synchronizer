@@ -1,3 +1,4 @@
+import { Router, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 type RequestMethod = "POST" | "GET";
@@ -86,6 +87,7 @@ function useRequest<T>(url: string, method: RequestMethod) {
 	const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [data, setData] = useState<T | null>(null);
+	const router = useRouter();
 
 	function send(body: Record<string, any> | null = null) {
 		setLoading(true);
@@ -110,6 +112,10 @@ function useRequest<T>(url: string, method: RequestMethod) {
 			body: body ? JSON.stringify(body) : null,
 		})
 			.then((res) => {
+				if (res.status === 401) {
+					router.push("/dashboard");
+				}
+
 				setError(!res.ok);
 				reqError = !res.ok;
 				return res.json();
