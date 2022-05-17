@@ -27,10 +27,10 @@ export default interface Service {
 	getPlaylistId: (user: User, name: string) => Promise<string | Error>;
 	getPlaylist: (user: User, playlistId: string) => Promise<Playlist | Error>;
 	getPlaylists: (user: User) => Promise<Playlist[] | Error>;
-	getPlaylistWithSongs: (
+	getSongsInPlaylist: (
 		user: User,
 		playlistId: string,
-	) => Promise<PlaylistWithSongs | Error>;
+	) => Promise<Song[] | Error>;
 	addToPlaylist: (user: User, playlistId: string) => Promise<void | Error>;
 	deleteFromPlaylist: (
 		user: User,

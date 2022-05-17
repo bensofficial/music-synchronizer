@@ -7,6 +7,7 @@ export function youtubePlaylistToPlaylist(
 	const snippet = playlist.snippet!;
 
 	return {
+		id: playlist.id!,
 		title: snippet.title!,
 		creator: snippet.channelTitle!,
 		type: privacyStatusToPlaylistType(playlist.status!.privacyStatus!),

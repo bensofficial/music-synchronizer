@@ -25,6 +25,7 @@ const scopes = [
 export function generateAuthUrl() {
 	return oauth2Client.generateAuthUrl({
 		access_type: "offline",
+		prompt: "consent",
 		scope: scopes,
 	});
 }
@@ -32,16 +33,16 @@ export function generateAuthUrl() {
 export async function handleCallback(
 	authorizationCode: string,
 	userId: number,
-) {
+): Promise<void | Error> {
 	const { tokens } = await oauth2Client.getToken(authorizationCode);
+
+	console.log("tokens", tokens);
 
 	await prisma.user.update({
 		where: { id: userId },
 		data: {
-			youtubeAccessToken: tokens.access_token ? tokens.access_token : "",
-			youtubeRefreshToken: tokens.refresh_token
-				? tokens.refresh_token
-				: "",
+			youtubeAccessToken: tokens.access_token,
+			youtubeRefreshToken: tokens.refresh_token,
 		},
 	});
 

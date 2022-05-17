@@ -37,6 +37,7 @@ const Index: Page = () => {
 						<PlaylistTable
 							playlists={[
 								{
+									id: "0",
 									title: "2022",
 									creator: "You",
 									type: PlaylistType.public,

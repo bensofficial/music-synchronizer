@@ -29,7 +29,6 @@ const Index: Page = () => {
 			<Tabs variant="soft-rounded" mt={8}>
 				<TabList>
 					<Tab>Playlists</Tab>
-					<Tab>Songs</Tab>
 				</TabList>
 				<TabPanels>
 					<TabPanel>
@@ -38,9 +37,6 @@ const Index: Page = () => {
 						) : (
 							<PlaylistTable playlists={data}></PlaylistTable>
 						)}
-					</TabPanel>
-					<TabPanel>
-						<p>Songs</p>
 					</TabPanel>
 				</TabPanels>
 			</Tabs>
