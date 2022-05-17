@@ -12,8 +12,15 @@ import {
 	TabPanels,
 	TabPanel,
 } from "@chakra-ui/react";
+import {useGetRequest} from "$lib/clientRequest";
 
 const Index: Page = () => {
+
+	const { loading, errorMessage, error, data } = useGetRequest<Record<string, never>>("/api/spotify/playlistTest");
+
+	console.log(error)
+	console.log(data);
+
 	return (
 		<>
 			<HStack gap={5}>

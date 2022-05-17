@@ -1,7 +1,7 @@
 import generateRandomString from "../../../lib/generateRandomString";
 import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
-import { userIsLoggedInWithSpotify } from "$lib/services/spotify/auth";
+import { isUserLoggedInWithSpotify } from "$lib/spotify/auth";
 import serializeCookie from "$lib/cookie";
 import getEnvVar from "$lib/env";
 
