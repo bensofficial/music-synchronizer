@@ -2,8 +2,9 @@ import { SessionUser } from "$lib/auth";
 import prisma from "$lib/prisma";
 import * as queryString from "query-string";
 import {isUserLoggedInWithSpotify} from "$lib/spotify/auth";
+import {data} from "browserslist";
 
-export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{ error: any }> {
+export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{ accessToken: string | null | undefined, error: any }> {
 
     const user = await prisma.user.findFirst({
         where: {
@@ -17,6 +18,7 @@ export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{
 
     if (!isUserLoggedInWithSpotify({spotifyRefreshToken: user!.spotifyRefreshToken})) {
         return {
+            accessToken: null,
             error: 'user_is_not_authenticated'
         }
     }
@@ -38,6 +40,7 @@ export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{
 
     if (response.status == 400) {
         return {
+            accessToken: null,
             error: 'token_still_valid'
         }
     }
@@ -45,6 +48,7 @@ export async function requestNewAccessToken(sessionUser: SessionUser): Promise<{
     await setNewToken(response, sessionUser);
 
     return {
+        accessToken: data.access_token?.toString(),
         error: null
     }
 }
@@ -54,7 +58,7 @@ async function setNewToken(response: Response, sessionUser: SessionUser) {
 
     await prisma.user.update({
         data: {
-            spotifyAccessToken: data.access_token,
+            spotifyAccessToken: data.access_token.toString(),
         },
         where: {
             id: sessionUser.id

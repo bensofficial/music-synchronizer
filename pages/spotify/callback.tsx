@@ -5,7 +5,6 @@ import { InferGetServerSidePropsType } from "next";
 import prisma from "$lib/prisma";
 import { isUserLoggedInWithSpotify } from "$lib/spotify/auth";
 import Link from "$/components/chakra/Link";
-import {getRequest} from "$lib/serverRequest";
 import {getUser} from "$lib/spotify/user/getUser";
 
 function Callback({
@@ -146,12 +145,14 @@ async function setSpotifyUserId(sessionUser: SessionUser) {
 
 	const { error, errorMessage, responseData } = await getUser(sessionUser);
 
+	console.log('reponse bei user request', responseData)
+
 	await prisma.user.update({
 		data: {
 			spotifyUserId: responseData.id
 		},
 		where: {
-			id: sessionData.user.id
+			id: sessionUser.id
 		}
 	})
 }

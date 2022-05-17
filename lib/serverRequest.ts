@@ -1,27 +1,42 @@
 import {User} from "@prisma/client";
+import {requestNewAccessToken} from "$lib/spotify/requestNewAccessToken";
+import {SessionUser} from "$lib/auth";
 
-export function getRequest(user: User, uri: string, authOptions: RequestInit = {}) {
-    return request(user, uri, authOptions);
+export async function getRequest(givenAccessToken: string, uri: string, authOptions: RequestInit = {}, sessionUser: SessionUser) {
+
+    const {error, errorMessage, responseData, statusCode} = await request(givenAccessToken, uri, authOptions);
+
+    console.log('error in serverRequest method', error)
+    console.log('statusCode in serverRequest', statusCode)
+    console.log('response in serverRequest', responseData)
+
+    if (error && statusCode == 401) {
+        console.log('401 error')
+        const {accessToken, error} = await requestNewAccessToken(sessionUser)
+        return await request(accessToken!, uri, authOptions);
+    }
+
+    return {error, errorMessage, responseData};
 }
 
-async function request(user: User, uri: string, authOptions: RequestInit) {
+async function request(accessToken: string, uri: string, authOptions: RequestInit) {
 
-    if (uri.startsWith('https://api.spotify.com')) {
-        authOptions.headers = {
-            'Authorization': 'Bearer ' + user.spotifyAccessToken,
-            'Content-Type': 'application/json'
-        }
+    authOptions.headers = {
+        'Authorization': 'Bearer ' + accessToken,
+        'Content-Type': 'application/json'
     }
 
     let error: boolean;
     let errorMessage = "";
     let responseData = null;
+    let statusCode: number;
 
     const res: Response = await fetch(uri, authOptions)
 
     error = !res.ok;
 
     responseData = await res.json()
+    statusCode = res.status;
 
     if (error) {
         try {
@@ -29,5 +44,5 @@ async function request(user: User, uri: string, authOptions: RequestInit) {
         } catch (e) {}
     }
 
-    return { error, errorMessage, responseData };
+    return { error, errorMessage, responseData, statusCode};
 }

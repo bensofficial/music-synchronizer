@@ -13,16 +13,16 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
     });
 
     const accessToken = user?.spotifyAccessToken;
+    const userId = user?.spotifyUserId;
 
-    console.log(accessToken);
+    console.log('userId', userId)
 
-    const { error, errorMessage, responseData } = await getRequest(user!, 'https://api.spotify.com/v1/albums/4aawyAB9vmqN3uQ7FjRGTy', {
+    console.log('user', sessionData.user)
+    console.log('accessToken ', accessToken);
+
+    const { error, errorMessage, responseData } = await getRequest(accessToken!, `https://api.spotify.com/v1/users/${userId}/playlists`, {
         method: "GET",
-        headers: {
-            'Authorization': 'Bearer ' + accessToken,
-            'Content-Type': 'application/json'
-        }
-    })
+    }, sessionData.user)
 
     console.log('error', error);
     console.log(errorMessage);
