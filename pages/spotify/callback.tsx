@@ -5,7 +5,7 @@ import { InferGetServerSidePropsType } from "next";
 import prisma from "$lib/prisma";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import Link from "$/components/chakra/Link";
-import {getUser} from "$lib/spotify/user/getUser";
+import { getUser } from "$lib/services/spotify/user/getUser";
 import getEnvVar from "$lib/env";
 
 export default function Spotify({
@@ -92,10 +92,10 @@ export const getServerSideProps = ssrRequireAuth<{
 
 	fetch("https://accounts.spotify.com/api/token", authOptions).then(
 		async (response) => {
-			await setSpotifyTokens(sessionData.user, response)
+			await setSpotifyTokens(sessionData.user, response);
 			await setSpotifyUserId(sessionData.user);
-		}
-);
+		},
+	);
 
 	return {
 		props: {
@@ -115,7 +115,6 @@ async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
 }
 
 async function setSpotifyTokens(sessionUser: SessionUser, response: Response) {
-
 	const data = await response.json();
 
 	const accessToken = data.access_token;
@@ -133,18 +132,16 @@ async function setSpotifyTokens(sessionUser: SessionUser, response: Response) {
 }
 
 async function setSpotifyUserId(sessionUser: SessionUser) {
-
 	const { error, errorMessage, responseData } = await getUser(sessionUser);
 
-	console.log('reponse bei user request', responseData)
+	console.log("reponse bei user request", responseData);
 
 	await prisma.user.update({
 		data: {
-			spotifyUserId: responseData.id
+			spotifyUserId: responseData.id,
 		},
 		where: {
-			id: sessionUser.id
-		}
-	})
+			id: sessionUser.id,
+		},
+	});
 }
-

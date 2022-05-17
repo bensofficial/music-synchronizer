@@ -13,6 +13,7 @@ export enum PlaylistType {
 }
 
 export interface Playlist {
+	id: string;
 	title: string;
 	creator: string;
 	type: PlaylistType;
