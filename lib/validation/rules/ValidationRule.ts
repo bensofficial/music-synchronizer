@@ -4,6 +4,12 @@ export default abstract class ValidationRule {
 		string().maxLen(3).minLen(2)
 	*/
 	private nextRule: ValidationRule | null = null;
+
+	/*
+	if this is true, the variable doesn't has to exist
+	*/
+	public isNullable: boolean = false;
+
 	/*
 	pointers to the first and last rule in the linked list of rules
 	*/
@@ -28,6 +34,11 @@ export default abstract class ValidationRule {
 		be validated when calling validate but not string
 		*/
 		return this.firstRule;
+	}
+
+	public nullable(): ValidationRule {
+		this.isNullable = true;
+		return this;
 	}
 
 	/*

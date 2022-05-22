@@ -10,7 +10,7 @@ const requestData = schema({
 });
 
 export default apiWithSession(async (req, res, session) => {
-	if (!requestData.validate(req, res)) {
+	if (!requestData.validateRequestBody(req, res)) {
 		return;
 	}
 

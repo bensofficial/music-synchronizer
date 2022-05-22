@@ -32,7 +32,7 @@ import { generateAuthUrl } from "$lib/services/youtube/authServer";
 import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
 import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
 import ConnectYoutubeButton from "$/components/buttons/ConnectYoutubeButton";
-import {useState} from "react";
+import { useState } from "react";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -121,6 +121,7 @@ export const getServerSideProps = ssrRequireAuth<{
 			spotifyRefreshToken: true,
 			youtubeAccessToken: true,
 			youtubeRefreshToken: true,
+			spotifyUserId: true,
 		},
 	});
 

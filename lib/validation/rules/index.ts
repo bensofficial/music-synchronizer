@@ -1,4 +1,5 @@
 import String from "./String";
+import Number from "./Number";
 
 export type { default as ValidationRule } from "./ValidationRule";
 

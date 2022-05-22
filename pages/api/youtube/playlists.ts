@@ -1,8 +1,22 @@
 import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
-import getPlaylists from "$lib/services/youtube/api/getPlaylists";
+import {
+	getAllPlaylists,
+	getPlaylistBatch,
+} from "$lib/services/youtube/api/getPlaylists";
+import { number, string } from "$lib/validation/rules";
+import schema from "$lib/validation/Schema";
 
-export default apiRequireAuth(async (_req, res, _session, sessionData) => {
+const requestData = schema({
+	pageToken: string().nullable(),
+	maxResults: number().integer().greaterThan(0).lessThan(51),
+});
+
+export default apiRequireAuth(async (req, res, _session, sessionData) => {
+	if (!requestData.validateRequestQuery(req, res)) {
+		return;
+	}
+
 	const user = await prisma.user.findUnique({
 		where: { id: sessionData.user.id },
 	});
@@ -11,7 +25,15 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		return res.status(400).json({ errors: [{ message: "No User found" }] });
 	}
 
-	const playlists = await getPlaylists(user);
+	const result = await getPlaylistBatch(
+		user,
+		parseInt(req.query.maxResults as string),
+		req.query.pageToken ? (req.query.pageToken as string) : null,
+	);
 
-	return res.status(200).send(playlists);
+	if (result instanceof Error) {
+		return res.status(500).json({ errors: [{ message: result.message }] });
+	}
+
+	return res.status(200).send(result);
 });
