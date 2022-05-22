@@ -33,43 +33,11 @@ const Index: Page = () => {
 				</TabList>
 				<TabPanels>
 					<TabPanel>
-<<<<<<< HEAD
-						<PlaylistTable
-							synchronise={async (playlist) => {
-								/*const testVid = {
-									title: "The ULTIMATE Movement Guide for Titanfall 2aaaa",
-									author: "bryonato",
-								};
-								const id = await findSongID(testVid);
-								if (id)
-									insertSongInPlaylist(
-										playlist.youtubeId,
-										playlist.length,
-										id,
-									);
-								const playlistContent =
-									await getVideosInPlaylist(
-										playlist.youtubeId,
-										playlist.length,
-									);
-								console.log(playlistContent);*/
-							}}
-							playlist={[
-								{
-									title: "2022",
-									creator: "Flosi21",
-									type: "private",
-									length: 0,
-									youtubeId: "null",
-								},
-							]}></PlaylistTable>
-=======
 						{loading || !data ? (
 							<Spinner></Spinner>
 						) : (
 							<PlaylistTable playlists={data}></PlaylistTable>
 						)}
->>>>>>> 503bf53b955fc24a90fc4a434ed7712d17befdf8
 					</TabPanel>
 					<TabPanel>
 						<p>Songs</p>

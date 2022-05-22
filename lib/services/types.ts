@@ -23,7 +23,7 @@ export type PlaylistWithSongs = Playlist & {
 };
 
 export default interface Service {
-	getSongId: (name: string, author: string) => Promise<Song | Error>;
+	getSongId: (name: string, author: string) => Promise<string | Error>;
 	getPlaylistId: (user: User, name: string) => Promise<string | Error>;
 	getPlaylist: (user: User, playlistId: string) => Promise<Playlist | Error>;
 	getPlaylists: (user: User) => Promise<Playlist[] | Error>;
