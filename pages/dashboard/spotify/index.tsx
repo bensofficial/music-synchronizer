@@ -1,6 +1,7 @@
 import SpotifyIcon from "$/components/icons/SpotifyIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import PlaylistTable from "$/components/services/PlaylistTable";
+import { PlaylistType } from "$lib/services/types";
 import { Page } from "$types/next";
 import {
 	Heading,
@@ -27,11 +28,11 @@ const Index: Page = () => {
 				<TabPanels>
 					<TabPanel>
 						<PlaylistTable
-							playlist={[
+							playlists={[
 								{
 									title: "2022",
 									creator: "You",
-									type: "public",
+									type: PlaylistType.public,
 								},
 							]}></PlaylistTable>
 					</TabPanel>

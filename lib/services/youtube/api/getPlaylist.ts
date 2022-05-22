@@ -1,12 +1,9 @@
-import { Playlist } from "$lib/services/types";
 import { User } from "@prisma/client";
 import { google } from "googleapis";
 import { authorizeUser } from "../authServer";
 import { youtubePlaylistToPlaylist } from "./convert";
 
-export default async function getPlaylists(
-	user: User,
-): Promise<Playlist[] | Error> {
+export default async function getPlaylist(user: User, playlistId: string) {
 	const error = authorizeUser(user);
 	if (error) {
 		return error;
@@ -16,20 +13,19 @@ export default async function getPlaylists(
 
 	try {
 		const res = await youtube.playlists.list({
-			mine: true,
+			id: [playlistId],
 			part: ["snippet", "status"],
-			maxResults: 50,
+			maxResults: 1,
 		});
 
-		let playlists: Playlist[] = [];
-
 		if (res.data.items) {
-			playlists = res.data.items.map((playlist) =>
-				youtubePlaylistToPlaylist(playlist),
-			);
-		}
+			const youtubePlaylist = res.data.items[0],
+				playlist = youtubePlaylistToPlaylist(youtubePlaylist);
 
-		return playlists;
+			return playlist;
+		} else {
+			return new Error("Playlist not found");
+		}
 	} catch (e) {
 		return e as Error;
 	}

@@ -1,8 +1,10 @@
+import { usePostRequest } from "$lib/clientRequest";
+import { Playlist, playlistTypeToString } from "$lib/services/types";
+import getSongId from "$lib/services/youtube/api/getSongId";
 import {
 	Table,
 	TableContainer,
 	TableContainerProps,
-	TableCaption,
 	Thead,
 	Tr,
 	Th,
@@ -14,22 +16,15 @@ import {
 
 import { AiOutlineSync } from "react-icons/ai";
 
-interface PlaylistItem {
-	title: string;
-	creator: string;
-	type: "public" | "private" | "unlisted";
-	length: number;
-	youtubeId: string;
-}
-
 export default function PlaylistTable({
-	playlist,
-	synchronise,
+	playlists,
 	...props
 }: TableContainerProps & {
-	playlist: PlaylistItem[];
-	synchronise: (playlist: PlaylistItem) => void;
+	playlists: Playlist[];
 }) {
+	const { data, loading, error, send } = usePostRequest(
+		"/api/youtube/songId",
+	);
 	return (
 		<TableContainer {...props} my={8}>
 			<Table variant="simple">
@@ -42,14 +37,14 @@ export default function PlaylistTable({
 					</Tr>
 				</Thead>
 				<Tbody>
-					{playlist.map((playlistItem, i) => (
+					{playlists.map((playlist, i) => (
 						<Tr key={i}>
-							<Td>{playlistItem.title}</Td>
-							<Td>{playlistItem.creator}</Td>
-							<Td>{playlistItem.type}</Td>
+							<Td>{playlist.title}</Td>
+							<Td>{playlist.creator}</Td>
+							<Td>{playlistTypeToString(playlist.type)}</Td>
 							<Td>
 								<Button
-									onClick={() => synchronise(playlistItem)}
+									onClick={() => {}}
 									size="sm"
 									leftIcon={<Icon as={AiOutlineSync} />}>
 									Synchronize

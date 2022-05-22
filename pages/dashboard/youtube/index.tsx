@@ -1,6 +1,8 @@
 import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import PlaylistTable from "$/components/services/PlaylistTable";
+import { useGetRequest } from "$lib/clientRequest";
+import { Playlist } from "$lib/services/types";
 import { Page } from "$types/next";
 import {
 	Heading,
@@ -10,9 +12,14 @@ import {
 	Tab,
 	TabPanels,
 	TabPanel,
+	Spinner,
 } from "@chakra-ui/react";
 
 const Index: Page = () => {
+	const { loading, data } = useGetRequest<Playlist[]>(
+		"/api/youtube/playlists",
+	);
+
 	return (
 		<>
 			<HStack gap={5}>
@@ -26,6 +33,7 @@ const Index: Page = () => {
 				</TabList>
 				<TabPanels>
 					<TabPanel>
+<<<<<<< HEAD
 						<PlaylistTable
 							synchronise={async (playlist) => {
 								/*const testVid = {
@@ -55,6 +63,13 @@ const Index: Page = () => {
 									youtubeId: "null",
 								},
 							]}></PlaylistTable>
+=======
+						{loading || !data ? (
+							<Spinner></Spinner>
+						) : (
+							<PlaylistTable playlists={data}></PlaylistTable>
+						)}
+>>>>>>> 503bf53b955fc24a90fc4a434ed7712d17befdf8
 					</TabPanel>
 					<TabPanel>
 						<p>Songs</p>
