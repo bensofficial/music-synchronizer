@@ -7,12 +7,11 @@ import { youtubePlaylistToPlaylist } from "./convert";
 export async function getAllPlaylists(user: User): Promise<Playlist[] | Error> {
 	let playlists: Playlist[] = [];
 	let nextPageToken: string | null | undefined = null;
-	let counter = 1;
 
 	do {
 		const result: PlaylistBatchResult = await getPlaylistBatch(
 			user,
-			5,
+			50,
 			nextPageToken,
 		);
 
@@ -22,9 +21,7 @@ export async function getAllPlaylists(user: User): Promise<Playlist[] | Error> {
 
 		nextPageToken = result.nextPageToken;
 		playlists = playlists.concat(result.playlists);
-
-		counter++;
-	} while (nextPageToken != null && counter < 2);
+	} while (nextPageToken != null);
 
 	return playlists;
 }
@@ -35,6 +32,7 @@ type PlaylistBatchResult =
 			playlists: Playlist[];
 			nextPageToken: string | null | undefined;
 			prevPageToken: string | null | undefined;
+			numberOfPages: number;
 	  };
 
 export async function getPlaylistBatch(
@@ -75,6 +73,10 @@ export async function getPlaylistBatch(
 			playlists,
 			nextPageToken: res.data.nextPageToken,
 			prevPageToken: res.data.prevPageToken,
+			numberOfPages: Math.ceil(
+				res.data.pageInfo!.totalResults! /
+					res.data.pageInfo!.resultsPerPage!,
+			),
 		};
 	} catch (e: any) {
 		if (e instanceof Error) {
