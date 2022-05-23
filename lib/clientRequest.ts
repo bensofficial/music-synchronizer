@@ -1,3 +1,4 @@
+import { Router, useRouter } from "next/router";
 import { useEffect, useState } from "react";
 
 type RequestMethod = "POST" | "GET";
@@ -67,18 +68,23 @@ export function usePostRequest<T = Record<string, never>>(url: string) {
  * const {loading, error, errorMessage, data} = useGetRequest<User>("/api/user");
  * ```
  */
-export function useGetRequest<T>(url: string) {
+export function useGetRequest<T>(
+	url: string,
+	dispatchImmediately: boolean = true,
+) {
 	const { send, ...values } = useRequest<T>(url, "GET");
 
 	/* pass an empty array of dependencies to ensure that 
 	the request is only send once, when the component mounts
 	*/
 	useEffect(() => {
-		send();
+		if (dispatchImmediately) {
+			send();
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	return { ...values };
+	return { ...values, send };
 }
 
 function useRequest<T>(url: string, method: RequestMethod) {
@@ -86,6 +92,7 @@ function useRequest<T>(url: string, method: RequestMethod) {
 	const [error, setError] = useState(false);
 	const [errorMessage, setErrorMessage] = useState("");
 	const [data, setData] = useState<T | null>(null);
+	const router = useRouter();
 
 	function send(body: Record<string, any> | null = null) {
 		setLoading(true);
@@ -110,6 +117,10 @@ function useRequest<T>(url: string, method: RequestMethod) {
 			body: body ? JSON.stringify(body) : null,
 		})
 			.then((res) => {
+				if (res.status === 401) {
+					router.push("/dashboard");
+				}
+
 				setError(!res.ok);
 				reqError = !res.ok;
 				return res.json();

@@ -22,7 +22,7 @@ import ServiceCard from "$/components/services/ServiceCard";
 import SpotifyIcon from "$/components/icons/SpotifyIcon";
 import ServiceCardWrapper from "$/components/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
-import { userIsLoggedInWithSpotify } from "$lib/services/spotify/auth";
+import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import { ssrRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { InferGetServerSidePropsType } from "next";
@@ -32,12 +32,14 @@ import { generateAuthUrl } from "$lib/services/youtube/authServer";
 import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
 import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
 import ConnectYoutubeButton from "$/components/buttons/ConnectYoutubeButton";
+import { useState } from "react";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const Index: Page<Props> = ({ user, googleAuthUrl }: Props) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
+	const [loggedInWithGoogle, setLoggedInWithGoogle] = useState(false);
 
 	return (
 		<>
@@ -46,7 +48,7 @@ const Index: Page<Props> = ({ user, googleAuthUrl }: Props) => {
 				Your Services:
 			</Text>
 			<Flex flexWrap="wrap" minH={32}>
-				{userIsLoggedInWithSpotify(user) && (
+				{isUserLoggedInWithSpotify(user) && (
 					<ServiceCard
 						flexBasis={{ base: "100%", md: "auto" }}
 						href="/dashboard/spotify"
@@ -82,7 +84,7 @@ const Index: Page<Props> = ({ user, googleAuthUrl }: Props) => {
 					<ModalCloseButton />
 					<ModalBody>
 						<VStack gap={3}>
-							{!userIsLoggedInWithSpotify(user) && (
+							{!isUserLoggedInWithSpotify(user) && (
 								<ConnectSpotifyButton />
 							)}
 							{!userIsLoggedInWithGoogle(user) && (
@@ -119,6 +121,7 @@ export const getServerSideProps = ssrRequireAuth<{
 			spotifyRefreshToken: true,
 			youtubeAccessToken: true,
 			youtubeRefreshToken: true,
+			spotifyUserId: true,
 		},
 	});
 

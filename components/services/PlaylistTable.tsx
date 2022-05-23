@@ -12,6 +12,8 @@ import {
 	Td,
 	Button,
 	Icon,
+	Tag,
+	Text,
 } from "@chakra-ui/react";
 
 import { AiOutlineSync } from "react-icons/ai";
@@ -39,9 +41,15 @@ export default function PlaylistTable({
 				<Tbody>
 					{playlists.map((playlist, i) => (
 						<Tr key={i}>
-							<Td>{playlist.title}</Td>
+							<Td>
+								<Text fontWeight="semibold">
+									{playlist.title}
+								</Text>
+							</Td>
 							<Td>{playlist.creator}</Td>
-							<Td>{playlistTypeToString(playlist.type)}</Td>
+							<Td>
+								<Tag>{playlistTypeToString(playlist.type)}</Tag>
+							</Td>
 							<Td>
 								<Button
 									onClick={() => {}}

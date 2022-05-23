@@ -12,7 +12,8 @@ $ git clone https://github.com/check24-scholarships/music-synchronizer.git
 Open the project in [Visual Studio Code](https://code.visualstudio.com/), (recommended IDE) (code editor):
 
 ```console
-$ code lsg
+$ cd music-synchronizer
+$ code .
 ```
 
 **Trust the foldera and install all recommended extensions**
@@ -26,6 +27,7 @@ Create a `.env.local` file and set the Cookie Secret (a 40 - 50 character long p
 
 ```dotenv
 COOKIE_SECRET=<40-50 character long password>
+# you can generate a random 50-character string e.g. with `cat /dev/urandom | LC_ALL=C tr -dc 'a-zA-Z0-9' | fold -w 50 | head -n 1`
 ```
 
 Install the dependencies of the Project (You can open up a new terminal in Visua Studio Code with <kbd>Ctrl</kbd> + <kbd>J</kbd>):

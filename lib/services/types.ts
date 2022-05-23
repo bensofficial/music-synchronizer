@@ -13,6 +13,7 @@ export enum PlaylistType {
 }
 
 export interface Playlist {
+	id: string;
 	title: string;
 	creator: string;
 	type: PlaylistType;
@@ -26,8 +27,7 @@ export default interface Service {
 	getSongId: (name: string, author: string) => Promise<string | Error>;
 	getPlaylistId: (user: User, name: string) => Promise<string | Error>;
 	getPlaylist: (user: User, playlistId: string) => Promise<Playlist | Error>;
-	getPlaylists: (user: User) => Promise<Playlist[] | Error>;
-	getPlaylistWithSongs: (
+	getSongsInPlaylist: (
 		user: User,
 		playlistId: string,
 	) => Promise<PlaylistWithSongs | Error>;

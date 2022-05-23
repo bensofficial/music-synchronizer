@@ -1,49 +1,33 @@
 import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
-import PlaylistTable from "$/components/services/PlaylistTable";
+import DisplayError from "$components/error/DisplayError";
+import PlaylistTableWrapper from "$components/services/PlaylistTableWrapper";
 import { useGetRequest } from "$lib/clientRequest";
 import { Playlist } from "$lib/services/types";
 import { Page } from "$types/next";
-import {
-	Heading,
-	HStack,
-	Tabs,
-	TabList,
-	Tab,
-	TabPanels,
-	TabPanel,
-	Spinner,
-} from "@chakra-ui/react";
+import { Heading, HStack, Spinner, Center } from "@chakra-ui/react";
 
 const Index: Page = () => {
-	const { loading, data } = useGetRequest<Playlist[]>(
+	const { loading, data, error, errorMessage } = useGetRequest<Playlist[]>(
 		"/api/youtube/playlists",
 	);
 
 	return (
 		<>
-			<HStack gap={5}>
-				<YoutubeMusicIcon h={16} w={16}></YoutubeMusicIcon>
+			<HStack>
+				<YoutubeMusicIcon h={14} w={14}></YoutubeMusicIcon>
 				<Heading>Youtube Music</Heading>
 			</HStack>
-			<Tabs variant="soft-rounded" mt={8}>
-				<TabList>
-					<Tab>Playlists</Tab>
-					<Tab>Songs</Tab>
-				</TabList>
-				<TabPanels>
-					<TabPanel>
-						{loading || !data ? (
-							<Spinner></Spinner>
-						) : (
-							<PlaylistTable playlists={data}></PlaylistTable>
-						)}
-					</TabPanel>
-					<TabPanel>
-						<p>Songs</p>
-					</TabPanel>
-				</TabPanels>
-			</Tabs>
+
+			{loading || !data ? (
+				<Center>
+					<Spinner></Spinner>
+				</Center>
+			) : error ? (
+				<DisplayError errorMessage={errorMessage}></DisplayError>
+			) : (
+				<PlaylistTableWrapper playlists={data} />
+			)}
 		</>
 	);
 };

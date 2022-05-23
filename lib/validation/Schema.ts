@@ -12,7 +12,10 @@ class Schema {
 		this.schemaShape = schemaShape;
 	}
 
-	validate(req: NextApiRequest, res: NextApiResponse): boolean {
+	public validateRequestBody(
+		req: NextApiRequest,
+		res: NextApiResponse,
+	): boolean {
 		const requestData = req.body;
 
 		if (!requestData || typeof requestData !== "object") {
@@ -23,33 +26,49 @@ class Schema {
 					},
 				],
 			});
+			return false;
 		}
 
+		return this.validate(requestData, res);
+	}
+
+	public validateRequestQuery(
+		req: NextApiRequest,
+		res: NextApiResponse,
+	): boolean {
+		return this.validate(req.query, res);
+	}
+
+	private validate(obj: any, res: NextApiResponse): boolean {
+		const requestData = obj;
+
 		for (const [key, validationRule] of Object.entries(this.schemaShape)) {
-			if (!(key in requestData)) {
+			if (!validationRule.isNullable && !(key in requestData)) {
 				res.status(400).send({
 					errors: [
 						{
-							message: `Request body must contain a ${key} field`,
+							message: `Request data must contain a ${key} field`,
 						},
 					],
 				});
 				return false;
 			}
 
-			const { error, errorMessage } = validationRule.validate(
-				requestData[key],
-			);
+			if (key in requestData) {
+				const { error, errorMessage } = validationRule.validate(
+					requestData[key],
+				);
 
-			if (error) {
-				res.status(400).send({
-					errors: [
-						{
-							message: `Field ${key} : ${errorMessage}`,
-						},
-					],
-				});
-				return false;
+				if (error) {
+					res.status(400).send({
+						errors: [
+							{
+								message: `Field ${key} : ${errorMessage}`,
+							},
+						],
+					});
+					return false;
+				}
 			}
 		}
 
