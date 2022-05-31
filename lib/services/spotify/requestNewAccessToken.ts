@@ -3,15 +3,13 @@ import prisma from "$lib/prisma";
 import * as queryString from "query-string";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import { data } from "browserslist";
+import {User} from "@prisma/client";
 
 export async function requestNewAccessToken(
-	sessionUser: SessionUser,
+	user: User,
 ): Promise<{ accessToken: string | null | undefined; error: any }> {
-	const user = await prisma.user.findFirst({
-		where: {
-			id: sessionUser.id,
-		},
-	});
+
+	console.log('Neuer AccessToken wird angefragt');
 
 	const clientId = process.env.SPOTIFY_CLIENT_ID;
 	const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
@@ -55,7 +53,11 @@ export async function requestNewAccessToken(
 		};
 	}
 
-	await setNewToken(response, sessionUser);
+	await setNewToken(response, user);
+
+	const data = await response.json();
+
+	console.log('antwort auf anfrage für neuen AccessToken', data);
 
 	return {
 		accessToken: data.access_token?.toString(),
@@ -63,7 +65,7 @@ export async function requestNewAccessToken(
 	};
 }
 
-async function setNewToken(response: Response, sessionUser: SessionUser) {
+async function setNewToken(response: Response, user: User) {
 	const data = await response.json();
 
 	await prisma.user.update({
@@ -71,7 +73,7 @@ async function setNewToken(response: Response, sessionUser: SessionUser) {
 			spotifyAccessToken: data.access_token.toString(),
 		},
 		where: {
-			id: sessionUser.id,
+			id: user.id,
 		},
 	});
 }

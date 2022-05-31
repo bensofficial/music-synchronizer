@@ -11,5 +11,5 @@ export async function getUser(sessionUser: SessionUser): Promise<{ error: boolea
 
     return await getRequest(user!.spotifyAccessToken, 'https://api.spotify.com/v1/me', {
         method: "GET",
-    }, sessionUser);
+    }, user!);
 }

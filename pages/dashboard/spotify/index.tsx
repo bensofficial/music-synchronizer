@@ -1,7 +1,7 @@
 import SpotifyIcon from "$/components/icons/SpotifyIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import PlaylistTable from "$/components/services/PlaylistTable";
-import { PlaylistType } from "$lib/services/types";
+import {Playlist, PlaylistType } from "$lib/services/types";
 import { Page } from "$types/next";
 import {
 	Heading,
@@ -10,18 +10,15 @@ import {
 	TabList,
 	Tab,
 	TabPanels,
-	TabPanel,
+	TabPanel, Spinner,
 } from "@chakra-ui/react";
 import {useGetRequest} from "$lib/clientRequest";
 
 const Index: Page = () => {
 
-	const { loading, errorMessage, error, data } = useGetRequest<Record<string, never>>("/api/spotify/playlistTest");
+	const { loading, errorMessage, error, data } = useGetRequest<Playlist[]>("/api/spotify/playlists");
 
-	console.log(error)
-	console.log(data);
-
-	return (
+	 return (
 		<>
 			<HStack gap={5}>
 				<SpotifyIcon h={16} w={16}></SpotifyIcon>
@@ -30,22 +27,14 @@ const Index: Page = () => {
 			<Tabs variant="soft-rounded" mt={8}>
 				<TabList>
 					<Tab>Playlists</Tab>
-					<Tab>Songs</Tab>
 				</TabList>
 				<TabPanels>
 					<TabPanel>
-						<PlaylistTable
-							playlists={[
-								{
-									id: "0",
-									title: "2022",
-									creator: "You",
-									type: PlaylistType.public,
-								},
-							]}></PlaylistTable>
-					</TabPanel>
-					<TabPanel>
-						<p>Songs</p>
+						{loading || !data ? (
+							<Spinner></Spinner>
+						) : (
+							<PlaylistTable playlists={data}></PlaylistTable>
+						)}
 					</TabPanel>
 				</TabPanels>
 			</Tabs>

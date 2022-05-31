@@ -1,6 +1,6 @@
 import { apiRequireAuth } from "$lib/auth";
 import { getRequest } from "$lib/serverRequest";
-import { getUser } from "$lib/services/spotify/user/getUser";
+import { getUser } from "$lib/services/spotify/api/getUser";
 
 export default apiRequireAuth(async (_req, _res, _session, sessionData) => {
 	const { error, errorMessage, responseData } = await getUser(
