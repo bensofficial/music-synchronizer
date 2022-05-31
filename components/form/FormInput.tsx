@@ -18,6 +18,7 @@ export default function FormInput({
 	name,
 	type,
 	label,
+	autoComplete,
 	...props
 }: InputProps & {
 	rule: ValidationRule;
@@ -36,6 +37,7 @@ export default function FormInput({
 			</FormLabel>
 			<InputGroup>
 				<Input
+					autoComplete={autoComplete}
 					type={!viewPassword ? type : "text"}
 					onChange={(e) => {
 						const { error, errorMessage } = rule.validate(

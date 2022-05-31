@@ -11,6 +11,7 @@ import { email, string } from "$lib/validation/rules";
 import { usePostRequest } from "$lib/clientRequest";
 import { useState } from "react";
 import { useRouter } from "next/router";
+import Link from "$components/chakra/Link";
 
 export default function Login() {
 	const { loading, errorMessage, error, send, data } =
@@ -73,6 +74,12 @@ export default function Login() {
 					w="100%">
 					Submit
 				</Button>
+				<Text textAlign="center" fontWeight="semibold">
+					Don&apos;t have an account yet?{" "}
+					<Link color="brand.400" href="/register">
+						Register
+					</Link>
+				</Text>
 			</VStack>
 		</Center>
 	);
