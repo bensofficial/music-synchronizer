@@ -67,6 +67,7 @@ export default function Login() {
 					}}
 				/>
 				<FormInput
+					autoComplete="new-password"
 					type="password"
 					name="password"
 					onChange={(e) => {
@@ -77,6 +78,7 @@ export default function Login() {
 					label="Password"
 				/>
 				<FormInput
+					autoComplete="new-password"
 					type="password"
 					name="repeatPassword"
 					rule={string().matchesString(
