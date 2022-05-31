@@ -79,6 +79,7 @@ export async function getPlaylistBatch(
 		};
 	} catch (e: any) {
 		if (e instanceof Error) {
+			console.log("e", e);
 			return e;
 		}
 	}

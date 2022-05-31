@@ -4,14 +4,17 @@ import {
 	AlertTitle,
 	AlertDescription,
 	Code,
+	AlertProps,
 } from "@chakra-ui/react";
 export default function DisplayError({
 	errorMessage,
-}: {
+	...props
+}: AlertProps & {
 	errorMessage: string;
 }) {
 	return (
 		<Alert
+			{...props}
 			status="error"
 			w="100%"
 			minH="100%"

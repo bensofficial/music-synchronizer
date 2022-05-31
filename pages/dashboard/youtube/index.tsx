@@ -24,7 +24,7 @@ const Index: Page = () => {
 					<Spinner></Spinner>
 				</Center>
 			) : error ? (
-				<DisplayError errorMessage={errorMessage}></DisplayError>
+				<DisplayError mt={8} errorMessage={errorMessage}></DisplayError>
 			) : (
 				<PlaylistTableWrapper playlists={data} />
 			)}

@@ -27,12 +27,18 @@ export default function PlaylistTableWrapper({
 		useState<Playlist[]>(playlists);
 	const [pagePlaylists, setPagePlaylists] = useState<Playlist[]>([]);
 	const [currentPage, setCurrentPage] = useState(1);
-	const [numberOfPages, setNumberOfPages] = useState(0);
+	const [numberOfPages, setNumberOfPages] = useState(1);
 	const [searchInput, setSearchInput] = useState("");
 
 	useEffect(() => {
 		setNumberOfPages(Math.ceil(filteredPlaylists.length / resultsPerPage));
 	}, [filteredPlaylists]);
+
+	useEffect(() => {
+		if (currentPage > numberOfPages) {
+			setCurrentPage(numberOfPages);
+		}
+	}, [numberOfPages, currentPage]);
 
 	useEffect(() => {
 		const input = searchInput.toLowerCase();
