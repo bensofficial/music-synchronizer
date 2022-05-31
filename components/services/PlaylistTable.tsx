@@ -1,4 +1,6 @@
+import { usePostRequest } from "$lib/clientRequest";
 import { Playlist, playlistTypeToString } from "$lib/services/types";
+import getSongId from "$lib/services/youtube/api/getSongId";
 import {
 	Table,
 	TableContainer,
@@ -22,6 +24,9 @@ export default function PlaylistTable({
 }: TableContainerProps & {
 	playlists: Playlist[];
 }) {
+	const { data, loading, error, send } = usePostRequest(
+		"/api/youtube/songId",
+	);
 	return (
 		<TableContainer {...props} my={8}>
 			<Table variant="simple">
@@ -47,6 +52,7 @@ export default function PlaylistTable({
 							</Td>
 							<Td>
 								<Button
+									onClick={() => {}}
 									size="sm"
 									leftIcon={<Icon as={AiOutlineSync} />}>
 									Synchronize

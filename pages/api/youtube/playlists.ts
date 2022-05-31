@@ -1,6 +1,7 @@
 import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
-import getPlaylists from "$lib/services/youtube/api/getPlaylists";
+import { Playlist } from "$lib/services/types";
+import { getAllPlaylists } from "$lib/services/youtube/api/getPlaylists";
 
 export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 	const user = await prisma.user.findUnique({
@@ -11,7 +12,13 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		return res.status(400).json({ errors: [{ message: "No User found" }] });
 	}
 
-	const playlists = await getPlaylists(user);
+	const result = await getAllPlaylists(user);
 
-	return res.status(200).send(playlists);
+	if (result instanceof Error) {
+		return res.status(500).json({ errors: [{ message: result.message }] });
+	}
+
+	result.sort((a: Playlist, b: Playlist) => a.title.localeCompare(b.title));
+
+	return res.status(200).send(result);
 });

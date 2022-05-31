@@ -23,8 +23,6 @@ export default function Youtube({
 
 export const getServerSideProps = ssrRequireAuth<{ error: string | null }>(
 	async (context, _session, sessionData) => {
-		console.log("executing callback");
-
 		const user = await prisma.user.findUnique({
 			where: { id: sessionData.user.id },
 			select: {

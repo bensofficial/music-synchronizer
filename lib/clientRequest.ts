@@ -68,18 +68,23 @@ export function usePostRequest<T = Record<string, never>>(url: string) {
  * const {loading, error, errorMessage, data} = useGetRequest<User>("/api/user");
  * ```
  */
-export function useGetRequest<T>(url: string) {
+export function useGetRequest<T>(
+	url: string,
+	dispatchImmediately: boolean = true,
+) {
 	const { send, ...values } = useRequest<T>(url, "GET");
 
 	/* pass an empty array of dependencies to ensure that 
 	the request is only send once, when the component mounts
 	*/
 	useEffect(() => {
-		send();
+		if (dispatchImmediately) {
+			send();
+		}
 		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
-	return { ...values };
+	return { ...values, send };
 }
 
 function useRequest<T>(url: string, method: RequestMethod) {

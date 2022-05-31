@@ -36,8 +36,6 @@ export async function handleCallback(
 ): Promise<void | Error> {
 	const { tokens } = await oauth2Client.getToken(authorizationCode);
 
-	console.log("tokens", tokens);
-
 	await prisma.user.update({
 		where: { id: userId },
 		data: {

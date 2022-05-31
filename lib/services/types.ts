@@ -24,20 +24,24 @@ export type PlaylistWithSongs = Playlist & {
 };
 
 export default interface Service {
-	getSongId: (name: string) => Promise<number | Error>;
+	getSongId: (name: string, author: string) => Promise<string | Error>;
 	getPlaylistId: (user: User, name: string) => Promise<string | Error>;
 	getPlaylist: (user: User, playlistId: string) => Promise<Playlist | Error>;
-	getPlaylists: (user: User) => Promise<Playlist[] | Error>;
 	getSongsInPlaylist: (
 		user: User,
 		playlistId: string,
-	) => Promise<Song[] | Error>;
-	addToPlaylist: (user: User, playlistId: string) => Promise<void | Error>;
+	) => Promise<PlaylistWithSongs | Error>;
+	addToPlaylist: (
+		user: User,
+		playlistId: string,
+		videoId: string,
+	) => Promise<void | Error>;
 	deleteFromPlaylist: (
 		user: User,
 		playlistId: string,
+		videoId: string,
 	) => Promise<void | Error>;
-	createPlaylist: (name: string) => Promise<void | Error>;
+	createPlaylist: (user: User, name: string) => Promise<void | Error>;
 }
 
 export function playlistTypeToString(type: PlaylistType): string {
