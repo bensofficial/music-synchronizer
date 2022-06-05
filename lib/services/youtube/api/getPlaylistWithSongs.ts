@@ -20,7 +20,7 @@ export default async function getPlaylistWithSongs(
 	try {
 		const res = await youtube.playlists.list({
 			id: [playlistId],
-			part: ["snippet", "status"],
+			part: ["snippet", "status", "contentDetails"],
 			maxResults: 1,
 		});
 

@@ -33,7 +33,7 @@ export default async function getSongsInPlaylist(
 				if (song.snippet?.resourceId) {
 					const youtubeId = song.snippet.resourceId.videoId,
 						title = song.snippet.title,
-						artist = song.snippet.channelTitle;
+						artist = song.snippet.videoOwnerChannelTitle;
 
 					if (youtubeId && title && artist) {
 						return { youtubeId, title, artist };
