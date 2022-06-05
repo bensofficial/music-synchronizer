@@ -9,48 +9,37 @@ export default async function getPlaylistWithSongs(
 	user: User,
 	playlistId: string,
 ) {
-	const error = authorizeUser(user);
-
-	if (error) {
-		return error;
-	}
+	authorizeUser(user);
 
 	const youtube = google.youtube("v3");
 
-	try {
-		const res = await youtube.playlists.list({
-			id: [playlistId],
-			part: ["snippet", "status"],
-			maxResults: 1,
-		});
+	const res = await youtube.playlists.list({
+		id: [playlistId],
+		part: ["snippet", "status"],
+		maxResults: 1,
+	});
 
-		if (res.data.items) {
-			const youtubePlaylist = res.data.items[0];
+	if (res.data.items) {
+		const youtubePlaylist = res.data.items[0];
 
-			if (
-				youtubePlaylist.id &&
-				youtubePlaylist.contentDetails?.itemCount
-			) {
-				const playlist: PlaylistWithSongs = {
-					...youtubePlaylistToPlaylist(youtubePlaylist),
-					songs: [],
-				};
-				const songs = await getSongsInPlaylist(
-					playlistId,
-					youtubePlaylist.contentDetails.itemCount,
-					user,
-				);
+		if (youtubePlaylist.id && youtubePlaylist.contentDetails?.itemCount) {
+			const playlist: PlaylistWithSongs = {
+				...youtubePlaylistToPlaylist(youtubePlaylist),
+				songs: [],
+			};
+			const songs = await getSongsInPlaylist(
+				playlistId,
+				youtubePlaylist.contentDetails.itemCount,
+				user,
+			);
 
-				if (!(songs instanceof Error)) {
-					playlist.songs = songs;
-				}
-
-				return playlist;
+			if (!(songs instanceof Error)) {
+				playlist.songs = songs;
 			}
-		}
 
-		return new Error("Playlist not found");
-	} catch (e) {
-		return e as Error;
+			return playlist;
+		}
 	}
+
+	throw new Error("Playlist not found");
 }

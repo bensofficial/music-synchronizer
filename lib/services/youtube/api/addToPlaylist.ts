@@ -7,27 +7,20 @@ export default async function addToPlaylist(
 	playlistId: string,
 	videoId: string,
 ) {
-	const err = authorizeUser(user);
-	if (err) {
-		return err;
-	}
+	authorizeUser(user);
 
 	const youtube = google.youtube("v3");
 
-	try {
-		await youtube.playlistItems.insert({
-			part: ["snippet"],
-			requestBody: {
-				snippet: {
-					playlistId,
-					resourceId: {
-						kind: "youtube#video",
-						videoId,
-					},
+	await youtube.playlistItems.insert({
+		part: ["snippet"],
+		requestBody: {
+			snippet: {
+				playlistId,
+				resourceId: {
+					kind: "youtube#video",
+					videoId,
 				},
 			},
-		});
-	} catch (e) {
-		return e as Error;
-	}
+		},
+	});
 }
