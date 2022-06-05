@@ -1,9 +1,9 @@
-import SpotifyIcon from "$/components/icons/SpotifyIcon";
+import SpotifyIcon from "$components/services/icons/SpotifyIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import { PlaylistType } from "$lib/services/types";
 import { Page } from "$types/next";
 import { Heading, HStack } from "@chakra-ui/react";
-import PlaylistTableWrapper from "$components/services/PlaylistTableWrapper";
+import PlaylistTableWrapper from "$components/services/playlists/PlaylistTableWrapper";
 
 const Index: Page = () => {
 	return (
@@ -13,6 +13,7 @@ const Index: Page = () => {
 				<Heading>Spotify</Heading>
 			</HStack>
 			<PlaylistTableWrapper
+				originService="spotify"
 				playlists={[
 					{
 						id: "0",

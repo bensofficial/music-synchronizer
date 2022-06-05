@@ -19,7 +19,7 @@ import {
 import { Page } from "$types/next";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import ServiceCard from "$/components/services/ServiceCard";
-import SpotifyIcon from "$/components/icons/SpotifyIcon";
+import SpotifyIcon from "$components/services/icons/SpotifyIcon";
 import ServiceCardWrapper from "$/components/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
@@ -27,11 +27,11 @@ import { ssrRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
 import { InferGetServerSidePropsType } from "next";
 import { UserWithoutDatesAndPassword } from "$types/user";
-import ConnectSpotifyButton from "$/components/buttons/ConnectSpotifyButton";
+import ConnectSpotifyButton from "$components/services/buttons/ConnectSpotifyButton";
 import { generateAuthUrl } from "$lib/services/youtube/authServer";
 import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
-import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
-import ConnectYoutubeButton from "$/components/buttons/ConnectYoutubeButton";
+import YoutubeMusicIcon from "$components/services/icons/YoutubeMusicIcon";
+import ConnectYoutubeButton from "$components/services/buttons/ConnectYoutubeButton";
 import { useState } from "react";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
@@ -39,7 +39,6 @@ type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 const Index: Page<Props> = ({ user, googleAuthUrl }: Props) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
-	const [loggedInWithGoogle, setLoggedInWithGoogle] = useState(false);
 
 	return (
 		<>

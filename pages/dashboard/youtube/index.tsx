@@ -1,7 +1,7 @@
-import YoutubeMusicIcon from "$/components/icons/YoutubeMusicIcon";
+import YoutubeMusicIcon from "$components/services/icons/YoutubeMusicIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import DisplayError from "$components/error/DisplayError";
-import PlaylistTableWrapper from "$components/services/PlaylistTableWrapper";
+import PlaylistTableWrapper from "$components/services/playlists/PlaylistTableWrapper";
 import { useGetRequest } from "$lib/clientRequest";
 import { Playlist } from "$lib/services/types";
 import { Page } from "$types/next";
@@ -26,7 +26,10 @@ const Index: Page = () => {
 			) : error ? (
 				<DisplayError mt={8} errorMessage={errorMessage}></DisplayError>
 			) : (
-				<PlaylistTableWrapper playlists={data} />
+				<PlaylistTableWrapper
+					originService="youtube"
+					playlists={data}
+				/>
 			)}
 		</>
 	);

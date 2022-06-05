@@ -23,6 +23,8 @@ export type PlaylistWithSongs = Playlist & {
 	songs: Song[];
 };
 
+export type ServiceName = "youtube" | "spotify";
+
 export default interface Service {
 	getSongId: (name: string, author: string) => Promise<string | Error>;
 	getPlaylistId: (user: User, name: string) => Promise<string | Error>;

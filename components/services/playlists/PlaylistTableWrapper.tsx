@@ -1,4 +1,8 @@
-import { Playlist, playlistTypeToString } from "$lib/services/types";
+import {
+	Playlist,
+	playlistTypeToString,
+	ServiceName,
+} from "$lib/services/types";
 import { useEffect, useState } from "react";
 import {
 	HStack,
@@ -17,8 +21,10 @@ import { FiArrowLeft, FiArrowRight, FiSearch } from "react-icons/fi";
 import PlaylistTable from "./PlaylistTable";
 
 export default function PlaylistTableWrapper({
+	originService,
 	playlists,
 }: {
+	originService: ServiceName;
 	playlists: Playlist[];
 }) {
 	const resultsPerPage = 7;
@@ -91,7 +97,9 @@ export default function PlaylistTableWrapper({
 			<Text mt={4} fontWeight="thin" fontSize="xl">
 				Page {currentPage} / {numberOfPages}
 			</Text>
-			<PlaylistTable playlists={pagePlaylists}></PlaylistTable>
+			<PlaylistTable
+				originService={originService}
+				playlists={pagePlaylists}></PlaylistTable>
 			<Center mb={8}>
 				<IconButton
 					borderRadius="full"
