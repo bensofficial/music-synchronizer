@@ -1,20 +1,17 @@
 import { User } from "@prisma/client";
-import { google } from "googleapis";
-import { authorizeUser } from "../authServer";
 import { getAllPlaylists } from "./getPlaylists";
 //TODO
-export default async function getPlaylistId(user: User, title: string) {
+export default async function getPlaylistId(
+	user: User,
+	title: string,
+): Promise<string | null> {
 	const playlists = await getAllPlaylists(user);
 
-	if (playlists instanceof Array) {
-		const playlist = playlists.find((p) => p.title === title);
+	const playlist = playlists.find((p) => p.title === title);
 
-		if (playlist) {
-			return playlist.id;
-		} else {
-			return new Error("No playlist with that title");
-		}
+	if (playlist) {
+		return playlist.serviceId;
 	} else {
-		return playlists;
+		return null;
 	}
 }

@@ -1,9 +1,13 @@
+import { Playlist } from "$lib/services/types";
 import { User } from "@prisma/client";
 import { google } from "googleapis";
 import { authorizeUser } from "../authServer";
 import { youtubePlaylistToPlaylist } from "./convert";
 
-export default async function getPlaylist(user: User, playlistId: string) {
+export default async function getPlaylist(
+	user: User,
+	playlistId: string,
+): Promise<Playlist> {
 	authorizeUser(user);
 
 	const youtube = google.youtube("v3");

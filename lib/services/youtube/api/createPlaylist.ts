@@ -2,7 +2,10 @@ import { User } from "@prisma/client";
 import { google } from "googleapis";
 import { authorizeUser } from "../authServer";
 
-export default async function createPlaylist(user: User, name: string) {
+export default async function createPlaylist(
+	user: User,
+	name: string,
+): Promise<string> {
 	authorizeUser(user);
 
 	const youtube = google.youtube("v3");
@@ -15,5 +18,6 @@ export default async function createPlaylist(user: User, name: string) {
 			},
 		},
 	});
-	return res.data.id;
+
+	return res.data.id!;
 }

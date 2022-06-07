@@ -3,7 +3,7 @@ import { google } from "googleapis";
 export default async function getSongId(
 	title: string,
 	artist: string,
-): Promise<string | Error> {
+): Promise<string> {
 	const youtube = google.youtube("v3");
 
 	const res = await youtube.search.list({

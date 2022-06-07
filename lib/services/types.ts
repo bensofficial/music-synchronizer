@@ -12,19 +12,19 @@ export interface Playlist {
 	type: PlaylistType;
 }
 
-export type PlaylistWithSongs = Playlist & {
-	songs: Song[];
-};
-
 export interface Song {
 	title: string;
 	artist: string;
 	serviceId: string;
 }
 
+export type ServiceName = "spotify" | "youtube";
+
+export type SongIdName = `${ServiceName}Id`;
+
 export default interface Service {
-	name: "spotify" | "youtube";
-	songIdName: "spotifyId" | "youtubeId";
+	name: ServiceName;
+	songIdName: SongIdName;
 	getSongId: (name: string, artist: string) => Promise<string>;
 	// return null if the playlist doesn't exist
 	getPlaylistId: (user: User, name: string) => Promise<string | null>;

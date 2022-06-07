@@ -1,4 +1,4 @@
-import { PlaylistWithSongs } from "$lib/services/types";
+/*import { PlaylistWithSongs } from "$lib/services/types";
 import { User } from "@prisma/client";
 import { google } from "googleapis";
 import { authorizeUser } from "../authServer";
@@ -50,3 +50,5 @@ export default async function getPlaylistWithSongs(
 
 	throw new Error("Playlist not found");
 }
+*/
+export {};

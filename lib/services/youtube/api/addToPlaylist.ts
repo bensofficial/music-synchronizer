@@ -1,7 +1,6 @@
 import { User } from "@prisma/client";
 import { google } from "googleapis";
 import { authorizeUser } from "../authServer";
-import getPlaylistWithSongs from "./getPlaylistWithSongs";
 
 export default async function addToPlaylist(
 	user: User,
@@ -10,13 +9,7 @@ export default async function addToPlaylist(
 ) {
 	authorizeUser(user);
 
-	const songsInPlaylist = await getPlaylistWithSongs(user, playlistId);
-	if (songsInPlaylist instanceof Error) {
-		return songsInPlaylist;
-	}
-
-	if (!songsInPlaylist.songs.find((song) => song.youtubeId === videoId)) {
-		const youtube = google.youtube("v3");
+	const youtube = google.youtube("v3");
 
 	await youtube.playlistItems.insert({
 		part: ["snippet"],
