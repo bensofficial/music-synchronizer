@@ -9,11 +9,7 @@ export default async function getPlaylistWithSongs(
 	user: User,
 	playlistId: string,
 ) {
-	const error = authorizeUser(user);
-
-	if (error) {
-		return error;
-	}
+	authorizeUser(user);
 
 	const youtube = google.youtube("v3");
 
@@ -47,10 +43,10 @@ export default async function getPlaylistWithSongs(
 
 				return playlist;
 			}
-		}
 
-		return new Error("Playlist not found");
-	} catch (e) {
-		return e as Error;
+			return playlist;
+		}
 	}
+
+	throw new Error("Playlist not found");
 }

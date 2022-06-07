@@ -33,7 +33,7 @@ export function generateAuthUrl() {
 export async function handleCallback(
 	authorizationCode: string,
 	userId: number,
-): Promise<void | Error> {
+): Promise<void> {
 	const { tokens } = await oauth2Client.getToken(authorizationCode);
 
 	await prisma.user.update({
@@ -47,9 +47,9 @@ export async function handleCallback(
 	oauth2Client.setCredentials({ refresh_token: tokens.refresh_token });
 }
 
-export function authorizeUser(user: User): void | Error {
+export function authorizeUser(user: User): void {
 	if (!userIsLoggedInWithGoogle(user)) {
-		return new Error("User is not logged in with google");
+		throw new Error("User is not logged in with google");
 	}
 
 	oauth2Client.setCredentials({ refresh_token: user.youtubeRefreshToken });

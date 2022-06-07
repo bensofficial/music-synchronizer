@@ -7,10 +7,7 @@ export default async function deleteFromPlaylist(
 	playlistId: string,
 	videoId: string,
 ) {
-	const err = authorizeUser(user);
-	if (err) {
-		return err;
-	}
+	authorizeUser(user);
 
 	const youtube = google.youtube("v3");
 

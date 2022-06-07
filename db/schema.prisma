@@ -24,10 +24,8 @@ model User {
     youtubeRefreshToken String?
 }
 
-model Song {
+model SongIdMap {
     id          Int             @id @default(autoincrement())
-    youtubeId   String?
-    spotifyId   String?
-    title       String
-    artist      String
+    youtubeId   String?         @unique
+    spotifyId   String?         @unique
 }
