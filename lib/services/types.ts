@@ -30,7 +30,7 @@ export default interface Service {
 	getSongsInPlaylist: (
 		user: User,
 		playlistId: string,
-	) => Promise<PlaylistWithSongs | Error>;
+	) => Promise<Song[] | Error>;
 	addToPlaylist: (
 		user: User,
 		playlistId: string,

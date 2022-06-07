@@ -92,7 +92,7 @@ export default function PlaylistTableWrapper({
 				Page {currentPage} / {numberOfPages}
 			</Text>
 			<PlaylistTable playlists={pagePlaylists}></PlaylistTable>
-			<Center>
+			<Center mb={8}>
 				<IconButton
 					borderRadius="full"
 					aria-label="previous page"
