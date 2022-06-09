@@ -24,7 +24,7 @@ const Index: Page<Props> = ({ user }: Props) => {
 				playlists={[
 					{
 						serviceId: "0",
-						title: "2022",
+						title: "2021",
 						creator: "You",
 						type: PlaylistType.public,
 					},

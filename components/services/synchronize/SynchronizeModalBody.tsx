@@ -8,10 +8,12 @@ import {
 	Center,
 	IconButton,
 } from "@chakra-ui/react";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import SelectService from "./SelectService";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
 import { UserWithoutDatesAndPassword } from "$types/user";
+import SelectPlaylist from "./SelectPlaylist";
+import SynchronizePlaylist from "./SynchronizePlaylist";
 
 export default function SynchronizeModalBody({
 	originService,
@@ -24,11 +26,9 @@ export default function SynchronizeModalBody({
 }) {
 	const [service, setService] = useState<ServiceName | null>(null);
 	const [tabIndex, setTabIndex] = useState(0);
-	const [destinationPlaylist, setDestinationPlaylist] = useState<
-		Playlist | "create"
-	>("create");
+	const [playlistId, setPlaylistId] = useState<string | null>(null);
 
-	return (
+	const tabs = (
 		<>
 			<Tabs index={tabIndex} align="center" isFitted variant="line">
 				<TabList>
@@ -55,14 +55,23 @@ export default function SynchronizeModalBody({
 							setService={setService}
 						/>
 					</TabPanel>
-					<TabPanel></TabPanel>
+					<TabPanel>
+						{service && (
+							<SelectPlaylist
+								playlistId={playlistId}
+								setPlaylistId={setPlaylistId}
+								playlist={playlist}
+								destinationService={service}
+							/>
+						)}
+					</TabPanel>
 				</TabPanels>
 			</Tabs>
 			<Center>
 				<IconButton
 					borderRadius="full"
 					aria-label="previous page"
-					icon={<FiArrowLeft></FiArrowLeft>}
+					icon={<FiArrowLeft />}
 					disabled={tabIndex == 0}
 					onClick={() => {
 						setTabIndex(tabIndex - 1);
@@ -72,13 +81,28 @@ export default function SynchronizeModalBody({
 					ml={4}
 					borderRadius="full"
 					aria-label="next page"
-					icon={<FiArrowRight></FiArrowRight>}
-					disabled={tabIndex == 1 || service == null}
+					icon={<FiArrowRight />}
+					disabled={
+						(tabIndex == 1 && playlistId == null) || service == null
+					}
 					onClick={() => {
 						setTabIndex(tabIndex + 1);
 					}}
 				/>
 			</Center>
+		</>
+	);
+
+	return (
+		<>
+			{service && playlistId && tabIndex == 2 ? (
+				<SynchronizePlaylist
+					service={service}
+					playlistId={playlistId}
+				/>
+			) : (
+				tabs
+			)}
 		</>
 	);
 }
