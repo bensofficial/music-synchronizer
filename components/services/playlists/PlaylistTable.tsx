@@ -4,6 +4,7 @@ import {
 	ServiceName,
 } from "$lib/services/types";
 import getSongId from "$lib/services/youtube/api/getSongId";
+import { UserWithoutDatesAndPassword } from "$types/user";
 import {
 	Table,
 	TableContainer,
@@ -33,8 +34,10 @@ import SynchronizeModalBody from "../synchronize/SynchronizeModalBody";
 export default function PlaylistTable({
 	playlists,
 	originService,
+	user,
 	...props
 }: TableContainerProps & {
+	user: UserWithoutDatesAndPassword;
 	originService: ServiceName;
 	playlists: Playlist[];
 }) {
@@ -96,6 +99,7 @@ export default function PlaylistTable({
 					<ModalBody>
 						{selectedPlaylist && (
 							<SynchronizeModalBody
+								user={user}
 								originService={originService}
 								playlist={selectedPlaylist}
 							/>

@@ -24,7 +24,6 @@ import ServiceCardWrapper from "$/components/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import { ssrRequireAuth } from "$lib/auth";
-import prisma from "$lib/prisma";
 import { InferGetServerSidePropsType } from "next";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import ConnectSpotifyButton from "$components/services/buttons/ConnectSpotifyButton";
@@ -32,7 +31,7 @@ import { generateAuthUrl } from "$lib/services/youtube/authServer";
 import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
 import YoutubeMusicIcon from "$components/services/icons/YoutubeMusicIcon";
 import ConnectYoutubeButton from "$components/services/buttons/ConnectYoutubeButton";
-import { useState } from "react";
+import { getUserWithoutDatesAndPassword } from "$lib/db/user";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -108,21 +107,7 @@ export const getServerSideProps = ssrRequireAuth<{
 	user: UserWithoutDatesAndPassword;
 	googleAuthUrl: string;
 }>(async (_context, _session, sessionData) => {
-	const user = await prisma.user.findUnique({
-		where: {
-			id: sessionData.user.id,
-		},
-		select: {
-			id: true,
-			email: true,
-			username: true,
-			spotifyAccessToken: true,
-			spotifyRefreshToken: true,
-			youtubeAccessToken: true,
-			youtubeRefreshToken: true,
-			spotifyUserId: true,
-		},
-	});
+	const user = await getUserWithoutDatesAndPassword(sessionData.user.id);
 
 	if (!user) {
 		return {

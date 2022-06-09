@@ -19,11 +19,14 @@ import {
 } from "@chakra-ui/react";
 import { FiArrowLeft, FiArrowRight, FiSearch } from "react-icons/fi";
 import PlaylistTable from "./PlaylistTable";
+import { UserWithoutDatesAndPassword } from "$types/user";
 
 export default function PlaylistTableWrapper({
 	originService,
 	playlists,
+	user,
 }: {
+	user: UserWithoutDatesAndPassword;
 	originService: ServiceName;
 	playlists: Playlist[];
 }) {
@@ -90,7 +93,8 @@ export default function PlaylistTableWrapper({
 							}}
 							placeholder="Search..."
 							variant="filled"
-							w={80}></Input>
+							w={80}
+						/>
 					</InputGroup>
 				</Box>
 			</HStack>
@@ -98,26 +102,30 @@ export default function PlaylistTableWrapper({
 				Page {currentPage} / {numberOfPages}
 			</Text>
 			<PlaylistTable
+				user={user}
 				originService={originService}
-				playlists={pagePlaylists}></PlaylistTable>
-			<Center mb={8}>
+				playlists={pagePlaylists}
+			/>
+			<Center mb={4}>
 				<IconButton
 					borderRadius="full"
 					aria-label="previous page"
-					icon={<FiArrowLeft></FiArrowLeft>}
+					icon={<FiArrowLeft />}
 					disabled={currentPage <= 1}
 					onClick={() => {
 						setCurrentPage(currentPage - 1);
-					}}></IconButton>
+					}}
+				/>
 				<IconButton
 					ml={4}
 					borderRadius="full"
 					aria-label="next page"
-					icon={<FiArrowRight></FiArrowRight>}
+					icon={<FiArrowRight />}
 					disabled={currentPage >= numberOfPages}
 					onClick={() => {
 						setCurrentPage(currentPage + 1);
-					}}></IconButton>
+					}}
+				/>
 			</Center>
 		</Tabs>
 	);

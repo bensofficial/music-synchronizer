@@ -11,11 +11,14 @@ import {
 import { useEffect, useState } from "react";
 import SelectService from "./SelectService";
 import { FiArrowLeft, FiArrowRight } from "react-icons/fi";
+import { UserWithoutDatesAndPassword } from "$types/user";
 
 export default function SynchronizeModalBody({
 	originService,
 	playlist,
+	user,
 }: {
+	user: UserWithoutDatesAndPassword;
 	originService: ServiceName;
 	playlist: Playlist;
 }) {
@@ -46,6 +49,7 @@ export default function SynchronizeModalBody({
 				<TabPanels>
 					<TabPanel>
 						<SelectService
+							user={user}
 							originService={originService}
 							service={service}
 							setService={setService}
