@@ -11,5 +11,8 @@
 	},
 	"editor.defaultFormatter": "esbenp.prettier-vscode",
 	"editor.formatOnSave": true,
-	"eslint.validate": ["typescript"]
+	"eslint.validate": [
+		"typescript"
+	],
+	"nuxt.isNuxtApp": false
 }

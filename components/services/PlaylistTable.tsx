@@ -24,9 +24,6 @@ export default function PlaylistTable({
 }: TableContainerProps & {
 	playlists: Playlist[];
 }) {
-	const { data, loading, error, send } = usePostRequest(
-		"/api/youtube/songId",
-	);
 	return (
 		<TableContainer {...props} my={8}>
 			<Table variant="simple">

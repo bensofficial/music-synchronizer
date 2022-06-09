@@ -1,4 +1,4 @@
-import { PlaylistWithSongs } from "$lib/services/types";
+/*import { PlaylistWithSongs } from "$lib/services/types";
 import { User } from "@prisma/client";
 import { google } from "googleapis";
 import { authorizeUser } from "../authServer";
@@ -9,18 +9,14 @@ export default async function getPlaylistWithSongs(
 	user: User,
 	playlistId: string,
 ) {
-	const error = authorizeUser(user);
-
-	if (error) {
-		return error;
-	}
+	authorizeUser(user);
 
 	const youtube = google.youtube("v3");
 
 	try {
 		const res = await youtube.playlists.list({
 			id: [playlistId],
-			part: ["snippet", "status"],
+			part: ["snippet", "status", "contentDetails"],
 			maxResults: 1,
 		});
 
@@ -47,10 +43,12 @@ export default async function getPlaylistWithSongs(
 
 				return playlist;
 			}
-		}
 
-		return new Error("Playlist not found");
-	} catch (e) {
-		return e as Error;
+			return playlist;
+		}
 	}
+
+	throw new Error("Playlist not found");
 }
+*/
+export {};
