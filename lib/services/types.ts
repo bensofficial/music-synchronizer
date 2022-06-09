@@ -22,8 +22,6 @@ export type ServiceName = "spotify" | "youtube";
 
 export type SongIdName = `${ServiceName}Id`;
 
-export type ServiceName = "youtube" | "spotify";
-
 export default interface Service {
 	name: ServiceName;
 	songIdName: SongIdName;

@@ -23,7 +23,7 @@ const Index: Page<Props> = ({ user }: Props) => {
 				originService="spotify"
 				playlists={[
 					{
-						id: "0",
+						serviceId: "0",
 						title: "2022",
 						creator: "You",
 						type: PlaylistType.public,
