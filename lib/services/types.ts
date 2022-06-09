@@ -1,49 +1,49 @@
 import { User } from "@prisma/client";
 
-export interface Song {
-	youtubeId: string;
-	spotifyId: string;
-	title: string;
-	artist: string;
-}
-
 export enum PlaylistType {
 	private,
 	public,
 }
 
 export interface Playlist {
-	id: string;
+	serviceId: string;
 	title: string;
 	creator: string;
 	type: PlaylistType;
 }
 
-export type PlaylistWithSongs = Playlist & {
-	songs: Song[];
-};
+export interface Song {
+	title: string;
+	artist: string;
+	serviceId: string;
+}
+
+export type ServiceName = "spotify" | "youtube";
+
+export type SongIdName = `${ServiceName}Id`;
 
 export type ServiceName = "youtube" | "spotify";
 
 export default interface Service {
-	getSongId: (name: string, author: string) => Promise<string | Error>;
-	getPlaylistId: (user: User, name: string) => Promise<string | Error>;
-	getPlaylist: (user: User, playlistId: string) => Promise<Playlist | Error>;
-	getSongsInPlaylist: (
-		user: User,
-		playlistId: string,
-	) => Promise<Song[] | Error>;
+	name: ServiceName;
+	songIdName: SongIdName;
+	getSongId: (name: string, artist: string) => Promise<string>;
+	// return null if the playlist doesn't exist
+	getPlaylistId: (user: User, name: string) => Promise<string | null>;
+	getPlaylist: (user: User, playlistId: string) => Promise<Playlist>;
+	getSongsInPlaylist: (user: User, playlistId: string) => Promise<Song[]>;
 	addToPlaylist: (
 		user: User,
 		playlistId: string,
 		videoId: string,
-	) => Promise<void | Error>;
+	) => Promise<void>;
 	deleteFromPlaylist: (
 		user: User,
 		playlistId: string,
 		videoId: string,
-	) => Promise<void | Error>;
-	createPlaylist: (user: User, name: string) => Promise<void | Error>;
+	) => Promise<void>;
+	// should return the id of the newly created playlist
+	createPlaylist: (user: User, name: string) => Promise<string>;
 }
 
 export function playlistTypeToString(type: PlaylistType): string {

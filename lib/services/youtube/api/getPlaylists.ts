@@ -4,7 +4,7 @@ import { google, youtube_v3 } from "googleapis";
 import { authorizeUser } from "../authServer";
 import { youtubePlaylistToPlaylist } from "./convert";
 
-export async function getAllPlaylists(user: User): Promise<Playlist[] | Error> {
+export async function getAllPlaylists(user: User): Promise<Playlist[]> {
 	let playlists: Playlist[] = [];
 	let nextPageToken: string | null | undefined = null;
 
@@ -15,10 +15,6 @@ export async function getAllPlaylists(user: User): Promise<Playlist[] | Error> {
 			nextPageToken,
 		);
 
-		if (result instanceof Error) {
-			return result;
-		}
-
 		nextPageToken = result.nextPageToken;
 		playlists = playlists.concat(result.playlists);
 	} while (nextPageToken != null);
@@ -26,24 +22,19 @@ export async function getAllPlaylists(user: User): Promise<Playlist[] | Error> {
 	return playlists;
 }
 
-type PlaylistBatchResult =
-	| Error
-	| {
-			playlists: Playlist[];
-			nextPageToken: string | null | undefined;
-			prevPageToken: string | null | undefined;
-			numberOfPages: number;
-	  };
+type PlaylistBatchResult = {
+	playlists: Playlist[];
+	nextPageToken: string | null | undefined;
+	prevPageToken: string | null | undefined;
+	numberOfPages: number;
+};
 
 export async function getPlaylistBatch(
 	user: User,
 	maxResults: number = 50,
 	pageToken: string | null | undefined = null,
 ): Promise<PlaylistBatchResult> {
-	const error = authorizeUser(user);
-	if (error) {
-		return error;
-	}
+	authorizeUser(user);
 
 	const youtube = google.youtube("v3");
 
@@ -57,32 +48,23 @@ export async function getPlaylistBatch(
 		parameters.pageToken = pageToken;
 	}
 
-	try {
-		const res = await youtube.playlists.list(parameters);
+	const res = await youtube.playlists.list(parameters);
 
-		let playlists: Playlist[] = [];
+	let playlists: Playlist[] = [];
 
-		if (res.data.items) {
-			playlists = res.data.items.map((playlist) =>
-				youtubePlaylistToPlaylist(playlist),
-			);
-		}
-
-		return {
-			playlists,
-			nextPageToken: res.data.nextPageToken,
-			prevPageToken: res.data.prevPageToken,
-			numberOfPages: Math.ceil(
-				res.data.pageInfo!.totalResults! /
-					res.data.pageInfo!.resultsPerPage!,
-			),
-		};
-	} catch (e: any) {
-		if (e instanceof Error) {
-			console.log("e", e);
-			return e;
-		}
+	if (res.data.items) {
+		playlists = res.data.items.map((playlist) =>
+			youtubePlaylistToPlaylist(playlist),
+		);
 	}
 
-	return new Error("An Error that occurred was not caught correctly");
+	return {
+		playlists,
+		nextPageToken: res.data.nextPageToken,
+		prevPageToken: res.data.prevPageToken,
+		numberOfPages: Math.ceil(
+			res.data.pageInfo!.totalResults! /
+				res.data.pageInfo!.resultsPerPage!,
+		),
+	};
 }
