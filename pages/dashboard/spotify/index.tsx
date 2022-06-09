@@ -1,11 +1,17 @@
-import SpotifyIcon from "$/components/icons/SpotifyIcon";
+import SpotifyIcon from "$components/services/icons/SpotifyIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import { PlaylistType } from "$lib/services/types";
 import { Page } from "$types/next";
 import { Heading, HStack } from "@chakra-ui/react";
-import PlaylistTableWrapper from "$components/services/PlaylistTableWrapper";
+import PlaylistTableWrapper from "$components/services/playlists/PlaylistTableWrapper";
+import { ssrRequireAuth } from "$lib/auth";
+import { UserWithoutDatesAndPassword } from "$types/user";
+import { getUserWithoutDatesAndPassword } from "$lib/db/user";
+import { InferGetServerSidePropsType } from "next";
 
-const Index: Page = () => {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+const Index: Page<Props> = ({ user }: Props) => {
 	return (
 		<>
 			<HStack gap={5}>
@@ -13,10 +19,12 @@ const Index: Page = () => {
 				<Heading>Spotify</Heading>
 			</HStack>
 			<PlaylistTableWrapper
+				user={user}
+				originService="spotify"
 				playlists={[
 					{
-						id: "0",
-						title: "2022",
+						serviceId: "0",
+						title: "2021",
 						creator: "You",
 						type: PlaylistType.public,
 					},
@@ -25,6 +33,27 @@ const Index: Page = () => {
 		</>
 	);
 };
+
+export const getServerSideProps = ssrRequireAuth<{
+	user: UserWithoutDatesAndPassword;
+}>(async (_context, _session, sessionData) => {
+	const user = await getUserWithoutDatesAndPassword(sessionData.user.id);
+
+	if (!user) {
+		return {
+			redirect: {
+				destination: "/login",
+				permanent: false,
+			},
+		};
+	}
+
+	return {
+		props: {
+			user,
+		},
+	};
+});
 
 Index.layout = DashboardLayout;
 
