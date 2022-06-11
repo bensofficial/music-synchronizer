@@ -1,6 +1,6 @@
 import SpotifyIcon from "$components/services/icons/SpotifyIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
-import PlaylistTable from "$/components/services/PlaylistTable";
+import PlaylistTableWrapper from "$components/services/playlists/PlaylistTableWrapper";
 import { Playlist, PlaylistType } from "$lib/services/types";
 import { Page } from "$types/next";
 import {
@@ -14,8 +14,14 @@ import {
 	Spinner,
 } from "@chakra-ui/react";
 import { useGetRequest } from "$lib/clientRequest";
+import { ssrRequireAuth } from "$lib/auth";
+import { UserWithoutDatesAndPassword } from "$types/user";
+import { getUserWithoutDatesAndPassword } from "$lib/db/user";
+import { InferGetServerSidePropsType } from "next";
 
-const Index: Page = () => {
+type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+
+const Index: Page<Props> = ({ user }: Props) => {
 	const { loading, errorMessage, error, data } = useGetRequest<Playlist[]>(
 		"/api/spotify/playlists",
 	);
@@ -35,7 +41,10 @@ const Index: Page = () => {
 						{loading || !data ? (
 							<Spinner></Spinner>
 						) : (
-							<PlaylistTable playlists={data}></PlaylistTable>
+							<PlaylistTableWrapper
+								user={user}
+								originService="spotify"
+								playlists={data}></PlaylistTableWrapper>
 						)}
 					</TabPanel>
 				</TabPanels>
