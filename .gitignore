@@ -274,5 +274,7 @@ $RECYCLE.BIN/
 # === Start of specific rules ===
 # === End of specific rules ===
 
-.idea
+.idea/
 .idea/workspace.xml
+
+music-synchronizer.iml

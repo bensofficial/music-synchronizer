@@ -1,35 +1,45 @@
 import SpotifyIcon from "$components/services/icons/SpotifyIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
-import { PlaylistType } from "$lib/services/types";
+import PlaylistTable from "$/components/services/PlaylistTable";
+import { Playlist, PlaylistType } from "$lib/services/types";
 import { Page } from "$types/next";
-import { Heading, HStack } from "@chakra-ui/react";
-import PlaylistTableWrapper from "$components/services/playlists/PlaylistTableWrapper";
-import { ssrRequireAuth } from "$lib/auth";
-import { UserWithoutDatesAndPassword } from "$types/user";
-import { getUserWithoutDatesAndPassword } from "$lib/db/user";
-import { InferGetServerSidePropsType } from "next";
+import {
+	Heading,
+	HStack,
+	Tabs,
+	TabList,
+	Tab,
+	TabPanels,
+	TabPanel,
+	Spinner,
+} from "@chakra-ui/react";
+import { useGetRequest } from "$lib/clientRequest";
 
-type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
+const Index: Page = () => {
+	const { loading, errorMessage, error, data } = useGetRequest<Playlist[]>(
+		"/api/spotify/playlists",
+	);
 
-const Index: Page<Props> = ({ user }: Props) => {
 	return (
 		<>
 			<HStack gap={5}>
 				<SpotifyIcon h={14} w={14}></SpotifyIcon>
 				<Heading>Spotify</Heading>
 			</HStack>
-			<PlaylistTableWrapper
-				user={user}
-				originService="spotify"
-				playlists={[
-					{
-						serviceId: "0",
-						title: "2021",
-						creator: "You",
-						type: PlaylistType.public,
-					},
-				]}
-			/>
+			<Tabs variant="soft-rounded" mt={8}>
+				<TabList>
+					<Tab>Playlists</Tab>
+				</TabList>
+				<TabPanels>
+					<TabPanel>
+						{loading || !data ? (
+							<Spinner></Spinner>
+						) : (
+							<PlaylistTable playlists={data}></PlaylistTable>
+						)}
+					</TabPanel>
+				</TabPanels>
+			</Tabs>
 		</>
 	);
 };

@@ -5,7 +5,7 @@ import { InferGetServerSidePropsType } from "next";
 import prisma from "$lib/prisma";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import Link from "$/components/chakra/Link";
-import { getUser } from "$lib/services/spotify/user/getUser";
+import { getUser } from "$lib/services/spotify/api/getUser";
 import getEnvVar from "$lib/env";
 
 export default function Spotify({

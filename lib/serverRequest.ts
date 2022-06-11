@@ -1,11 +1,12 @@
 import { requestNewAccessToken } from "$lib/services/spotify/requestNewAccessToken";
 import { SessionUser } from "$lib/auth";
+import {User} from "@prisma/client";
 
 export async function getRequest(
 	givenAccessToken: string,
 	uri: string,
 	authOptions: RequestInit = {},
-	sessionUser: SessionUser,
+	user: User,
 ) {
 	const { error, errorMessage, responseData, statusCode } = await request(
 		givenAccessToken,
@@ -19,7 +20,7 @@ export async function getRequest(
 
 	if (error && statusCode == 401) {
 		console.log("401 error");
-		const { accessToken, error } = await requestNewAccessToken(sessionUser);
+		const { accessToken, error } = await requestNewAccessToken(user);
 		return await request(accessToken!, uri, authOptions);
 	}
 

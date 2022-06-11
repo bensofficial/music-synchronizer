@@ -17,6 +17,6 @@ export async function getUser(
 		{
 			method: "GET",
 		},
-		sessionUser,
+		user!,
 	);
 }
