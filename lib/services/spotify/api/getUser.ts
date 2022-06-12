@@ -1,5 +1,5 @@
 import prisma from "$lib/prisma";
-import { getRequest } from "$lib/serverRequest";
+import { getRequest } from "$lib/services/spotify/request";
 import { SessionUser } from "$lib/auth";
 
 export async function getUser(
@@ -11,12 +11,9 @@ export async function getUser(
 		},
 	});
 
-	return await getRequest(
-		user!.spotifyAccessToken,
-		"https://api.spotify.com/v1/me",
-		{
-			method: "GET",
-		},
-		user!,
-	);
+	if (!user) {
+		throw new Error("No user found");
+	}
+
+	return await getRequest("https://api.spotify.com/v1/me", user);
 }

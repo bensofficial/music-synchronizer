@@ -132,9 +132,7 @@ async function setSpotifyTokens(sessionUser: SessionUser, response: Response) {
 }
 
 async function setSpotifyUserId(sessionUser: SessionUser) {
-	const { error, errorMessage, responseData } = await getUser(sessionUser);
-
-	console.log("reponse bei user request", responseData);
+	const { responseData } = await getUser(sessionUser);
 
 	await prisma.user.update({
 		data: {

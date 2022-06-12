@@ -12,12 +12,14 @@ import {
 	TabPanels,
 	TabPanel,
 	Spinner,
+	Center,
 } from "@chakra-ui/react";
 import { useGetRequest } from "$lib/clientRequest";
 import { ssrRequireAuth } from "$lib/auth";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import { getUserWithoutDatesAndPassword } from "$lib/db/user";
 import { InferGetServerSidePropsType } from "next";
+import DisplayError from "$components/error/DisplayError";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -32,23 +34,19 @@ const Index: Page<Props> = ({ user }: Props) => {
 				<SpotifyIcon h={14} w={14}></SpotifyIcon>
 				<Heading>Spotify</Heading>
 			</HStack>
-			<Tabs variant="soft-rounded" mt={8}>
-				<TabList>
-					<Tab>Playlists</Tab>
-				</TabList>
-				<TabPanels>
-					<TabPanel>
-						{loading || !data ? (
-							<Spinner></Spinner>
-						) : (
-							<PlaylistTableWrapper
-								user={user}
-								originService="spotify"
-								playlists={data}></PlaylistTableWrapper>
-						)}
-					</TabPanel>
-				</TabPanels>
-			</Tabs>
+			{loading || !data ? (
+				<Center>
+					<Spinner />
+				</Center>
+			) : error ? (
+				<DisplayError mt={8} errorMessage={errorMessage} />
+			) : (
+				<PlaylistTableWrapper
+					user={user}
+					originService="spotify"
+					playlists={data}
+				/>
+			)}
 		</>
 	);
 };

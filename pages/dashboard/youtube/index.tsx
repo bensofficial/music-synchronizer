@@ -26,7 +26,7 @@ const Index: Page<Props> = ({ user }: Props) => {
 
 			{loading || !data ? (
 				<Center>
-					<Spinner></Spinner>
+					<Spinner />
 				</Center>
 			) : error ? (
 				<DisplayError mt={8} errorMessage={errorMessage}></DisplayError>

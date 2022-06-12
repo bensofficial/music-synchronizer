@@ -1,23 +1,19 @@
-import { SessionUser } from "$lib/auth";
 import prisma from "$lib/prisma";
 import * as queryString from "query-string";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
-import { data } from "browserslist";
-import {User} from "@prisma/client";
+import { User } from "@prisma/client";
+import getEnvVar from "$lib/env";
 
 export async function requestNewAccessToken(
 	user: User,
 ): Promise<{ accessToken: string | null | undefined; error: any }> {
-
-	console.log('Neuer AccessToken wird angefragt');
-
-	const clientId = process.env.SPOTIFY_CLIENT_ID;
-	const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-	const refreshToken = user?.spotifyRefreshToken;
+	const clientId = getEnvVar("SPOTIFY_CLIENT_ID");
+	const clientSecret = getEnvVar("SPOTIFY_CLIENT_SECRET");
+	const refreshToken = user.spotifyRefreshToken;
 
 	if (
 		!isUserLoggedInWithSpotify({
-			spotifyRefreshToken: user!.spotifyRefreshToken,
+			spotifyRefreshToken: user.spotifyRefreshToken,
 		})
 	) {
 		return {
@@ -26,11 +22,11 @@ export async function requestNewAccessToken(
 		};
 	}
 
-	const authOptions = {
+	const authOptions: RequestInit = {
 		method: "POST",
 		body: queryString.stringify({
 			grant_type: "refresh_token",
-			refresh_toke: refreshToken,
+			refresh_token: refreshToken,
 		}),
 		headers: {
 			Authorization:
@@ -38,7 +34,6 @@ export async function requestNewAccessToken(
 				Buffer.from(clientId + ":" + clientSecret).toString("base64"),
 			"Content-Type": "application/x-www-form-urlencoded",
 		},
-		json: true,
 	};
 
 	const response = await fetch(
@@ -53,24 +48,21 @@ export async function requestNewAccessToken(
 		};
 	}
 
-	await setNewToken(response, user);
-
 	const data = await response.json();
+	const accessToken = data.access_token;
 
-	console.log('antwort auf anfrage für neuen AccessToken', data);
+	await setNewToken(accessToken, user);
 
 	return {
-		accessToken: data.access_token?.toString(),
+		accessToken,
 		error: null,
 	};
 }
 
-async function setNewToken(response: Response, user: User) {
-	const data = await response.json();
-
+async function setNewToken(accessToken: string, user: User) {
 	await prisma.user.update({
 		data: {
-			spotifyAccessToken: data.access_token.toString(),
+			spotifyAccessToken: accessToken,
 		},
 		where: {
 			id: user.id,
