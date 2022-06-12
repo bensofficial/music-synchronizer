@@ -28,7 +28,8 @@ export default interface Service {
 	getSongId: (name: string, artist: string) => Promise<string>;
 	// return null if the playlist doesn't exist
 	getPlaylistId: (user: User, name: string) => Promise<string | null>;
-	getPlaylist: (user: User, playlistId: string) => Promise<Playlist>;
+	// return null if the playlist doesn't exist
+	getPlaylist: (user: User, playlistId: string) => Promise<Playlist | null>;
 	getSongsInPlaylist: (user: User, playlistId: string) => Promise<Song[]>;
 	addToPlaylist: (
 		user: User,

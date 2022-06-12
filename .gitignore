@@ -267,7 +267,7 @@ $RECYCLE.BIN/
 # === End of generated rules ===
 # === Start of generic rules ===
 
-.env*
+.env.local
 /db/main.db
 
 # === End of generic rules ===
