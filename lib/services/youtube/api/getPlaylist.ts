@@ -7,7 +7,7 @@ import { youtubePlaylistToPlaylist } from "./convert";
 export default async function getPlaylist(
 	user: User,
 	playlistId: string,
-): Promise<Playlist> {
+): Promise<Playlist | null> {
 	authorizeUser(user);
 
 	const youtube = google.youtube("v3");
@@ -24,6 +24,6 @@ export default async function getPlaylist(
 
 		return playlist;
 	} else {
-		throw new Error("Playlist not found");
+		return null;
 	}
 }
