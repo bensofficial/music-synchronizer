@@ -3,6 +3,7 @@ import * as queryString from "query-string";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import { User } from "@prisma/client";
 import getEnvVar from "$lib/env";
+import { postRequest } from "$lib/serverRequest";
 
 export async function requestNewAccessToken(
 	user: User,
@@ -22,34 +23,29 @@ export async function requestNewAccessToken(
 		};
 	}
 
-	const authOptions: RequestInit = {
-		method: "POST",
+	const { resData, status } = await postRequest<{
+		access_token: string;
+	}>("https://accounts.spotify.com/api/token", {
+		headers: {
+			Authorization: `Basic ${Buffer.from(
+				clientId + ":" + clientSecret,
+			).toString("base64")}`,
+			"Content-Type": "application/x-www-form-urlencoded",
+		},
 		body: queryString.stringify({
 			grant_type: "refresh_token",
 			refresh_token: refreshToken,
 		}),
-		headers: {
-			Authorization:
-				"Basic " +
-				Buffer.from(clientId + ":" + clientSecret).toString("base64"),
-			"Content-Type": "application/x-www-form-urlencoded",
-		},
-	};
+	});
 
-	const response = await fetch(
-		"https://accounts.spotify.com/api/token",
-		authOptions,
-	);
-
-	if (response.status == 400) {
+	if (status == 400 || !resData) {
 		return {
 			accessToken: null,
 			error: "token_still_valid",
 		};
 	}
 
-	const data = await response.json();
-	const accessToken = data.access_token;
+	const accessToken = resData.access_token;
 
 	await setNewToken(accessToken, user);
 

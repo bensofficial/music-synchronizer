@@ -1,7 +1,6 @@
 import { apiRequireAuth } from "$lib/auth";
-import prisma from "$lib/prisma";
-import getPlaylist from "$lib/services/youtube/api/getPlaylist";
-import getPlaylistId from "$lib/services/youtube/api/getPlaylistId";
+import getPlaylist from "$lib/services/spotify/api/getPlaylist";
+import getPlaylistId from "$lib/services/spotify/api/getPlaylistId";
 import { string } from "$lib/validation/rules";
 import schema from "$lib/validation/Schema";
 
@@ -26,7 +25,7 @@ export default apiRequireAuth(async (req, res, _session, sessionData) => {
 		});
 	}
 
-	const user = await prisma.user.findUnique({
+	const user = await prisma?.user.findUnique({
 		where: { id: sessionData.user.id },
 	});
 

@@ -1,63 +1,60 @@
+import { serverRequest } from "$lib/serverRequest";
 import { User } from "@prisma/client";
+import { RequestInit } from "next/dist/server/web/spec-extension/request";
 import { requestNewAccessToken } from "./requestNewAccessToken";
 
 type RequestMethod = "POST" | "GET";
 
-export async function getRequest(uri: string, user: User) {
-	const { error, errorMessage, responseData, statusCode } = await request(
+export async function getRequest<T = Record<string, never>>(
+	uri: string,
+	user: User,
+) {
+	return await requestRefreshTokenWrapper<T>(uri, user, "GET", null);
+}
+
+export async function postRequest<T = Record<string, never>>(
+	uri: string,
+	user: User,
+	body: Record<string, any> | null | string,
+) {
+	return await requestRefreshTokenWrapper<T>(uri, user, "POST", body);
+}
+
+async function requestRefreshTokenWrapper<T>(
+	uri: string,
+	user: User,
+	method: RequestMethod,
+	body: Record<string, any> | null | string = null,
+) {
+	if (typeof body === "object" && body !== null) {
+		body = JSON.stringify(body);
+	}
+
+	const options: RequestInit = {
+		headers: {
+			Authorization: `Bearer ${user.spotifyAccessToken}`,
+			"Content-Type": "application/json",
+		},
+		body: body,
+	};
+
+	const { error, errorMessage, resData, status } = await serverRequest<T>(
 		uri,
-		user.spotifyAccessToken,
-		"GET",
-		null,
+		method,
+		options,
 	);
 
-	if (error && statusCode == 401) {
+	if (error && status === 401) {
 		const { accessToken } = await requestNewAccessToken(user);
 
 		if (!accessToken) {
 			throw new Error(
-				"Unexpected Error occurred, Received 401 but accessToken is still valid",
+				"Unexpected Error occurred, received 401 but accessToken is still valid",
 			);
 		}
 
-		return await request(uri, accessToken, "GET", null);
+		return await serverRequest<T>(uri, method, options);
 	}
 
-	return { error, errorMessage, responseData };
-}
-
-async function request(
-	uri: string,
-	accessToken: string,
-	method: RequestMethod,
-	body: Record<string, any> | null,
-) {
-	const options = {
-		headers: {
-			Authorization: "Bearer " + accessToken,
-			"Content-Type": "application/json",
-		},
-		method,
-		body: body ? JSON.stringify(body) : null,
-	};
-
-	let error: boolean;
-	let errorMessage = "";
-	let responseData = null;
-	let statusCode: number;
-
-	const res: Response = await fetch(uri, options);
-
-	error = !res.ok;
-
-	responseData = await res.json();
-	statusCode = res.status;
-
-	if (error) {
-		try {
-			errorMessage = responseData.error.message;
-		} catch (e) {}
-	}
-
-	return { error, errorMessage, responseData, statusCode };
+	return { error, errorMessage, resData, status };
 }

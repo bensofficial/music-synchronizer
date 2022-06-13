@@ -12,13 +12,17 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		return res.status(400).json({ errors: [{ message: "No User found" }] });
 	}
 
-	const result = await getAllPlaylists(user);
+	try {
+		const playlists = await getAllPlaylists(user);
 
-	if (result instanceof Error) {
-		return res.status(500).json({ errors: [{ message: result.message }] });
+		playlists.sort((a: Playlist, b: Playlist) =>
+			a.title.localeCompare(b.title),
+		);
+
+		return res.status(200).send(playlists);
+	} catch (e) {
+		if (e instanceof Error) {
+			return res.status(500).send({ errors: [{ message: e.message }] });
+		}
 	}
-
-	result.sort((a: Playlist, b: Playlist) => a.title.localeCompare(b.title));
-
-	return res.status(200).send(result);
 });

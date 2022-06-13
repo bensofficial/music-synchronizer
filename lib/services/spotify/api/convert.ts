@@ -1,21 +1,19 @@
 import { Playlist, PlaylistType } from "$lib/services/types";
+import { SpotifyPlaylist } from "../types";
 
-export function spotifyPlaylistsToPlaylists(json: any): Playlist[] {
-	let playlists: Playlist[] = [];
-
-	for (let i = 0; i < json.length; i++) {
-		let obj = spotifyPlaylistToPlaylist(json[i]);
-		playlists.push(obj);
-	}
-
-	return playlists;
+export function spotifyPlaylistsToPlaylists(
+	spotifyPlaylists: SpotifyPlaylist[],
+): Playlist[] {
+	return spotifyPlaylists.map((playlist) =>
+		spotifyPlaylistToPlaylist(playlist),
+	);
 }
 
-export function spotifyPlaylistToPlaylist(json: any): Playlist {
+export function spotifyPlaylistToPlaylist(playlist: SpotifyPlaylist): Playlist {
 	return {
-		creator: json.owner.display_name,
-		serviceId: json.id,
-		title: json.name,
-		type: json.public ? PlaylistType.public : PlaylistType.private,
+		creator: playlist.owner.display_name,
+		serviceId: playlist.id,
+		title: playlist.name,
+		type: playlist.public ? PlaylistType.public : PlaylistType.private,
 	};
 }
