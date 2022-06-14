@@ -1,18 +1,20 @@
 import { User } from "@prisma/client";
 import getSongIdForService from "./cache";
 import Service, { Playlist } from "./types";
-import addToPlaylist from "./youtube/api/addToPlaylist";
-import deleteFromPlaylist from "./youtube/api/deleteFromPlaylist";
 
 export default async function synchronizePlaylist(
 	user: User,
 	originPlaylist: Playlist,
+	destinationPlaylistId: string,
 	originService: Service,
 	destinationService: Service,
 ) {
-	const destinationPlaylistId =
-		(await destinationService.getPlaylistId(user, originPlaylist.title)) ??
-		(await destinationService.createPlaylist(user, originPlaylist.title));
+	if (destinationPlaylistId === "create") {
+		destinationPlaylistId = await destinationService.createPlaylist(
+			user,
+			originPlaylist.title,
+		);
+	}
 
 	const originSongs = await originService.getSongsInPlaylist(
 		user,
@@ -57,10 +59,15 @@ export default async function synchronizePlaylist(
 		(song) => !destinationSongsMap.includes(song),
 	);
 
-	toBeDeleted.forEach((song) =>
-		deleteFromPlaylist(user, destinationPlaylistId, song.destinationId),
+	destinationService.deleteFromPlaylist(
+		user,
+		destinationPlaylistId,
+		toBeDeleted.map((song) => song.destinationId),
 	);
-	toBeAdded.forEach((song) =>
-		addToPlaylist(user, destinationPlaylistId, song.destinationId),
+
+	destinationService.addToPlaylist(
+		user,
+		destinationPlaylistId,
+		toBeAdded.map((song) => song.destinationId),
 	);
 }

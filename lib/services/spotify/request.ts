@@ -1,9 +1,7 @@
-import { serverRequest } from "$lib/serverRequest";
+import { RequestMethod, serverRequest } from "$lib/serverRequest";
 import { User } from "@prisma/client";
 import { RequestInit } from "next/dist/server/web/spec-extension/request";
 import { requestNewAccessToken } from "./requestNewAccessToken";
-
-type RequestMethod = "POST" | "GET";
 
 export async function getRequest<T = Record<string, never>>(
 	uri: string,
@@ -18,6 +16,14 @@ export async function postRequest<T = Record<string, never>>(
 	body: Record<string, any> | null | string,
 ) {
 	return await requestRefreshTokenWrapper<T>(uri, user, "POST", body);
+}
+
+export async function deleteRequest<T = Record<string, never>>(
+	uri: string,
+	user: User,
+	body: Record<string, any> | null | string,
+) {
+	return await requestRefreshTokenWrapper<T>(uri, user, "DELETE", body);
 }
 
 async function requestRefreshTokenWrapper<T>(
@@ -52,6 +58,11 @@ async function requestRefreshTokenWrapper<T>(
 				"Unexpected Error occurred, received 401 but accessToken is still valid",
 			);
 		}
+
+		options.headers = {
+			Authorization: `Bearer ${accessToken}`,
+			"Content-Type": "application/json",
+		};
 
 		return await serverRequest<T>(uri, method, options);
 	}

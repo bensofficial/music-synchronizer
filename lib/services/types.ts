@@ -34,12 +34,12 @@ export default interface Service {
 	addToPlaylist: (
 		user: User,
 		playlistId: string,
-		videoId: string,
+		songIds: string[],
 	) => Promise<void>;
 	deleteFromPlaylist: (
 		user: User,
 		playlistId: string,
-		videoId: string,
+		songIds: string[],
 	) => Promise<void>;
 	// should return the id of the newly created playlist
 	createPlaylist: (user: User, name: string) => Promise<string>;

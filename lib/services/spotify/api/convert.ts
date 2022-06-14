@@ -1,13 +1,5 @@
 import { Playlist, PlaylistType } from "$lib/services/types";
-import { SpotifyPlaylist } from "../types";
-
-export function spotifyPlaylistsToPlaylists(
-	spotifyPlaylists: SpotifyPlaylist[],
-): Playlist[] {
-	return spotifyPlaylists.map((playlist) =>
-		spotifyPlaylistToPlaylist(playlist),
-	);
-}
+import { SpotifyPlaylist, SpotifySong } from "../types";
 
 export function spotifyPlaylistToPlaylist(playlist: SpotifyPlaylist): Playlist {
 	return {
@@ -15,5 +7,13 @@ export function spotifyPlaylistToPlaylist(playlist: SpotifyPlaylist): Playlist {
 		serviceId: playlist.id,
 		title: playlist.name,
 		type: playlist.public ? PlaylistType.public : PlaylistType.private,
+	};
+}
+
+export function spotifySongToSong(song: SpotifySong) {
+	return {
+		serviceId: song.id,
+		title: song.name,
+		artist: song.artists[0].name,
 	};
 }

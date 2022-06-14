@@ -1,7 +1,5 @@
 import { apiRequireAuth } from "$lib/auth";
-import prisma from "$lib/prisma";
-import getPlaylist from "$lib/services/youtube/api/getPlaylist";
-import getPlaylistId from "$lib/services/youtube/api/getPlaylistId";
+import getPlaylistId from "$lib/services/spotify/api/getPlaylistId";
 import { string } from "$lib/validation/rules";
 import schema from "$lib/validation/Schema";
 
@@ -26,7 +24,7 @@ export default apiRequireAuth(async (req, res, _session, sessionData) => {
 		});
 	}
 
-	const user = await prisma.user.findUnique({
+	const user = await prisma?.user.findUnique({
 		where: { id: sessionData.user.id },
 	});
 
@@ -41,9 +39,7 @@ export default apiRequireAuth(async (req, res, _session, sessionData) => {
 			return res.status(404).send({});
 		}
 
-		const playlist = await getPlaylist(user, playlistId);
-
-		return res.status(200).send(playlist);
+		return res.status(200).send({ playlistId });
 	} catch (e) {
 		if (e instanceof Error) {
 			return res.status(500).send({ errors: [{ message: e.message }] });

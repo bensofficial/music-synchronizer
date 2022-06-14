@@ -1,4 +1,4 @@
-import { Playlist, PlaylistType } from "$lib/services/types";
+import { Playlist, PlaylistType, Song } from "$lib/services/types";
 import { youtube_v3 } from "googleapis";
 
 export function youtubePlaylistToPlaylist(
@@ -11,6 +11,14 @@ export function youtubePlaylistToPlaylist(
 		title: snippet.title!,
 		creator: snippet.channelTitle!,
 		type: privacyStatusToPlaylistType(playlist.status!.privacyStatus!),
+	};
+}
+
+export function youtubeSongToSong(song: youtube_v3.Schema$PlaylistItem): Song {
+	return {
+		serviceId: song.snippet!.resourceId!.videoId!,
+		title: song.snippet!.title!,
+		artist: song.snippet!.videoOwnerChannelTitle!,
 	};
 }
 

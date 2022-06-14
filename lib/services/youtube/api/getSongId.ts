@@ -1,5 +1,7 @@
 import { google } from "googleapis";
 
+// Quota cost: 100
+
 export default async function getSongId(
 	title: string,
 	artist: string,

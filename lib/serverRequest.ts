@@ -1,6 +1,6 @@
 import { RequestInit } from "next/dist/server/web/spec-extension/request";
 
-type RequestMethod = "POST" | "GET";
+export type RequestMethod = "POST" | "GET" | "DELETE";
 
 export async function getRequest<T = Record<string, never>>(
 	uri: string,
@@ -14,6 +14,13 @@ export async function postRequest<T = Record<string, never>>(
 	options: RequestInit,
 ) {
 	return await serverRequest<T>(uri, "POST", options);
+}
+
+export async function deleteRequest<T = Record<string, never>>(
+	uri: string,
+	options: RequestInit,
+) {
+	return await serverRequest<T>(uri, "DELETE", options);
 }
 
 export async function serverRequest<T>(

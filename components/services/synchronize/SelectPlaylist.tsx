@@ -15,8 +15,8 @@ export default function SelectPlaylist({
 	setPlaylistId: Dispatch<SetStateAction<string | null>>;
 	playlist: Playlist;
 }) {
-	const { loading, data } = useGetRequest<{} | Playlist>(
-		`/api/${destinationService}/getPlaylist?title=${playlist.title}`,
+	const { loading, data } = useGetRequest<{} | { playlistId: string }>(
+		`/api/${destinationService}/getPlaylistId?title=${playlist.title}`,
 	);
 	const [playlistExists, setPlaylistExists] = useState(false);
 

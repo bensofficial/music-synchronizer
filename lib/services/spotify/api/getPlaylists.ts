@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import { Playlist } from "$lib/services/types";
 import { getRequest } from "$lib/services/spotify/request";
-import { spotifyPlaylistsToPlaylists } from "$lib/services/spotify/api/convert";
+import { spotifyPlaylistToPlaylist } from "$lib/services/spotify/api/convert";
 import { SpotifyPlaylist } from "../types";
 
 export default async function getAllPlaylists(user: User): Promise<Playlist[]> {
@@ -12,7 +12,7 @@ export default async function getAllPlaylists(user: User): Promise<Playlist[]> {
 
 	do {
 		const result: PlaylistBatchResult = await getPlaylistBatch(
-			nextPageUrl!,
+			nextPageUrl,
 			user,
 		);
 
@@ -40,7 +40,9 @@ async function getPlaylistBatch(pageUrl: string, user: User) {
 		throw new Error(errorMessage);
 	}
 
-	const playlists = spotifyPlaylistsToPlaylists(resData.items);
+	const playlists = resData.items.map((playlist) =>
+		spotifyPlaylistToPlaylist(playlist),
+	);
 
 	return {
 		playlists,

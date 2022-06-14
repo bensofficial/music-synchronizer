@@ -2,6 +2,8 @@ import { User } from "@prisma/client";
 import { google } from "googleapis";
 import { authorizeUser } from "../authServer";
 
+// Quota cost: 50
+
 export default async function createPlaylist(
 	user: User,
 	name: string,

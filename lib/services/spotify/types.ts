@@ -12,4 +12,8 @@ export interface SpotifyUser {
 
 export interface SpotifySong {
 	id: string;
+	name: string;
+	artists: Array<{
+		name: string;
+	}>;
 }

@@ -2,10 +2,22 @@ import { User } from "@prisma/client";
 import { google } from "googleapis";
 import { authorizeUser } from "../authServer";
 
+// Quota cost per song: 51
+
 export default async function deleteFromPlaylist(
 	user: User,
 	playlistId: string,
-	videoId: string,
+	songIds: string[],
+) {
+	for (let i = 0; i < songIds.length; i += 1) {
+		await deleteOneSongFromPlaylist(user, playlistId, songIds[0]);
+	}
+}
+
+async function deleteOneSongFromPlaylist(
+	user: User,
+	playlistId: string,
+	songId: string,
 ): Promise<void> {
 	authorizeUser(user);
 
@@ -14,7 +26,7 @@ export default async function deleteFromPlaylist(
 	const playlistItems = await youtube.playlistItems.list({
 		part: ["snippet"],
 		playlistId,
-		videoId,
+		videoId: songId,
 		maxResults: 1,
 	});
 

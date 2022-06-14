@@ -1,6 +1,8 @@
 import { User } from "@prisma/client";
 import { getAllPlaylists } from "./getPlaylists";
 
+// Quota cost: 1 - ?
+
 export default async function getPlaylistId(
 	user: User,
 	title: string,
