@@ -39,12 +39,11 @@ export async function handleCallback(
 	await prisma.user.update({
 		where: { id: userId },
 		data: {
-			youtubeAccessToken: tokens.access_token,
 			youtubeRefreshToken: tokens.refresh_token,
 		},
 	});
 
-	oauth2Client.setCredentials({ refresh_token: tokens.refresh_token });
+	oauth2Client.credentials = { refresh_token: tokens.refresh_token };
 }
 
 export function authorizeUser(user: User): void {
@@ -52,5 +51,5 @@ export function authorizeUser(user: User): void {
 		throw new Error("User is not logged in with google");
 	}
 
-	oauth2Client.setCredentials({ refresh_token: user.youtubeRefreshToken });
+	oauth2Client.credentials = { refresh_token: user.youtubeRefreshToken };
 }

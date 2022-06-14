@@ -20,7 +20,6 @@ model User {
     spotifyAccessToken String @default("")
     spotifyRefreshToken String @default("")
     spotifyUserId String @default("")
-    youtubeAccessToken  String?
     youtubeRefreshToken String?
 }
 

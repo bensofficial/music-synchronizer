@@ -2,6 +2,7 @@ import { apiRequireAuth } from "$lib/auth";
 import getPlaylistId from "$lib/services/spotify/api/getPlaylistId";
 import { string } from "$lib/validation/rules";
 import schema from "$lib/validation/Schema";
+import prisma from "$lib/prisma";
 
 const requestData = schema({
 	title: string(),
@@ -24,7 +25,7 @@ export default apiRequireAuth(async (req, res, _session, sessionData) => {
 		});
 	}
 
-	const user = await prisma?.user.findUnique({
+	const user = await prisma.user.findUnique({
 		where: { id: sessionData.user.id },
 	});
 
