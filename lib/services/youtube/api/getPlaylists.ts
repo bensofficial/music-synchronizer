@@ -4,6 +4,8 @@ import { google, youtube_v3 } from "googleapis";
 import { authorizeUser } from "../authServer";
 import { youtubePlaylistToPlaylist } from "./convert";
 
+// Quota cost: 1 - ?
+
 export async function getAllPlaylists(user: User): Promise<Playlist[]> {
 	let playlists: Playlist[] = [];
 	let nextPageToken: string | null | undefined = null;
@@ -11,7 +13,6 @@ export async function getAllPlaylists(user: User): Promise<Playlist[]> {
 	do {
 		const result: PlaylistBatchResult = await getPlaylistBatch(
 			user,
-			50,
 			nextPageToken,
 		);
 
@@ -22,17 +23,15 @@ export async function getAllPlaylists(user: User): Promise<Playlist[]> {
 	return playlists;
 }
 
-type PlaylistBatchResult = {
+interface PlaylistBatchResult {
 	playlists: Playlist[];
 	nextPageToken: string | null | undefined;
 	prevPageToken: string | null | undefined;
-	numberOfPages: number;
-};
+}
 
-export async function getPlaylistBatch(
+async function getPlaylistBatch(
 	user: User,
-	maxResults: number = 50,
-	pageToken: string | null | undefined = null,
+	pageToken: string | null | undefined,
 ): Promise<PlaylistBatchResult> {
 	authorizeUser(user);
 
@@ -41,7 +40,7 @@ export async function getPlaylistBatch(
 	const parameters: youtube_v3.Params$Resource$Playlists$List = {
 		mine: true,
 		part: ["snippet", "status"],
-		maxResults,
+		maxResults: 50,
 	};
 
 	if (pageToken) {
@@ -62,9 +61,5 @@ export async function getPlaylistBatch(
 		playlists,
 		nextPageToken: res.data.nextPageToken,
 		prevPageToken: res.data.prevPageToken,
-		numberOfPages: Math.ceil(
-			res.data.pageInfo!.totalResults! /
-				res.data.pageInfo!.resultsPerPage!,
-		),
 	};
 }

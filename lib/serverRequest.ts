@@ -1,58 +1,64 @@
-import { requestNewAccessToken } from "$lib/services/spotify/requestNewAccessToken";
-import { SessionUser } from "$lib/auth";
+import { RequestInit } from "next/dist/server/web/spec-extension/request";
 
-export async function getRequest(
-	givenAccessToken: string,
+export type RequestMethod = "POST" | "GET" | "DELETE";
+
+export async function getRequest<T = Record<string, never>>(
 	uri: string,
-	authOptions: RequestInit = {},
-	sessionUser: SessionUser,
+	options: RequestInit,
 ) {
-	const { error, errorMessage, responseData, statusCode } = await request(
-		givenAccessToken,
-		uri,
-		authOptions,
-	);
-
-	console.log("error in serverRequest method", error);
-	console.log("statusCode in serverRequest", statusCode);
-	console.log("response in serverRequest", responseData);
-
-	if (error && statusCode == 401) {
-		console.log("401 error");
-		const { accessToken, error } = await requestNewAccessToken(sessionUser);
-		return await request(accessToken!, uri, authOptions);
-	}
-
-	return { error, errorMessage, responseData };
+	return await serverRequest<T>(uri, "GET", options);
 }
 
-async function request(
-	accessToken: string,
+export async function postRequest<T = Record<string, never>>(
 	uri: string,
-	authOptions: RequestInit,
+	options: RequestInit,
 ) {
-	authOptions.headers = {
-		Authorization: "Bearer " + accessToken,
-		"Content-Type": "application/json",
-	};
+	return await serverRequest<T>(uri, "POST", options);
+}
 
+export async function deleteRequest<T = Record<string, never>>(
+	uri: string,
+	options: RequestInit,
+) {
+	return await serverRequest<T>(uri, "DELETE", options);
+}
+
+export async function serverRequest<T>(
+	uri: string,
+	method: RequestMethod,
+	options: RequestInit,
+) {
 	let error: boolean;
 	let errorMessage = "";
-	let responseData = null;
-	let statusCode: number;
+	let resData: T | null = null;
+	let status: number;
 
-	const res: Response = await fetch(uri, authOptions);
+	options.method = method;
+
+	const res: Response = await fetch(uri, options);
 
 	error = !res.ok;
+	status = res.status;
 
-	responseData = await res.json();
-	statusCode = res.status;
+	let resBody = null;
+
+	// if this fails it means that the body is not in json format
+	try {
+		resBody = await res.clone().json();
+	} catch (e) {
+		const text = await res.text();
+		errorMessage = text;
+
+		return { error, errorMessage, resData, status };
+	}
 
 	if (error) {
 		try {
-			errorMessage = responseData.error.message;
+			errorMessage = resBody.error.message;
 		} catch (e) {}
+	} else {
+		resData = resBody;
 	}
 
-	return { error, errorMessage, responseData, statusCode };
+	return { error, errorMessage, resData, status };
 }

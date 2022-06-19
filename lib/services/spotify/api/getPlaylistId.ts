@@ -1,7 +1,5 @@
 import { User } from "@prisma/client";
-import { getAllPlaylists } from "./getPlaylists";
-
-// Quota cost: 1 - ?
+import getAllPlaylists from "./getPlaylists";
 
 export default async function getPlaylistId(
 	user: User,

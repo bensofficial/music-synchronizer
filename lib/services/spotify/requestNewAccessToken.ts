@@ -1,25 +1,20 @@
-import { SessionUser } from "$lib/auth";
 import prisma from "$lib/prisma";
 import * as queryString from "query-string";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
-import { data } from "browserslist";
+import { User } from "@prisma/client";
+import getEnvVar from "$lib/env";
+import { postRequest } from "$lib/serverRequest";
 
 export async function requestNewAccessToken(
-	sessionUser: SessionUser,
+	user: User,
 ): Promise<{ accessToken: string | null | undefined; error: any }> {
-	const user = await prisma.user.findFirst({
-		where: {
-			id: sessionUser.id,
-		},
-	});
-
-	const clientId = process.env.SPOTIFY_CLIENT_ID;
-	const clientSecret = process.env.SPOTIFY_CLIENT_SECRET;
-	const refreshToken = user?.spotifyRefreshToken;
+	const clientId = getEnvVar("SPOTIFY_CLIENT_ID");
+	const clientSecret = getEnvVar("SPOTIFY_CLIENT_SECRET");
+	const refreshToken = user.spotifyRefreshToken;
 
 	if (
 		!isUserLoggedInWithSpotify({
-			spotifyRefreshToken: user!.spotifyRefreshToken,
+			spotifyRefreshToken: user.spotifyRefreshToken,
 		})
 	) {
 		return {
@@ -28,50 +23,45 @@ export async function requestNewAccessToken(
 		};
 	}
 
-	const authOptions = {
-		method: "POST",
-		body: queryString.stringify({
-			grant_type: "refresh_token",
-			refresh_toke: refreshToken,
-		}),
+	const { resData, status } = await postRequest<{
+		access_token: string;
+	}>("https://accounts.spotify.com/api/token", {
 		headers: {
-			Authorization:
-				"Basic " +
-				Buffer.from(clientId + ":" + clientSecret).toString("base64"),
+			Authorization: `Basic ${Buffer.from(
+				clientId + ":" + clientSecret,
+			).toString("base64")}`,
 			"Content-Type": "application/x-www-form-urlencoded",
 		},
-		json: true,
-	};
+		body: queryString.stringify({
+			grant_type: "refresh_token",
+			refresh_token: refreshToken,
+		}),
+	});
 
-	const response = await fetch(
-		"https://accounts.spotify.com/api/token",
-		authOptions,
-	);
-
-	if (response.status == 400) {
+	if (status == 400 || !resData) {
 		return {
 			accessToken: null,
 			error: "token_still_valid",
 		};
 	}
 
-	await setNewToken(response, sessionUser);
+	const accessToken = resData.access_token;
+
+	await setNewToken(accessToken, user);
 
 	return {
-		accessToken: data.access_token?.toString(),
+		accessToken,
 		error: null,
 	};
 }
 
-async function setNewToken(response: Response, sessionUser: SessionUser) {
-	const data = await response.json();
-
+async function setNewToken(accessToken: string, user: User) {
 	await prisma.user.update({
 		data: {
-			spotifyAccessToken: data.access_token.toString(),
+			spotifyAccessToken: accessToken,
 		},
 		where: {
-			id: sessionUser.id,
+			id: user.id,
 		},
 	});
 }

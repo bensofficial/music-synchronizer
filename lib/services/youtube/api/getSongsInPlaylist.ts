@@ -1,39 +1,68 @@
 import { Song } from "$lib/services/types";
 import { User } from "@prisma/client";
-import { google } from "googleapis";
+import { google, youtube_v3 } from "googleapis";
 import { authorizeUser } from "../authServer";
+import { youtubeSongToSong } from "./convert";
 
-export default async function getSongsInPlaylist(
-	playlistId: string,
-	playlistLength: number,
+// Quota cost: 1 - ?
+
+export async function getSongsInPlaylist(
 	user: User,
+	playlistId: string,
 ): Promise<Song[]> {
+	let songs: Song[] = [];
+	let nextPageToken: string | null | undefined = null;
+
+	do {
+		const result: SongBatchResult = await getSongBatch(
+			user,
+			playlistId,
+			nextPageToken,
+		);
+
+		nextPageToken = result.nextPageToken;
+		songs = songs.concat(result.songs);
+	} while (nextPageToken != null);
+
+	return songs;
+}
+
+interface SongBatchResult {
+	songs: Song[];
+	nextPageToken: string | null | undefined;
+	prevPageToken: string | null | undefined;
+}
+
+async function getSongBatch(
+	user: User,
+	playlistId: string,
+	pageToken: string | null | undefined,
+): Promise<SongBatchResult> {
 	authorizeUser(user);
 
 	const youtube = google.youtube("v3");
 
-	const res = await youtube.playlistItems.list({
+	const parameters: youtube_v3.Params$Resource$Playlistitems$List = {
 		part: ["snippet"],
 		playlistId: playlistId,
-		maxResults: playlistLength,
-	});
+		maxResults: 50,
+	};
 
-	let songs: (Song | null)[] = [];
-
-	if (res.data.items) {
-		songs = res.data.items.map((song) => {
-			if (song.snippet?.resourceId) {
-				const youtubeId = song.snippet.resourceId.videoId,
-					title = song.snippet.title,
-					artist = song.snippet.videoOwnerChannelTitle;
-
-				if (youtubeId && title && artist) {
-					return { serviceId: youtubeId, title, artist };
-				}
-			}
-			return null;
-		});
+	if (pageToken) {
+		parameters.pageToken = pageToken;
 	}
 
-	return songs.filter((song) => song) as Song[];
+	const res = await youtube.playlistItems.list(parameters);
+
+	let songs: Song[] = [];
+
+	if (res.data.items) {
+		songs = res.data.items.map((song) => youtubeSongToSong(song));
+	}
+
+	return {
+		songs,
+		nextPageToken: res.data.nextPageToken,
+		prevPageToken: res.data.prevPageToken,
+	};
 }

@@ -1,6 +1,5 @@
 import { apiRequireAuth } from "$lib/auth";
 import { getUserWithoutDatesAndPassword } from "$lib/db/user";
-import prisma from "$lib/prisma";
 
 export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 	const user = await getUserWithoutDatesAndPassword(sessionData.user.id);

@@ -4,6 +4,8 @@ import { google } from "googleapis";
 import { authorizeUser } from "../authServer";
 import { youtubePlaylistToPlaylist } from "./convert";
 
+// Quota cost: 1
+
 export default async function getPlaylist(
 	user: User,
 	playlistId: string,

@@ -1,29 +1,36 @@
-import { Button, Center, Heading } from "@chakra-ui/react";
+import { Button, Center, Heading, VStack } from "@chakra-ui/react";
 import * as queryString from "query-string";
 import { SessionUser, ssrRequireAuth } from "$lib/auth";
 import { InferGetServerSidePropsType } from "next";
 import prisma from "$lib/prisma";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import Link from "$/components/chakra/Link";
-import { getUser } from "$lib/services/spotify/user/getUser";
 import getEnvVar from "$lib/env";
+import { getRequest, postRequest } from "$lib/serverRequest";
+import { SpotifyUser } from "$lib/services/spotify/types";
+import DisplayError from "$components/error/DisplayError";
 
 export default function Spotify({
 	error,
 }: InferGetServerSidePropsType<typeof getServerSideProps>) {
 	return (
 		<Center h="100vh">
-			{error === null ? (
+			{!error ? (
 				<>
 					<Heading>
 						Authentication with Spotify was successful 👍
 					</Heading>
-					<Link href="/dashboard" textDecoration={"none"}>
+					<Link mt={4} href="/dashboard" textDecoration={"none"}>
 						<Button>Return to Dashboard</Button>
 					</Link>
 				</>
 			) : (
-				<Heading>😔 {error}</Heading>
+				<VStack>
+					<DisplayError errorMessage={error} />
+					<Link mt={4} href="/dashboard" textDecoration={"none"}>
+						<Button>Return to Dashboard</Button>
+					</Link>
+				</VStack>
 			)}
 		</Center>
 	);
@@ -74,8 +81,14 @@ export const getServerSideProps = ssrRequireAuth<{
 		};
 	}
 
-	const authOptions = {
-		method: "POST",
+	const {
+		resData,
+		error: resError,
+		errorMessage,
+	} = await postRequest<{
+		access_token: string;
+		refresh_token: string;
+	}>("https://accounts.spotify.com/api/token", {
 		body: queryString.stringify({
 			code: code,
 			redirect_uri: `${baseUrl}/spotify/callback`,
@@ -87,15 +100,39 @@ export const getServerSideProps = ssrRequireAuth<{
 				new Buffer(clientId + ":" + clientSecret).toString("base64"),
 			"Content-Type": "application/x-www-form-urlencoded",
 		},
-		json: true,
-	};
+	});
 
-	fetch("https://accounts.spotify.com/api/token", authOptions).then(
-		async (response) => {
-			await setSpotifyTokens(sessionData.user, response);
-			await setSpotifyUserId(sessionData.user);
+	if (resError || !resData) {
+		return {
+			props: {
+				error: errorMessage,
+			},
+		};
+	}
+
+	const {
+		resData: spotifyUser,
+		error: spotifyUserError,
+		errorMessage: spotifyUserErrorMessage,
+		status,
+	} = await getRequest<SpotifyUser>("https://api.spotify.com/v1/me", {
+		headers: {
+			Authorization: `Bearer ${resData.access_token}`,
+			"Content-Type": "application/json",
 		},
-	);
+		body: null,
+	});
+
+	if (!spotifyUser || spotifyUserError) {
+		return {
+			props: {
+				error: spotifyUserErrorMessage,
+			},
+		};
+	}
+
+	await setSpotifyUserId(sessionData.user, spotifyUser);
+	await setSpotifyTokens(sessionData.user, resData);
 
 	return {
 		props: {
@@ -103,6 +140,35 @@ export const getServerSideProps = ssrRequireAuth<{
 		},
 	};
 });
+
+async function setSpotifyTokens(
+	sessionUser: SessionUser,
+	resData: { refresh_token: string; access_token: string },
+) {
+	await prisma.user.update({
+		data: {
+			spotifyAccessToken: resData.access_token,
+			spotifyRefreshToken: resData.refresh_token,
+		},
+		where: {
+			id: sessionUser.id,
+		},
+	});
+}
+
+async function setSpotifyUserId(
+	sessionUser: SessionUser,
+	spotifyUser: SpotifyUser,
+) {
+	await prisma.user.update({
+		data: {
+			spotifyUserId: spotifyUser.id,
+		},
+		where: {
+			id: sessionUser.id,
+		},
+	});
+}
 
 async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
 	const user = await prisma.user.findFirst({
@@ -112,36 +178,4 @@ async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
 	});
 
 	return isUserLoggedInWithSpotify(user);
-}
-
-async function setSpotifyTokens(sessionUser: SessionUser, response: Response) {
-	const data = await response.json();
-
-	const accessToken = data.access_token;
-	const refreshToken = data.refresh_token;
-
-	await prisma.user.update({
-		data: {
-			spotifyAccessToken: accessToken,
-			spotifyRefreshToken: refreshToken,
-		},
-		where: {
-			id: sessionUser.id,
-		},
-	});
-}
-
-async function setSpotifyUserId(sessionUser: SessionUser) {
-	const { error, errorMessage, responseData } = await getUser(sessionUser);
-
-	console.log("reponse bei user request", responseData);
-
-	await prisma.user.update({
-		data: {
-			spotifyUserId: responseData.id,
-		},
-		where: {
-			id: sessionUser.id,
-		},
-	});
 }

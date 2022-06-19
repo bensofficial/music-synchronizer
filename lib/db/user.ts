@@ -11,7 +11,6 @@ export async function getUserWithoutDatesAndPassword(userId: number) {
 			username: true,
 			spotifyAccessToken: true,
 			spotifyRefreshToken: true,
-			youtubeAccessToken: true,
 			youtubeRefreshToken: true,
 			spotifyUserId: true,
 		},

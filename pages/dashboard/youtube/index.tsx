@@ -12,7 +12,6 @@ import { UserWithoutDatesAndPassword } from "$types/user";
 import { InferGetServerSidePropsType } from "next";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
-
 const Index: Page<Props> = ({ user }: Props) => {
 	const { loading, data, error, errorMessage } = useGetRequest<Playlist[]>(
 		"/api/youtube/playlists",
@@ -27,7 +26,7 @@ const Index: Page<Props> = ({ user }: Props) => {
 
 			{loading || !data ? (
 				<Center>
-					<Spinner></Spinner>
+					<Spinner />
 				</Center>
 			) : error ? (
 				<DisplayError mt={8} errorMessage={errorMessage}></DisplayError>
