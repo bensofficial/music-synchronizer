@@ -32,12 +32,39 @@ import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
 import YoutubeMusicIcon from "$components/services/icons/YoutubeMusicIcon";
 import ConnectYoutubeButton from "$components/services/buttons/ConnectYoutubeButton";
 import { getUserWithoutDatesAndPassword } from "$lib/db/user";
+import {useRouter} from "next/router";
+import {useEffect} from "react";
+import { useToast } from '@chakra-ui/react'
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const Index: Page<Props> = ({ user, googleAuthUrl }: Props) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
+	const router = useRouter();
+	const toast = useToast();
+	console.log(router.query);
+
+	useEffect(() => {
+		const param = router.query['toast'];
+		if (param == 'spotify') {
+			toast({
+				title: 'Dein Account wurde erfolgreich mit Spotify verknüpft 👍',
+				status: "success",
+				isClosable: true,
+			});
+			return;
+		}
+
+		if (param == 'youtube') {
+			toast({
+				title: 'Dein Account wurde erfolgreich mit YouTube Music verknüpft 👍',
+				status: "success",
+				isClosable: true,
+			});
+			return;
+		}
+	}, []);
 
 	return (
 		<>

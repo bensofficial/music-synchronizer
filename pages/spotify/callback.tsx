@@ -36,6 +36,7 @@ export default function Spotify({
 	);
 }
 
+//TODO: das muss irgendwie zum dashboard verschoben werden
 export const getServerSideProps = ssrRequireAuth<{
 	error: string | null;
 }>(async (_ctx, _session, sessionData) => {
