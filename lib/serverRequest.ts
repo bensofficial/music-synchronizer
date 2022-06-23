@@ -43,9 +43,10 @@ export async function serverRequest<T>(
 	let resBody = null;
 
 	// if this fails it means that the body is not in json format
-	try {
-		resBody = await res.clone().json();
-	} catch (e) {
+
+	if (res.headers.get("Content-Type")?.includes("application/json")) {
+		resBody = await res.json();
+	} else {
 		const text = await res.text();
 		errorMessage = text;
 

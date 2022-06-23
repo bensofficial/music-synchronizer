@@ -45,9 +45,12 @@ export default abstract class ValidationRule {
 	Validates all rules one after each other until one fails or the end is reached 
 	*/
 	public validate(input: string): { errorMessage: string; error: boolean } {
-		if (!this.isValid(input)) {
+		const valid = this.isValid(input.trim());
+
+		if (valid === false) {
 			return { errorMessage: this.errorMessage, error: true };
 		}
+
 		return this.nextRule
 			? this.nextRule.validate(input)
 			: { errorMessage: "", error: false };

@@ -25,7 +25,11 @@ export type SongIdName = `${ServiceName}Id`;
 export default interface Service {
 	name: ServiceName;
 	songIdName: SongIdName;
-	getSongId: (name: string, artist: string) => Promise<string>;
+	getSongId: (
+		user: User,
+		name: string,
+		artist: string,
+	) => Promise<string | null>;
 	// return null if the playlist doesn't exist
 	getPlaylistId: (user: User, name: string) => Promise<string | null>;
 	// return null if the playlist doesn't exist
