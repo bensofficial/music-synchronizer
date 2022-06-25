@@ -1,5 +1,6 @@
 import { SongIdMap, User } from "@prisma/client";
 import getSongIdForService from "./cache";
+import { updateLastSynchronized } from "./playlist";
 import Service from "./types";
 
 export default async function synchronizePlaylist(
@@ -24,6 +25,9 @@ export default async function synchronizePlaylist(
 			originPlaylist.title,
 		);
 	}
+
+	await updateLastSynchronized(originPlaylist.serviceId, user.id);
+	await updateLastSynchronized(destinationPlaylistId, user.id);
 
 	const originSongs = await originService.getSongsInPlaylist(
 		user,

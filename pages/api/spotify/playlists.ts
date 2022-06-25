@@ -1,5 +1,6 @@
 import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
+import { playlistsToDisplayPlaylists } from "$lib/services/playlist";
 import getAllPlaylists from "$lib/services/spotify/api/getPlaylists";
 import { Playlist } from "$lib/services/types";
 
@@ -10,12 +11,18 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 		},
 	});
 
+	if (!user) {
+		return res.status(400).json({ errors: [{ message: "No User found" }] });
+	}
+
 	try {
-		const playlists = await getAllPlaylists(user!);
+		let playlists = await getAllPlaylists(user);
 
 		playlists.sort((a: Playlist, b: Playlist) =>
 			a.title.localeCompare(b.title),
 		);
+
+		playlists = await playlistsToDisplayPlaylists(user.id, playlists);
 
 		return res.status(200).send(playlists);
 	} catch (e) {

@@ -1,4 +1,4 @@
-import { useGetRequest } from "$lib/clientRequest";
+import { useGetRequest } from "$lib/request/clientRequest";
 import { Playlist, ServiceName } from "$lib/services/types";
 import { Spinner, VStack } from "@chakra-ui/react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";

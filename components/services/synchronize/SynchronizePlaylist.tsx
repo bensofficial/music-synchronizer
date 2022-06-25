@@ -1,5 +1,5 @@
 import DisplayError from "$components/error/DisplayError";
-import { usePostRequest } from "$lib/clientRequest";
+import { usePostRequest } from "$lib/request/clientRequest";
 import { ServiceName } from "$lib/services/types";
 import {
 	Button,

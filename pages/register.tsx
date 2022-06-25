@@ -9,7 +9,7 @@ import {
 import { FormInput } from "$/components/form";
 import { useState } from "react";
 import { password, string, email } from "$lib/validation/rules";
-import { usePostRequest } from "$lib/clientRequest";
+import { usePostRequest } from "$lib/request/clientRequest";
 import { useRouter } from "next/router";
 
 export default function Login() {

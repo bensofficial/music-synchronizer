@@ -27,8 +27,6 @@ export default apiWithSession(async (req, res, session) => {
 			email: data.email,
 			password: await hashPassword(data.password),
 			username: data.username,
-			spotifyAccessToken: "",
-			spotifyRefreshToken: "",
 		},
 	});
 

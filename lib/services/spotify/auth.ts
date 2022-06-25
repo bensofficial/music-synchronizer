@@ -1,10 +1,10 @@
 export function isUserLoggedInWithSpotify(
 	user:
 		| {
-				spotifyRefreshToken: string;
+				spotifyRefreshToken: string | null;
 		  }
 		| null
 		| undefined,
 ): boolean {
-	return user != null && user.spotifyRefreshToken.length > 0;
+	return user != null && user.spotifyRefreshToken !== null;
 }

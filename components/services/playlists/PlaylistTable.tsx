@@ -1,9 +1,9 @@
 import {
+	DisplayPlaylistFrontend,
 	Playlist,
 	playlistTypeToString,
 	ServiceName,
 } from "$lib/services/types";
-import getSongId from "$lib/services/youtube/api/getSongId";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import {
 	Table,
@@ -39,7 +39,7 @@ export default function PlaylistTable({
 }: TableContainerProps & {
 	user: UserWithoutDatesAndPassword;
 	originService: ServiceName;
-	playlists: Playlist[];
+	playlists: DisplayPlaylistFrontend[];
 }) {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const [selectedPlaylist, setSelectedPlaylist] = useState<Playlist | null>(
@@ -53,9 +53,9 @@ export default function PlaylistTable({
 					<Thead>
 						<Tr>
 							<Th>Title</Th>
-							<Th>Creator</Th>
 							<Th>Type</Th>
 							<Th>Synchronize</Th>
+							<Th>Last Synchronized</Th>
 						</Tr>
 					</Thead>
 					<Tbody>
@@ -66,7 +66,6 @@ export default function PlaylistTable({
 										{playlist.title}
 									</Text>
 								</Td>
-								<Td>{playlist.creator}</Td>
 								<Td>
 									<Tag>
 										{playlistTypeToString(playlist.type)}
@@ -82,6 +81,13 @@ export default function PlaylistTable({
 										leftIcon={<Icon as={AiOutlineSync} />}>
 										Synchronize
 									</Button>
+								</Td>
+								<Td>
+									{playlist.lastSynchronized
+										? new Date(
+												playlist.lastSynchronized,
+										  ).toDateString()
+										: ""}
 								</Td>
 							</Tr>
 						))}

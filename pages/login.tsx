@@ -8,7 +8,7 @@ import {
 } from "@chakra-ui/react";
 import { FormInput } from "$/components/form";
 import { email, string } from "$lib/validation/rules";
-import { usePostRequest } from "$lib/clientRequest";
+import { usePostRequest } from "$lib/request/clientRequest";
 import { useState } from "react";
 import { useRouter } from "next/router";
 import Link from "$components/chakra/Link";

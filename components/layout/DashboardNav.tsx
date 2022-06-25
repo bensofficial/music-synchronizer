@@ -1,4 +1,4 @@
-import { usePostRequest } from "$lib/clientRequest";
+import { usePostRequest } from "$lib/request/clientRequest";
 import { Button, Flex, Heading } from "@chakra-ui/react";
 import { useRouter } from "next/router";
 

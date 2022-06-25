@@ -7,7 +7,6 @@ export function youtubePlaylistToPlaylist(
 	if (
 		!playlist.id ||
 		!playlist.snippet?.title ||
-		!playlist.snippet.channelTitle ||
 		!playlist.status?.privacyStatus
 	) {
 		return null;
@@ -16,7 +15,6 @@ export function youtubePlaylistToPlaylist(
 	return {
 		serviceId: playlist.id,
 		title: playlist.snippet.title,
-		creator: playlist.snippet.channelTitle,
 		type: privacyStatusToPlaylistType(playlist.status.privacyStatus!),
 	};
 }

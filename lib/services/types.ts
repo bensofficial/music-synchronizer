@@ -8,15 +8,21 @@ export enum PlaylistType {
 export interface Playlist {
 	serviceId: string;
 	title: string;
-	creator: string;
 	type: PlaylistType;
 }
-
 export interface Song {
 	title: string;
 	artist: string;
 	serviceId: string;
 }
+
+export type DisplayPlaylist = Playlist & {
+	lastSynchronized: Date | null;
+};
+
+export type DisplayPlaylistFrontend = Playlist & {
+	lastSynchronized: string | null;
+};
 
 export type ServiceName = "spotify" | "youtube";
 
