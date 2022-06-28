@@ -180,3 +180,4 @@ async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
 
 	return isUserLoggedInWithSpotify(user);
 }
+

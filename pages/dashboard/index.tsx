@@ -23,7 +23,7 @@ import SpotifyIcon from "$components/services/icons/SpotifyIcon";
 import ServiceCardWrapper from "$/components/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
-import { ssrRequireAuth } from "$lib/auth";
+import {SessionUser, ssrRequireAuth} from "$lib/auth";
 import { InferGetServerSidePropsType } from "next";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import ConnectSpotifyButton from "$components/services/buttons/ConnectSpotifyButton";
@@ -35,19 +35,33 @@ import { getUserWithoutDatesAndPassword } from "$lib/db/user";
 import {useRouter} from "next/router";
 import {useEffect} from "react";
 import { useToast } from '@chakra-ui/react'
+import getEnvVar from "$lib/env";
+import {getRequest, postRequest} from "$lib/serverRequest";
+import * as queryString from "query-string";
+import {SpotifyUser} from "$lib/services/spotify/types";
+import prisma from "$lib/prisma";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
-const Index: Page<Props> = ({ user, googleAuthUrl }: Props) => {
+const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 	const { isOpen, onOpen, onClose } = useDisclosure();
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
 	const router = useRouter();
 	const toast = useToast();
-	console.log(router.query);
+	let test = false;
 
 	useEffect(() => {
 		const param = router.query['toast'];
 		if (param == 'spotify') {
+			test= true;
+			if (error !== null) {
+				toast({
+					title: `Es gab ein Problem (${error})`,
+					status: "error",
+					isClosable: true
+				});
+				return;
+			}
 			toast({
 				title: 'Dein Account wurde erfolgreich mit Spotify verknüpft 👍',
 				status: "success",
@@ -133,26 +147,189 @@ Index.layout = DashboardLayout;
 export const getServerSideProps = ssrRequireAuth<{
 	user: UserWithoutDatesAndPassword;
 	googleAuthUrl: string;
+	error: string | null;
 }>(async (_context, _session, sessionData) => {
 	const user = await getUserWithoutDatesAndPassword(sessionData.user.id);
-
+	const param = _context.query.toast || null;
+	console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', param);
 	if (!user) {
 		return {
 			redirect: {
 				destination: "/login",
 				permanent: false,
+				error: null
 			},
 		};
 	}
 
 	const googleAuthUrl = generateAuthUrl();
 
+	if (param == 'spotify') {
+
+		if (await isUserConnected(sessionData.user)) {
+			return {
+				props: {
+					user,
+					googleAuthUrl,
+					error: "spotify_user_already_authenticated",
+				},
+			};
+		}
+
+		const clientId = getEnvVar("SPOTIFY_CLIENT_ID");
+		const clientSecret = getEnvVar("SPOTIFY_CLIENT_SECRET");
+		const baseUrl = getEnvVar("BASE_URL");
+
+		const code = _context.query.code || null;
+		const error = _context.query.error || null;
+		const state = _context.query.state || null;
+
+		const previousState = _context.req.cookies.spotify_state;
+
+		if (error !== null) {
+			return {
+				props: {
+					user,
+					googleAuthUrl,
+					error: error.toString(),
+				},
+			};
+		}
+
+		if (state === null) {
+			return {
+				props: {
+					user,
+					googleAuthUrl,
+					error: "state_is_null",
+				},
+			};
+		}
+
+		if (state !== previousState) {
+			return {
+				props: {
+					user,
+					googleAuthUrl,
+					error: "state_mismatch",
+				},
+			};
+		}
+
+		const {
+			resData,
+			error: resError,
+			errorMessage,
+			status
+		} = await postRequest<{
+			access_token: string;
+			refresh_token: string;
+		}>("https://accounts.spotify.com/api/token", {
+			body: queryString.stringify({
+				code: code,
+				redirect_uri: `${baseUrl}/dashboard?toast=spotify`,
+				grant_type: "authorization_code",
+			}),
+			headers: {
+				Authorization:
+					"Basic " +
+					new Buffer(clientId + ":" + clientSecret).toString("base64"),
+				"Content-Type": "application/x-www-form-urlencoded",
+			},
+		});
+
+		if (resError || !resData) {
+			console.log(resData);
+			console.log(resError);
+			console.log(status)
+			return {
+				props: {
+					user,
+					googleAuthUrl,
+					error: errorMessage || null,
+				},
+			};
+		}
+
+		const {
+			resData: spotifyUser,
+			error: spotifyUserError,
+			errorMessage: spotifyUserErrorMessage,
+			status: test,
+		} = await getRequest<SpotifyUser>("https://api.spotify.com/v1/me", {
+			headers: {
+				Authorization: `Bearer ${resData.access_token}`,
+				"Content-Type": "application/json",
+			},
+			body: null,
+		});
+
+		if (!spotifyUser || spotifyUserError) {
+			return {
+				props: {
+					user,
+					googleAuthUrl,
+					error: spotifyUserErrorMessage,
+				},
+			};
+		}
+
+		await setSpotifyUserId(sessionData.user, spotifyUser);
+		await setSpotifyTokens(sessionData.user, resData);
+
+		console.log('set up done');
+	}
+
 	return {
 		props: {
 			user,
 			googleAuthUrl,
+			error: null
 		},
 	};
 });
+
+async function setSpotifyTokens(
+	sessionUser: SessionUser,
+	resData: { refresh_token: string; access_token: string },
+) {
+	await prisma.user.update({
+		data: {
+			spotifyAccessToken: resData.access_token,
+			spotifyRefreshToken: resData.refresh_token,
+		},
+		where: {
+			id: sessionUser.id,
+		},
+	});
+
+	console.log('Tokens geupdatet')
+}
+
+async function setSpotifyUserId(
+	sessionUser: SessionUser,
+	spotifyUser: SpotifyUser,
+) {
+	await prisma.user.update({
+		data: {
+			spotifyUserId: spotifyUser.id,
+		},
+		where: {
+			id: sessionUser.id,
+		},
+	});
+	console.log('userId gesetzt')
+}
+
+async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
+	const user = await prisma.user.findFirst({
+		where: {
+			id: sessionUser.id,
+		},
+	});
+
+	return isUserLoggedInWithSpotify(user);
+}
+
 
 export default Index;
