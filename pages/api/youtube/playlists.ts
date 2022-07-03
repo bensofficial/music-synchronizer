@@ -1,5 +1,6 @@
 import { apiRequireAuth } from "$lib/auth";
 import prisma from "$lib/prisma";
+import { playlistsToDisplayPlaylists } from "$lib/services/playlist";
 import { Playlist } from "$lib/services/types";
 import { getAllPlaylists } from "$lib/services/youtube/api/getPlaylists";
 
@@ -13,11 +14,13 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 	}
 
 	try {
-		const playlists = await getAllPlaylists(user);
+		let playlists = await getAllPlaylists(user);
 
 		playlists.sort((a: Playlist, b: Playlist) =>
 			a.title.localeCompare(b.title),
 		);
+
+		playlists = await playlistsToDisplayPlaylists(user.id, playlists);
 
 		return res.status(200).send(playlists);
 	} catch (e) {

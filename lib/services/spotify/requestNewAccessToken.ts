@@ -3,7 +3,7 @@ import * as queryString from "query-string";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import { User } from "@prisma/client";
 import getEnvVar from "$lib/env";
-import { postRequest } from "$lib/serverRequest";
+import { postRequest } from "$lib/request/serverRequest";
 
 export async function requestNewAccessToken(
 	user: User,

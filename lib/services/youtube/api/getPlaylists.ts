@@ -49,7 +49,7 @@ async function getPlaylistBatch(
 
 	const res = await youtube.playlists.list(parameters);
 
-	let playlists: Playlist[] = [];
+	let playlists: (Playlist | null)[] = [];
 
 	if (res.data.items) {
 		playlists = res.data.items.map((playlist) =>
@@ -58,7 +58,7 @@ async function getPlaylistBatch(
 	}
 
 	return {
-		playlists,
+		playlists: playlists.filter((p) => p != null) as Playlist[],
 		nextPageToken: res.data.nextPageToken,
 		prevPageToken: res.data.prevPageToken,
 	};

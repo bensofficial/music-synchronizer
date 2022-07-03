@@ -1,5 +1,5 @@
 import prisma from "$lib/prisma";
-import { SongIdMap } from "@prisma/client";
+import { SongIdMap, User } from "@prisma/client";
 import Service, { Song } from "./types";
 
 async function getSongIdMap(
@@ -44,20 +44,40 @@ async function createSongIdMap(
 }
 
 export default async function getSongIdForService(
+	user: User,
 	originSong: Song,
 	originService: Service,
 	destinationService: Service,
-): Promise<string> {
+): Promise<string | null> {
 	let songIdMap = await getSongIdMap(originSong.serviceId, originService);
 
 	if (songIdMap && songIdMap[destinationService.songIdName]) {
+		console.log("Song: ", originSong.title, " already in cache");
+
 		return songIdMap[destinationService.songIdName]!;
 	}
 
 	const destinationSongId = await destinationService.getSongId(
+		user,
 		originSong.title,
 		originSong.artist,
 	);
+
+	if (!destinationSongId) {
+		return null;
+	}
+
+	let songIdMapDestination = await getSongIdMap(
+		destinationSongId,
+		destinationService,
+	);
+
+	if (
+		songIdMapDestination &&
+		songIdMapDestination[destinationService.songIdName]
+	) {
+		return songIdMapDestination[destinationService.songIdName]!;
+	}
 
 	if (songIdMap) {
 		updateSongIdMap(
@@ -68,6 +88,12 @@ export default async function getSongIdForService(
 		);
 		return destinationSongId;
 	}
+
+	console.log(
+		"Song Map for: ",
+		originSong.title,
+		" does not exist yet, is being created",
+	);
 
 	createSongIdMap(
 		originService,

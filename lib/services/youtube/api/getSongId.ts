@@ -1,11 +1,13 @@
+import { User } from "@prisma/client";
 import { google } from "googleapis";
 
 // Quota cost: 100
 
 export default async function getSongId(
+	_user: User,
 	title: string,
 	artist: string,
-): Promise<string> {
+): Promise<string | null> {
 	const youtube = google.youtube("v3");
 
 	const res = await youtube.search.list({
@@ -16,7 +18,7 @@ export default async function getSongId(
 	});
 
 	if (!res.data.items) {
-		throw new Error("Song not found");
+		return null;
 	}
 
 	if (res.data.items[0].id && res.data.items[0].id.videoId) {

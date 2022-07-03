@@ -33,7 +33,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 	if (isUserLoggedInWithSpotify(user)) {
 		res.redirect(
 			307,
-			`http://localhost:3000/spotify/callback?error=user_already_authenticated`,
+			`http://localhost:3000/callback/spotify?error=user_already_authenticated`,
 		);
 		return;
 	}
@@ -54,7 +54,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 			307,
 			"https://accounts.spotify.com/authorize?" +
 				new URLSearchParams(
-					`response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${baseUrl}/spotify/callback&state=${state}`,
+					`response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${baseUrl}/callback/spotify&state=${state}`,
 				),
 		);
 	} catch (err) {

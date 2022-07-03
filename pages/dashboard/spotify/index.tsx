@@ -1,7 +1,11 @@
 import SpotifyIcon from "$components/services/icons/SpotifyIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import PlaylistTableWrapper from "$components/services/playlists/PlaylistTableWrapper";
-import { Playlist, PlaylistType } from "$lib/services/types";
+import {
+	DisplayPlaylistFrontend,
+	Playlist,
+	PlaylistType,
+} from "$lib/services/types";
 import { Page } from "$types/next";
 import {
 	Heading,
@@ -14,7 +18,7 @@ import {
 	Spinner,
 	Center,
 } from "@chakra-ui/react";
-import { useGetRequest } from "$lib/clientRequest";
+import { useGetRequest } from "$lib/request/clientRequest";
 import { ssrRequireAuth } from "$lib/auth";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import { getUserWithoutDatesAndPassword } from "$lib/db/user";
@@ -24,9 +28,9 @@ import DisplayError from "$components/error/DisplayError";
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
 const Index: Page<Props> = ({ user }: Props) => {
-	const { loading, errorMessage, error, data } = useGetRequest<Playlist[]>(
-		"/api/spotify/playlists",
-	);
+	const { loading, errorMessage, error, data } = useGetRequest<
+		DisplayPlaylistFrontend[]
+	>("/api/spotify/playlists");
 
 	return (
 		<>

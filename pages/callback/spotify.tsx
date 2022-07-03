@@ -6,7 +6,7 @@ import prisma from "$lib/prisma";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import Link from "$/components/chakra/Link";
 import getEnvVar from "$lib/env";
-import { getRequest, postRequest } from "$lib/serverRequest";
+import { getRequest, postRequest } from "$lib/request/serverRequest";
 import { SpotifyUser } from "$lib/services/spotify/types";
 import DisplayError from "$components/error/DisplayError";
 
@@ -91,7 +91,7 @@ export const getServerSideProps = ssrRequireAuth<{
 	}>("https://accounts.spotify.com/api/token", {
 		body: queryString.stringify({
 			code: code,
-			redirect_uri: `${baseUrl}/spotify/callback`,
+			redirect_uri: `${baseUrl}/callback/spotify`,
 			grant_type: "authorization_code",
 		}),
 		headers: {

@@ -3,7 +3,6 @@ import { SpotifyPlaylist, SpotifySong } from "../types";
 
 export function spotifyPlaylistToPlaylist(playlist: SpotifyPlaylist): Playlist {
 	return {
-		creator: playlist.owner.display_name,
 		serviceId: playlist.id,
 		title: playlist.name,
 		type: playlist.public ? PlaylistType.public : PlaylistType.private,

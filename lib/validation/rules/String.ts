@@ -82,6 +82,6 @@ class Matches extends String {
 	}
 
 	protected isValid(input: string): boolean {
-		return this.shouldMatch.test(input);
+		return this.shouldMatch.test(input.trim());
 	}
 }

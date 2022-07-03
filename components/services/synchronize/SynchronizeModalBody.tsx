@@ -97,8 +97,10 @@ export default function SynchronizeModalBody({
 		<>
 			{service && playlistId && tabIndex == 2 ? (
 				<SynchronizePlaylist
-					service={service}
-					playlistId={playlistId}
+					originService={originService}
+					destService={service}
+					destPlaylistId={playlistId}
+					originPlaylistId={playlist.serviceId}
 				/>
 			) : (
 				tabs

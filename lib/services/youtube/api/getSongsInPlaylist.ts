@@ -54,14 +54,14 @@ async function getSongBatch(
 
 	const res = await youtube.playlistItems.list(parameters);
 
-	let songs: Song[] = [];
+	let songs: (Song | null)[] = [];
 
 	if (res.data.items) {
 		songs = res.data.items.map((song) => youtubeSongToSong(song));
 	}
 
 	return {
-		songs,
+		songs: songs.filter((s) => s != null) as Song[],
 		nextPageToken: res.data.nextPageToken,
 		prevPageToken: res.data.prevPageToken,
 	};
