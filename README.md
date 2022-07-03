@@ -37,6 +37,7 @@ GOOGLE_CLIENT_ID=<your google client id>
 GOOGLE_CLIENT_SECRET=<your google client secret>
 SPOTIFY_CLIENT_ID=<your spotify client id>
 SPOTIFY_CLIENT_SECRET=<your spotify client secret>
+DATABASE_URL=<your database connection url>
 ```
 
 Install the dependencies of the Project (You can open up a new terminal in Visua Studio Code with <kbd>Ctrl</kbd> + <kbd>J</kbd>):
