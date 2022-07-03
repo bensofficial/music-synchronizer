@@ -33,7 +33,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 	if (isUserLoggedInWithSpotify(user)) {
 		res.redirect(
 			307,
-			`http://localhost:3000/spotify/callback?error=user_already_authenticated`,
+			`${baseUrl}/dashboard?toast=spotify`,
 		);
 		return;
 	}
