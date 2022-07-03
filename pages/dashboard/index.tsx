@@ -23,23 +23,26 @@ import SpotifyIcon from "$components/services/icons/SpotifyIcon";
 import ServiceCardWrapper from "$/components/services/ServiceCardWrapper";
 import { IoAdd } from "react-icons/io5";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
-import {SessionUser, ssrRequireAuth} from "$lib/auth";
+import { SessionUser, ssrRequireAuth } from "$lib/auth";
 import { InferGetServerSidePropsType } from "next";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import ConnectSpotifyButton from "$components/services/buttons/ConnectSpotifyButton";
-import {generateAuthUrl, handleCallback} from "$lib/services/youtube/authServer";
+import {
+	generateAuthUrl,
+	handleCallback,
+} from "$lib/services/youtube/authServer";
 import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
 import YoutubeMusicIcon from "$components/services/icons/YoutubeMusicIcon";
 import ConnectYoutubeButton from "$components/services/buttons/ConnectYoutubeButton";
 import { getUserWithoutDatesAndPassword } from "$lib/db/user";
-import {useRouter} from "next/router";
-import {useEffect} from "react";
-import { useToast } from '@chakra-ui/react'
+import { useRouter } from "next/router";
+import { useEffect } from "react";
+import { useToast } from "@chakra-ui/react";
 import getEnvVar from "$lib/env";
 import * as queryString from "query-string";
-import {SpotifyUser} from "$lib/services/spotify/types";
+import { SpotifyUser } from "$lib/services/spotify/types";
 import prisma from "$lib/prisma";
-import {getRequest, postRequest} from "$lib/request/serverRequest";
+import { getRequest, postRequest } from "$lib/request/serverRequest";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 
@@ -48,31 +51,29 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
 	const router = useRouter();
 	const toast = useToast();
-	let test = false;
 
 	useEffect(() => {
-		const param = router.query['toast'];
-		if (param == 'spotify') {
-			test= true;
+		const param = router.query["toast"];
+		if (param == "spotify") {
 			if (error !== null) {
 				toast({
 					title: `Es gab ein Problem (${error})`,
 					status: "error",
-					isClosable: true
+					isClosable: true,
 				});
 				return;
 			}
 			toast({
-				title: 'Your account has successfully been connected with Spotify 👍',
+				title: "Your account has successfully been connected with Spotify 👍",
 				status: "success",
 				isClosable: true,
 			});
 			return;
 		}
 
-		if (param == 'youtube') {
+		if (param == "youtube") {
 			toast({
-				title: 'Your account has been connected with YouTube Music 👍',
+				title: "Your account has been connected with YouTube Music 👍",
 				status: "success",
 				isClosable: true,
 			});
@@ -157,15 +158,14 @@ export const getServerSideProps = ssrRequireAuth<{
 			redirect: {
 				destination: "/login",
 				permanent: false,
-				error: null
+				error: null,
 			},
 		};
 	}
 
 	const googleAuthUrl = generateAuthUrl();
 
-	if (param == 'spotify') {
-
+	if (param == "spotify") {
 		if (await isUserConnected(sessionData.user)) {
 			return {
 				props: {
@@ -220,7 +220,7 @@ export const getServerSideProps = ssrRequireAuth<{
 			resData,
 			error: resError,
 			errorMessage,
-			status
+			status,
 		} = await postRequest<{
 			access_token: string;
 			refresh_token: string;
@@ -233,7 +233,9 @@ export const getServerSideProps = ssrRequireAuth<{
 			headers: {
 				Authorization:
 					"Basic " +
-					new Buffer(clientId + ":" + clientSecret).toString("base64"),
+					new Buffer(clientId + ":" + clientSecret).toString(
+						"base64",
+					),
 				"Content-Type": "application/x-www-form-urlencoded",
 			},
 		});
@@ -241,7 +243,7 @@ export const getServerSideProps = ssrRequireAuth<{
 		if (resError || !resData) {
 			console.log(resData);
 			console.log(resError);
-			console.log(status)
+			console.log(status);
 			return {
 				props: {
 					user,
@@ -277,10 +279,10 @@ export const getServerSideProps = ssrRequireAuth<{
 		await setSpotifyUserId(sessionData.user, spotifyUser);
 		await setSpotifyTokens(sessionData.user, resData);
 
-		console.log('set up done');
+		console.log("set up done");
 	}
 
-	if (param == 'youtube') {
+	if (param == "youtube") {
 		if (!_context.req.url || !user) {
 			return {
 				notFound: true,
@@ -314,7 +316,7 @@ export const getServerSideProps = ssrRequireAuth<{
 			redirect: {
 				destination: "/login",
 				permanent: false,
-				error: null
+				error: null,
 			},
 		};
 	}
@@ -323,7 +325,7 @@ export const getServerSideProps = ssrRequireAuth<{
 		props: {
 			user,
 			googleAuthUrl,
-			error: null
+			error: null,
 		},
 	};
 });
@@ -342,7 +344,7 @@ async function setSpotifyTokens(
 		},
 	});
 
-	console.log('Tokens geupdatet')
+	console.log("Tokens geupdatet");
 }
 
 async function setSpotifyUserId(
@@ -357,7 +359,7 @@ async function setSpotifyUserId(
 			id: sessionUser.id,
 		},
 	});
-	console.log('userId gesetzt')
+	console.log("userId gesetzt");
 }
 
 async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
@@ -369,6 +371,5 @@ async function isUserConnected(sessionUser: SessionUser): Promise<boolean> {
 
 	return isUserLoggedInWithSpotify(user);
 }
-
 
 export default Index;
