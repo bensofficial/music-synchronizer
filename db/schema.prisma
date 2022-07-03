@@ -32,7 +32,7 @@ model SongIdMap {
 
 model Playlist {
     id                  Int             @id @default(autoincrement())
-    serviceId           String?         @unique
+    serviceId           String?         @unique 
     lastSynchronized    DateTime?       
     userId              Int 
     user                User            @relation(fields: [userId], references: [id])

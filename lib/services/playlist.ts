@@ -35,12 +35,14 @@ export async function playlistsToDisplayPlaylists(
 }
 
 async function createPlaylist(userId: number, playlistId: string) {
-	await prisma.playlist.create({
-		data: {
-			userId,
-			serviceId: playlistId,
-		},
-	});
+	try {
+		await prisma.playlist.create({
+			data: {
+				userId,
+				serviceId: playlistId,
+			},
+		});
+	} catch {}
 }
 
 export async function updateLastSynchronized(
