@@ -6,7 +6,7 @@ import { userIsLoggedInWithGoogle } from "./authFrontend";
 
 const GOOGLE_CLIENT_ID = getEnvVar("GOOGLE_CLIENT_ID");
 const GOOGLE_CLIENT_SECRET = getEnvVar("GOOGLE_CLIENT_SECRET");
-const GOOGLE_REDIRECT_URL = `${getEnvVar("BASE_URL")}/callback/youtube`;
+const GOOGLE_REDIRECT_URL = `${getEnvVar("BASE_URL")}/dashboard?toast=youtube`;
 
 const oauth2Client = new google.auth.OAuth2(
 	GOOGLE_CLIENT_ID,

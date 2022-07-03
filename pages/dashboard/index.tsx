@@ -27,7 +27,7 @@ import {SessionUser, ssrRequireAuth} from "$lib/auth";
 import { InferGetServerSidePropsType } from "next";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import ConnectSpotifyButton from "$components/services/buttons/ConnectSpotifyButton";
-import { generateAuthUrl } from "$lib/services/youtube/authServer";
+import {generateAuthUrl, handleCallback} from "$lib/services/youtube/authServer";
 import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
 import YoutubeMusicIcon from "$components/services/icons/YoutubeMusicIcon";
 import ConnectYoutubeButton from "$components/services/buttons/ConnectYoutubeButton";
@@ -63,7 +63,7 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 				return;
 			}
 			toast({
-				title: 'Dein Account wurde erfolgreich mit Spotify verknüpft 👍',
+				title: 'Your account has successfully been connected with Spotify 👍',
 				status: "success",
 				isClosable: true,
 			});
@@ -72,13 +72,13 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 
 		if (param == 'youtube') {
 			toast({
-				title: 'Dein Account wurde erfolgreich mit YouTube Music verknüpft 👍',
+				title: 'Your account has been connected with YouTube Music 👍',
 				status: "success",
 				isClosable: true,
 			});
 			return;
 		}
-	}, []);
+	}, [isUserLoggedInWithSpotify(user), userIsLoggedInWithGoogle(user)]);
 
 	return (
 		<>
@@ -149,9 +149,9 @@ export const getServerSideProps = ssrRequireAuth<{
 	googleAuthUrl: string;
 	error: string | null;
 }>(async (_context, _session, sessionData) => {
-	const user = await getUserWithoutDatesAndPassword(sessionData.user.id);
+	let user = await getUserWithoutDatesAndPassword(sessionData.user.id);
 	const param = _context.query.toast || null;
-	console.log('AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA', param);
+
 	if (!user) {
 		return {
 			redirect: {
@@ -278,6 +278,45 @@ export const getServerSideProps = ssrRequireAuth<{
 		await setSpotifyTokens(sessionData.user, resData);
 
 		console.log('set up done');
+	}
+
+	if (param == 'youtube') {
+		if (!_context.req.url || !user) {
+			return {
+				notFound: true,
+			};
+		}
+
+		const authCode = new URL(
+			_context.req.url,
+			getEnvVar("BASE_URL"),
+		).searchParams.get("code");
+
+		let error: string | null = null;
+
+		if (!authCode) {
+			error = "Parameter 'code' missing in url query parameters";
+		}
+
+		if (authCode) {
+			try {
+				await handleCallback(authCode, user.id);
+			} catch (e: any) {
+				error = e.message;
+			}
+		}
+	}
+
+	user = await getUserWithoutDatesAndPassword(sessionData.user.id);
+
+	if (!user) {
+		return {
+			redirect: {
+				destination: "/login",
+				permanent: false,
+				error: null
+			},
+		};
 	}
 
 	return {
