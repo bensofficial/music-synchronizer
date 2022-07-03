@@ -23,7 +23,7 @@ code .
 > (macOS) `brew install --cask visual-studio-code`  
 > (Windows) `winget install -e --id Microsoft.VisualStudioCode`
 
-Create a `.env.local` file and set required environment variables (have a look at `env.example`)
+Create a `.env` file and set required environment variables (have a look at `env.example`)
 
 You can obtain your own `GOOGLE_CLIENT_ID` and `GOOGLE_CLIENT_SECRET` in the [Google Developer Console](https://console.cloud.google.com/apis/dashboard)
 
