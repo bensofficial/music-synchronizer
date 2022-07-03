@@ -36,10 +36,10 @@ import {useRouter} from "next/router";
 import {useEffect} from "react";
 import { useToast } from '@chakra-ui/react'
 import getEnvVar from "$lib/env";
-import {getRequest, postRequest} from "$lib/serverRequest";
 import * as queryString from "query-string";
 import {SpotifyUser} from "$lib/services/spotify/types";
 import prisma from "$lib/prisma";
+import {getRequest, postRequest} from "$lib/request/serverRequest";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 

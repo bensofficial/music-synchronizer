@@ -54,7 +54,7 @@ export default apiRequireAuth(async (_req, res, _session, sessionData) => {
 			307,
 			"https://accounts.spotify.com/authorize?" +
 				new URLSearchParams(
-					`response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${baseUrl}/spotify/callback&state=${state}`,
+					`response_type=code&client_id=${clientId}&scope=${scope}&redirect_uri=${baseUrl}/dashboard?toast=spotify&state=${state}`,
 				),
 		);
 	} catch (err) {
