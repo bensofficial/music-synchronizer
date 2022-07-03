@@ -11,7 +11,7 @@ export default async function getSongsInPlaylist(
 	let songs: Song[] = [];
 	let nextPageUrl:
 		| string
-		| null = `https://api.spotify.com/v1/playlists/${playlistId}/tracks`;
+		| null = `https://api.spotify.com/v1/playlists/${playlistId}/tracks?limit=50`;
 
 	do {
 		const result: SongBatchResult = await getSongBatch(nextPageUrl, user);
@@ -34,7 +34,9 @@ export async function getSongBatch(
 	user: User,
 ): Promise<SongBatchResult> {
 	const { resData, error, errorMessage } = await getRequest<{
-		items: SpotifySong[];
+		items: {
+			track: SpotifySong;
+		}[];
 		next: string | null;
 		previous: string | null;
 	}>(pageUrl, user);
@@ -43,7 +45,7 @@ export async function getSongBatch(
 		throw new Error(errorMessage);
 	}
 
-	const songs = resData.items.map((song) => spotifySongToSong(song));
+	const songs = resData.items.map((song) => spotifySongToSong(song.track));
 
 	return {
 		songs,

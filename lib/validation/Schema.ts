@@ -95,8 +95,12 @@ class Schema {
  * You can validate the data in the api route like this: (Logically you should do this before you use the data)
  * ```
  * export default someApiRoute((req, res) => {
- * 		if(!expectedData.validate(req, res)){
+ * 		if(!expectedData.validateRequestBody(req, res)){
  * 			return;		
+ * 		}
+ * 
+ * 		if(!expectedData.validateRequestQuery(req,res)){
+ * 			return;
  * 		}
  * 		//do other stuff
  * })

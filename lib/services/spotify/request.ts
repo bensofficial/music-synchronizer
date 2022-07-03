@@ -1,6 +1,7 @@
-import { RequestMethod, serverRequest } from "$lib/serverRequest";
+import { RequestMethod, serverRequest } from "$lib/request/serverRequest";
 import { User } from "@prisma/client";
 import { RequestInit } from "next/dist/server/web/spec-extension/request";
+import { isUserLoggedInWithSpotify } from "./auth";
 import { requestNewAccessToken } from "./requestNewAccessToken";
 
 export async function getRequest<T = Record<string, never>>(
@@ -32,6 +33,10 @@ async function requestRefreshTokenWrapper<T>(
 	method: RequestMethod,
 	body: Record<string, any> | null | string = null,
 ) {
+	if (!isUserLoggedInWithSpotify(user)) {
+		throw new Error("This user is not logged in with spotify");
+	}
+
 	if (typeof body === "object" && body !== null) {
 		body = JSON.stringify(body);
 	}

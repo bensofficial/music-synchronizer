@@ -1,18 +1,18 @@
-import { getRequest } from "$lib/serverRequest";
+import { User } from "@prisma/client";
+import { getRequest } from "../request";
 import { SpotifySong } from "../types";
 export default async function getSongId(
+	user: User,
 	title: string,
 	artist: string,
-): Promise<string> {
+): Promise<string | null> {
 	const { resData, error, errorMessage } = await getRequest<{
 		tracks: {
 			items: SpotifySong[];
 		};
 	}>(
 		`https://api.spotify.com/v1/search?type=track&limit=1&q=${title} ${artist}`,
-		{
-			headers: { Authorization: "", "Content-Type": "application/json" },
-		},
+		user,
 	);
 
 	if (!resData || error) {
@@ -20,7 +20,7 @@ export default async function getSongId(
 	}
 
 	if (resData.tracks.items.length === 0) {
-		throw new Error("Song not found");
+		return null;
 	}
 
 	return resData.tracks.items[0].id;

@@ -10,7 +10,11 @@ export default async function addToPlaylist(
 	videoIds: string[],
 ) {
 	for (let i = 0; i < videoIds.length; i += 1) {
-		await addOneSongToPlaylist(user, playlistId, videoIds[i]);
+		try {
+			await addOneSongToPlaylist(user, playlistId, videoIds[i]);
+		} catch (e) {
+			throw e;
+		}
 	}
 }
 
@@ -24,6 +28,7 @@ async function addOneSongToPlaylist(
 	const youtube = google.youtube("v3");
 
 	await youtube.playlistItems.insert({
+		part: ["snippet"],
 		requestBody: {
 			snippet: {
 				playlistId,

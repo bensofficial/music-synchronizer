@@ -2,8 +2,8 @@ import YoutubeMusicIcon from "$components/services/icons/YoutubeMusicIcon";
 import DashboardLayout from "$/components/layout/DashboardLayout";
 import DisplayError from "$components/error/DisplayError";
 import PlaylistTableWrapper from "$components/services/playlists/PlaylistTableWrapper";
-import { useGetRequest } from "$lib/clientRequest";
-import { Playlist } from "$lib/services/types";
+import { useGetRequest } from "$lib/request/clientRequest";
+import { DisplayPlaylistFrontend, Playlist } from "$lib/services/types";
 import { Page } from "$types/next";
 import { Heading, HStack, Spinner, Center } from "@chakra-ui/react";
 import { ssrRequireAuth } from "$lib/auth";
@@ -13,9 +13,9 @@ import { InferGetServerSidePropsType } from "next";
 
 type Props = InferGetServerSidePropsType<typeof getServerSideProps>;
 const Index: Page<Props> = ({ user }: Props) => {
-	const { loading, data, error, errorMessage } = useGetRequest<Playlist[]>(
-		"/api/youtube/playlists",
-	);
+	const { loading, data, error, errorMessage } = useGetRequest<
+		DisplayPlaylistFrontend[]
+	>("/api/youtube/playlists");
 
 	return (
 		<>

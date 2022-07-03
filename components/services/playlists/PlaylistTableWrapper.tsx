@@ -1,6 +1,6 @@
 import {
+	DisplayPlaylistFrontend,
 	Playlist,
-	playlistTypeToString,
 	ServiceName,
 } from "$lib/services/types";
 import { useEffect, useState } from "react";
@@ -28,19 +28,23 @@ export default function PlaylistTableWrapper({
 }: {
 	user: UserWithoutDatesAndPassword;
 	originService: ServiceName;
-	playlists: Playlist[];
+	playlists: DisplayPlaylistFrontend[];
 }) {
-	const resultsPerPage = 7;
+	const resultsPerPage = 8;
 
 	const [filteredPlaylists, setFilteredPlaylists] =
-		useState<Playlist[]>(playlists);
-	const [pagePlaylists, setPagePlaylists] = useState<Playlist[]>([]);
+		useState<DisplayPlaylistFrontend[]>(playlists);
+	const [pagePlaylists, setPagePlaylists] = useState<
+		DisplayPlaylistFrontend[]
+	>([]);
 	const [currentPage, setCurrentPage] = useState(1);
 	const [numberOfPages, setNumberOfPages] = useState(1);
 	const [searchInput, setSearchInput] = useState("");
 
 	useEffect(() => {
-		setNumberOfPages(Math.ceil(filteredPlaylists.length / resultsPerPage));
+		setNumberOfPages(
+			Math.max(Math.ceil(filteredPlaylists.length / resultsPerPage), 1),
+		);
 	}, [filteredPlaylists]);
 
 	useEffect(() => {
@@ -54,10 +58,7 @@ export default function PlaylistTableWrapper({
 
 		setFilteredPlaylists(
 			playlists.filter(
-				(playlist) =>
-					playlist.creator.toLowerCase().search(input) > -1 ||
-					playlist.title.toLowerCase().search(input) > -1 ||
-					playlistTypeToString(playlist.type).search(input) > -1,
+				(playlist) => playlist.title.toLowerCase().search(input) > -1,
 			),
 		);
 	}, [playlists, searchInput]);
@@ -72,7 +73,7 @@ export default function PlaylistTableWrapper({
 			filteredPlaylists.length - 1,
 		);
 
-		setPagePlaylists(filteredPlaylists.slice(start, end + 1));
+		setPagePlaylists(filteredPlaylists.slice(start, end));
 	}, [filteredPlaylists, currentPage]);
 
 	return (
