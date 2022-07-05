@@ -16,6 +16,14 @@ export default async function getSongId(
 	);
 
 	if (!resData || error) {
+		/*
+		This comparison is necessary since spotify throws an Error if the search yields
+		no results instead of returning 0 items 
+		*/
+		if (errorMessage === "Not found.") {
+			return null;
+		}
+
 		throw new Error(errorMessage);
 	}
 

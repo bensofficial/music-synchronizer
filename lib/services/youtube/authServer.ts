@@ -2,7 +2,7 @@ import getEnvVar from "$lib/env";
 import { User } from "@prisma/client";
 import { google } from "googleapis";
 import prisma from "lib/prisma";
-import { userIsLoggedInWithGoogle } from "./authFrontend";
+import { isUserLoggedInWithGoogle } from "./authFrontend";
 
 const GOOGLE_CLIENT_ID = getEnvVar("GOOGLE_CLIENT_ID");
 const GOOGLE_CLIENT_SECRET = getEnvVar("GOOGLE_CLIENT_SECRET");
@@ -47,7 +47,7 @@ export async function handleCallback(
 }
 
 export function authorizeUser(user: User): void {
-	if (!userIsLoggedInWithGoogle(user)) {
+	if (!isUserLoggedInWithGoogle(user)) {
 		throw new Error("User is not logged in with google");
 	}
 

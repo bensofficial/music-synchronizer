@@ -1,7 +1,7 @@
 import Link from "$components/chakra/Link";
 import { isUserLoggedInWithSpotify } from "$lib/services/spotify/auth";
 import { ServiceName } from "$lib/services/types";
-import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
+import { isUserLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
 import { UserWithoutDatesAndPassword } from "$types/user";
 import { Flex, Icon, Text, VStack } from "@chakra-ui/react";
 import { Dispatch, SetStateAction } from "react";
@@ -48,7 +48,7 @@ export default function SelectService({
 					<YoutubeMusicIcon />
 				</SelectServiceButton>
 			),
-			connected: userIsLoggedInWithGoogle(user),
+			connected: isUserLoggedInWithGoogle(user),
 		},
 	];
 

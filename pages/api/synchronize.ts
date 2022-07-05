@@ -49,6 +49,8 @@ export default apiRequireAuth(async (req, res, _session, sessionData) => {
 		return res.status(200).send({});
 	} catch (e) {
 		if (e instanceof Error) {
+			console.log(e);
+
 			return res.status(500).send({ errors: [{ message: e.message }] });
 		}
 	}

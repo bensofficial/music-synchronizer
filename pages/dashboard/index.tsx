@@ -31,7 +31,7 @@ import {
 	generateAuthUrl,
 	handleCallback,
 } from "$lib/services/youtube/authServer";
-import { userIsLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
+import { isUserLoggedInWithGoogle } from "$lib/services/youtube/authFrontend";
 import YoutubeMusicIcon from "$components/services/icons/YoutubeMusicIcon";
 import ConnectYoutubeButton from "$components/services/buttons/ConnectYoutubeButton";
 import { getUserWithoutDatesAndPassword } from "$lib/db/user";
@@ -51,6 +51,9 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 	const addIconColor = useColorModeValue("gray.200", "gray.600");
 	const router = useRouter();
 	const toast = useToast();
+
+	const isLoggedInWithSpotify = isUserLoggedInWithSpotify(user);
+	const isLoggedInWithGoogle = isUserLoggedInWithGoogle(user);
 
 	useEffect(() => {
 		const param = router.query["toast"];
@@ -79,7 +82,13 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 			});
 			return;
 		}
-	}, [isUserLoggedInWithSpotify(user), userIsLoggedInWithGoogle(user)]);
+	}, [
+		isLoggedInWithGoogle,
+		isLoggedInWithSpotify,
+		error,
+		router.query,
+		toast,
+	]);
 
 	return (
 		<>
@@ -88,7 +97,7 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 				Your Services:
 			</Text>
 			<Flex flexWrap="wrap" minH={32}>
-				{isUserLoggedInWithSpotify(user) && (
+				{isLoggedInWithSpotify && (
 					<ServiceCard
 						flexBasis={{ base: "100%", md: "auto" }}
 						href="/dashboard/spotify"
@@ -98,7 +107,7 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 						<SpotifyIcon />
 					</ServiceCard>
 				)}
-				{userIsLoggedInWithGoogle(user) && (
+				{isLoggedInWithGoogle && (
 					<ServiceCard
 						flexBasis={{ base: "100%", md: "auto" }}
 						href="/dashboard/youtube"
@@ -124,10 +133,8 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 					<ModalCloseButton />
 					<ModalBody>
 						<VStack gap={3}>
-							{!isUserLoggedInWithSpotify(user) && (
-								<ConnectSpotifyButton />
-							)}
-							{!userIsLoggedInWithGoogle(user) && (
+							{!isLoggedInWithSpotify && <ConnectSpotifyButton />}
+							{!isLoggedInWithGoogle && (
 								<ConnectYoutubeButton
 									googleAuthUrl={googleAuthUrl}
 								/>
