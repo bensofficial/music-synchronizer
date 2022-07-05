@@ -17,7 +17,7 @@
 		"next:build": "next build",
 		"next:dev": "next dev",
 		"next:export": "next export",
-		"next:start": "next start",
+		"next:start": "next start -p 8105",
 		"prettier:fix": "npm run prettier:individual -- .",
 		"prettier:individual": "npm run prettier:template -- --write",
 		"prettier:report": "npm run prettier:template -- --check .",
