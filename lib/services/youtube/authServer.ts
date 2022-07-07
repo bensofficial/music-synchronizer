@@ -52,4 +52,6 @@ export function authorizeUser(user: User): void {
 	}
 
 	oauth2Client.credentials = { refresh_token: user.youtubeRefreshToken };
+
+	google.options({ auth: oauth2Client });
 }
