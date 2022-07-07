@@ -73,7 +73,7 @@ export default function PlaylistTableWrapper({
 			filteredPlaylists.length - 1,
 		);
 
-		setPagePlaylists(filteredPlaylists.slice(start, end));
+		setPagePlaylists(filteredPlaylists.slice(start, end + 1));
 	}, [filteredPlaylists, currentPage]);
 
 	return (
