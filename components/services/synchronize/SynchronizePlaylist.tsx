@@ -11,6 +11,7 @@ import {
 	useDisclosure,
 	VStack,
 } from "@chakra-ui/react";
+import { AiOutlineSync } from "react-icons/ai";
 import { IoIosCheckmarkCircleOutline } from "react-icons/io";
 
 export default function SynchronizePlaylist({
@@ -64,6 +65,9 @@ export default function SynchronizePlaylist({
 					</>
 				) : (
 					<Button
+						size="lg"
+						variant="outline"
+						rightIcon={<Icon as={AiOutlineSync} />}
 						onClick={() => {
 							send({
 								originService,
