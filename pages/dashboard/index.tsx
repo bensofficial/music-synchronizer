@@ -71,7 +71,6 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 				status: "success",
 				isClosable: true,
 			});
-			return;
 		}
 
 		if (param == "youtube") {
@@ -80,15 +79,11 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 				status: "success",
 				isClosable: true,
 			});
-			return;
 		}
-	}, [
-		isLoggedInWithGoogle,
-		isLoggedInWithSpotify,
-		error,
-		router.query,
-		toast,
-	]);
+
+		router.replace(`${window.location.origin}/dashboard`);
+		// eslint-disable-next-line react-hooks/exhaustive-deps
+	}, [isLoggedInWithGoogle, isLoggedInWithSpotify, error, toast]);
 
 	return (
 		<>
@@ -117,14 +112,21 @@ const Index: Page<Props> = ({ user, googleAuthUrl, error }: Props) => {
 						<YoutubeMusicIcon />
 					</ServiceCard>
 				)}
-				<ServiceCardWrapper
-					mb={4}
-					flexBasis={{ base: "100%", md: "auto" }}
-					onClick={onOpen}>
-					<Center h="full" px={6}>
-						<Icon color={addIconColor} w={16} h={16} as={IoAdd} />
-					</Center>
-				</ServiceCardWrapper>
+				{!(isLoggedInWithGoogle && isLoggedInWithSpotify) && (
+					<ServiceCardWrapper
+						mb={4}
+						flexBasis={{ base: "100%", md: "auto" }}
+						onClick={onOpen}>
+						<Center h="full" px={6}>
+							<Icon
+								color={addIconColor}
+								w={16}
+								h={16}
+								as={IoAdd}
+							/>
+						</Center>
+					</ServiceCardWrapper>
+				)}
 			</Flex>
 			<Modal isOpen={isOpen} onClose={onClose}>
 				<ModalOverlay />
