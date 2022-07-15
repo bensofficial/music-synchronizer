@@ -21,7 +21,7 @@ const Home: NextPage = () => {
 				flexDirection="column"
 				alignItems="center">
 				<Flex
-					mt="5%"
+					mt="6%"
 					width="100%"
 					textAlign="center"
 					alignItems="center"
@@ -31,14 +31,15 @@ const Home: NextPage = () => {
 						bgClip="text"
 						wordBreak="keep-all"
 						fontWeight="extrabold"
-						fontSize="max(9vw, 3.8rem)">
+						lineHeight="max(4rem, 10.4vw)"
+						fontSize="max(3rem, 8vw)">
 						Music <br /> Synchronizer
 					</Heading>
 					<Text
 						mb="8"
 						w="min(40rem, 100%)"
 						fontWeight="thin"
-						fontSize="max(2.5vw, 1.5rem)">
+						fontSize="max(1.5rem, 2vw)">
 						A powerful tool to synchronize your music between
 						multiple services
 					</Text>
