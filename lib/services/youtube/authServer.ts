@@ -16,7 +16,11 @@ const oauth2Client = new google.auth.OAuth2(
 
 google.options({ auth: oauth2Client });
 
-const scopes = ["https://www.googleapis.com/auth/youtube.readonly"];
+const scopes = [
+	"https://www.googleapis.com/auth/youtube",
+	"https://www.googleapis.com/auth/youtube.force-ssl",
+	"https://www.googleapis.com/auth/youtube.readonly",
+];
 
 export function generateAuthUrl() {
 	return oauth2Client.generateAuthUrl({
